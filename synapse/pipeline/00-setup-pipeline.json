@@ -73,7 +73,14 @@
 				"name": "Script SqlDwh",
 				"description": "Run setup script against dedicate pool",
 				"type": "Script",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Fetch setup sql",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -97,12 +104,33 @@
 						{
 							"type": "NonQuery",
 							"text": {
-								"value": "@uriComponentToString(replace(replace(replace(replace(uriComponent(variables('setupsqlscript')), '%0A', '  '), '%0D', '  '), '%09', '  '), 'GO', '; '))",
+								"value": "@uriComponentToString(replace(replace(replace(replace(uriComponent(activity('Fetch setup sql').output.response), '%0A', '  '), '%0D', '  '), '%09', '  '), 'GO', '; '))",
 								"type": "Expression"
 							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Fetch setup sql",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/setup.sql",
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET"
 				}
 			}
 		],
