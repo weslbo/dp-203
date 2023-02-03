@@ -12,7 +12,7 @@ param sqlUser string
 param sqlPassword string
 
 @description('Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using (az ad signed-in-user show --query userPrincipalName)')
-param userPrincipalName string
+param userobjectid string
 
 var rdPrefix = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions'
 var role = {
@@ -691,7 +691,7 @@ resource rolesassignments_currentuser_to_datalake 'Microsoft.Authorization/roleA
   name: guid('currentuser_to_datalake_${resourceGroup().name}')
   scope: dataLakeAccount
   properties: {
-    principalId: userPrincipalName
+    principalId: userobjectid
     roleDefinitionId: role['StorageBlobDataContributor']
     principalType: 'User'
   }

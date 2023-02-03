@@ -25,7 +25,7 @@ To deploy this environment:
     ```azurecli
     git clone https://github.com/weslbo/dp-203.git
     cd dp-203
-    userPrincipalName=$(az ad signed-in-user show --query userPrincipalName)
+    userobjectid=$(az ad signed-in-user show --query id)
     read -p "Password for SQL Admin: " password
     ```
 
@@ -33,7 +33,7 @@ To deploy this environment:
 
     ```azurecli
     az group create --name rg-dp-203 --location westeurope
-    az deployment group create --name dp-203 --resource-group rg-dp-203 --template-file ./automation/dp-203.bicep --parameters sqlUser=azureuser sqlPassword=$password userPrincipalName=$userPrincipalName
+    az deployment group create --name dp-203 --resource-group rg-dp-203 --template-file ./automation/dp-203.bicep --parameters sqlUser=azureuser sqlPassword=$password userobjectid=$userobjectid
     ```
 
     If you get any errors (#redtext), this happens usually when you re-deploy and the dedicated pool/data explorer pool is in a paused/stopped state
