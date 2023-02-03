@@ -1,0 +1,462 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "synapse-dyfk4ryjqex56"
+		},
+		"synapse-dyfk4ryjqex56-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'synapse-dyfk4ryjqex56-WorkspaceDefaultSqlServer'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synapse-dyfk4ryjqex56.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"DataLake_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{concat('https://datalake', linkedService().suffix, '.dfs.core.windows.net')}"
+		},
+		"GitHubDP203AzureDataEngineer_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/MicrosoftLearning/DP-203-Azure-Data-Engineer/"
+		},
+		"synapse-dyfk4ryjqex56-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://datalakedyfk4ryjqex56.dfs.core.windows.net"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/00-setup-pipeline')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "This setup pipeline needs to executed after the DP-203 environment has been deployed. It will copy files and setup data sources",
+				"activities": [
+					{
+						"name": "For each file in Github",
+						"description": "For each file in the official github account https://github.com/MicrosoftLearning/DP-203-Azure-Data-Engineer, copy the files into the data lake",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('filesToCopy')",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy file",
+									"description": "Copy file from github into datalake",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "HttpReadSettings",
+												"requestMethod": "GET"
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "FilesFromGithub",
+											"type": "DatasetReference",
+											"parameters": {
+												"fileName": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DestinationFilesOnDataLake",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"filesToCopy": {
+						"type": "Array",
+						"defaultValue": [
+							"master/Allfiles/labs/01/setup.sql",
+							"master/Allfiles/labs/01/adventureworks/products.csv",
+							"master/Allfiles/labs/01/data/DimCurrency.fmt",
+							"master/Allfiles/labs/01/data/DimCurrency.txt",
+							"master/Allfiles/labs/01/data/DimCustomer.txt",
+							"master/Allfiles/labs/01/data/DimDate.fmt",
+							"master/Allfiles/labs/01/data/DimDate.txt",
+							"master/Allfiles/labs/01/data/DimGeography.fmt",
+							"master/Allfiles/labs/01/data/DimGeography.txt",
+							"master/Allfiles/labs/01/data/DimProduct.fmt",
+							"master/Allfiles/labs/01/data/DimProduct.txt",
+							"master/Allfiles/labs/01/data/DimProductCategory.fmt",
+							"master/Allfiles/labs/01/data/DimProductCategory.txt",
+							"master/Allfiles/labs/01/data/DimProductSubCategory.fmt",
+							"master/Allfiles/labs/01/data/DimProductSubCategory.txt",
+							"master/Allfiles/labs/01/data/DimPromotion.fmt",
+							"master/Allfiles/labs/01/data/DimPromotion.txt",
+							"master/Allfiles/labs/01/data/DimSalesTerritory.fmt",
+							"master/Allfiles/labs/01/data/DimSalesTerritory.txt",
+							"master/Allfiles/labs/01/data/FactInternetSales.fmt",
+							"master/Allfiles/labs/01/data/FactInternetSales.txt",
+							"master/Allfiles/labs/01/files/ingest-data.kql",
+							"master/Allfiles/labs/01/files/sales.csv",
+							"master/Allfiles/labs/01/iot/devices.csv",
+							"master/Allfiles/labs/02/data/2019.csv",
+							"master/Allfiles/labs/02/data/2019.snappy.parquet",
+							"master/Allfiles/labs/02/data/2020.csv",
+							"master/Allfiles/labs/02/data/2020.snappy.parquet",
+							"master/Allfiles/labs/02/data/2021.csv",
+							"master/Allfiles/labs/02/data/2021.snappy.parquet",
+							"master/Allfiles/labs/02/data/SO43700.json",
+							"master/Allfiles/labs/02/data/SO43701.json",
+							"master/Allfiles/labs/02/data/SO43703.json",
+							"master/Allfiles/labs/02/data/SO43704.json",
+							"master/Allfiles/labs/02/data/SO43705.json",
+							"master/Allfiles/labs/03/data/2019.csv",
+							"master/Allfiles/labs/03/data/2020.csv",
+							"master/Allfiles/labs/03/data/2021.csv",
+							"master/Allfiles/labs/04/data/customer.csv",
+							"master/Allfiles/labs/04/data/product.csv",
+							"master/Allfiles/labs/04/data/salesorder.csv",
+							"master/Allfiles/labs/05/data/2019.csv",
+							"master/Allfiles/labs/05/data/2020.csv",
+							"master/Allfiles/labs/05/data/2021.csv",
+							"master/Allfiles/labs/06/data/2019.csv",
+							"master/Allfiles/labs/06/data/2020.csv",
+							"master/Allfiles/labs/06/data/2021.csv",
+							"master/Allfiles/labs/06/notebooks/Spark Transform.ipynb",
+							"master/Allfiles/labs/07/data/products.csv",
+							"master/Allfiles/labs/08/setup.sql",
+							"master/Allfiles/labs/08/Solution.sql",
+							"master/Allfiles/labs/08/data/DimAccount.fmt",
+							"master/Allfiles/labs/08/data/DimAccount.txt",
+							"master/Allfiles/labs/08/data/DimCurrency.fmt",
+							"master/Allfiles/labs/08/data/DimCurrency.txt",
+							"master/Allfiles/labs/08/data/DimCustomer.fmt",
+							"master/Allfiles/labs/08/data/DimCustomer.txt",
+							"master/Allfiles/labs/08/data/DimDate.fmt",
+							"master/Allfiles/labs/08/data/DimDate.txt",
+							"master/Allfiles/labs/08/data/DimDepartmentGroup.fmt",
+							"master/Allfiles/labs/08/data/DimDepartmentGroup.txt",
+							"master/Allfiles/labs/08/data/DimEmployee.fmt",
+							"master/Allfiles/labs/08/data/DimEmployee.txt",
+							"master/Allfiles/labs/08/data/DimGeography.fmt",
+							"master/Allfiles/labs/08/data/DimGeography.txt",
+							"master/Allfiles/labs/08/data/DimOrganization.fmt",
+							"master/Allfiles/labs/08/data/DimOrganization.txt",
+							"master/Allfiles/labs/08/data/DimProduct.fmt",
+							"master/Allfiles/labs/08/data/DimProduct.txt",
+							"master/Allfiles/labs/08/data/DimProductCategory.fmt",
+							"master/Allfiles/labs/08/data/DimProductCategory.txt",
+							"master/Allfiles/labs/08/data/DimProductSubCategory.fmt",
+							"master/Allfiles/labs/08/data/DimProductSubCategory.txt",
+							"master/Allfiles/labs/08/data/DimPromotion.fmt",
+							"master/Allfiles/labs/08/data/DimPromotion.txt",
+							"master/Allfiles/labs/08/data/DimReseller.fmt",
+							"master/Allfiles/labs/08/data/DimReseller.txt",
+							"master/Allfiles/labs/08/data/DimSalesTerritory.fmt",
+							"master/Allfiles/labs/08/data/DimSalesTerritory.txt",
+							"master/Allfiles/labs/08/data/FactInternetSales.fmt",
+							"master/Allfiles/labs/08/data/FactInternetSales.txt",
+							"master/Allfiles/labs/08/data/FactResellerSales.fmt",
+							"master/Allfiles/labs/08/data/FactResellerSales.txt",
+							"master/Allfiles/labs/09/setup.sql",
+							"master/Allfiles/labs/09/data/Customer.csv",
+							"master/Allfiles/labs/09/data/DimAccount.fmt",
+							"master/Allfiles/labs/09/data/DimAccount.txt",
+							"master/Allfiles/labs/09/data/DimCurrency.fmt",
+							"master/Allfiles/labs/09/data/DimCurrency.txt",
+							"master/Allfiles/labs/09/data/DimCustomer.fmt",
+							"master/Allfiles/labs/09/data/DimCustomer.txt",
+							"master/Allfiles/labs/09/data/DimDate.fmt",
+							"master/Allfiles/labs/09/data/DimDate.txt",
+							"master/Allfiles/labs/09/data/DimDepartmentGroup.fmt",
+							"master/Allfiles/labs/09/data/DimDepartmentGroup.txt",
+							"master/Allfiles/labs/09/data/DimEmployee.fmt",
+							"master/Allfiles/labs/09/data/DimEmployee.txt",
+							"master/Allfiles/labs/09/data/DimGeography.fmt",
+							"master/Allfiles/labs/09/data/DimGeography.txt",
+							"master/Allfiles/labs/09/data/DimOrganization.fmt",
+							"master/Allfiles/labs/09/data/DimOrganization.txt",
+							"master/Allfiles/labs/09/data/DimProductCategory.fmt",
+							"master/Allfiles/labs/09/data/DimProductCategory.txt",
+							"master/Allfiles/labs/09/data/DimProductSubCategory.fmt",
+							"master/Allfiles/labs/09/data/DimProductSubCategory.txt",
+							"master/Allfiles/labs/09/data/DimPromotion.fmt",
+							"master/Allfiles/labs/09/data/DimPromotion.txt",
+							"master/Allfiles/labs/09/data/DimReseller.fmt",
+							"master/Allfiles/labs/09/data/DimReseller.txt",
+							"master/Allfiles/labs/09/data/DimSalesTerritory.fmt",
+							"master/Allfiles/labs/09/data/DimSalesTerritory.txt",
+							"master/Allfiles/labs/09/data/FactInternetSales.fmt",
+							"master/Allfiles/labs/09/data/FactInternetSales.txt",
+							"master/Allfiles/labs/09/data/FactResellerSales.fmt",
+							"master/Allfiles/labs/09/data/FactResellerSales.txt",
+							"master/Allfiles/labs/09/data/Product.csv",
+							"master/Allfiles/labs/10/setup.sql",
+							"master/Allfiles/labs/10/data/Product.csv",
+							"master/Allfiles/labs/11/data/2019.csv",
+							"master/Allfiles/labs/11/data/2020.csv",
+							"master/Allfiles/labs/11/data/2021.csv",
+							"master/Allfiles/labs/11/notebooks/Spark Transform.ipynb",
+							"master/Allfiles/labs/18/setup.sql",
+							"master/Allfiles/labs/22/dedicated.sql",
+							"master/Allfiles/labs/22/serverless.sql",
+							"master/Allfiles/labs/22/data/products.csv",
+							"master/Allfiles/labs/23/adventureworks/products.csv",
+							"master/Allfiles/labs/24/Databricks-Spark.dbc",
+							"master/Allfiles/labs/24/data/2019.csv",
+							"master/Allfiles/labs/24/data/2020.csv",
+							"master/Allfiles/labs/24/data/2021.csv",
+							"master/Allfiles/labs/25/Delta-Lake.dbc",
+							"master/Allfiles/labs/25/data/devices1.json",
+							"master/Allfiles/labs/25/data/devices2.json",
+							"master/Allfiles/labs/25/data/products.csv",
+							"master/Allfiles/labs/26/data/products.csv",
+							"master/Allfiles/labs/27/Process-Data.dbc",
+							"master/Allfiles/labs/27/data/products.csv"
+						]
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-02-03T06:46:19Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/FilesFromGithub')]",
+				"[concat(variables('workspaceId'), '/datasets/DestinationFilesOnDataLake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DestinationFilesOnDataLake')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "files"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/DataLake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/FilesFromGithub')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GitHubDP203AzureDataEngineer",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/GitHubDP203AzureDataEngineer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DataLake')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "The Azure Data Lake that is linked to this workspace",
+				"parameters": {
+					"suffix": {
+						"type": "string",
+						"defaultValue": "dyfk4ryjqex56"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('DataLake_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/GitHubDP203AzureDataEngineer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Official location of the GitHub repository DP-203: Azure Data Engineer",
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('GitHubDP203AzureDataEngineer_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/synapse-dyfk4ryjqex56-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('synapse-dyfk4ryjqex56-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/synapse-dyfk4ryjqex56-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('synapse-dyfk4ryjqex56-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 4,
+					"minNodeCount": 3
+				},
+				"nodeCount": 0,
+				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.2",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		}
+	]
+}
