@@ -1,0 +1,15 @@
+{
+	"name": "KeyVault",
+	"properties": {
+		"parameters": {
+			"suffix": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "@{concat('https://keyvault-', linkedService().suffix, '.vault.azure.net/')}"
+		}
+	}
+}
