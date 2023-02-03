@@ -1,0 +1,20 @@
+{
+	"name": "00_drop_tables_sqldwh",
+	"properties": {
+		"folder": {
+			"name": "00_setup"
+		},
+		"content": {
+			"query": "IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') DROP TABLE [dbo].[FactInternetSales];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') DROP TABLE [dbo].[DimCustomer];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') DROP TABLE [dbo].[DimDate];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') DROP TABLE [dbo].[DimGeography];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') DROP TABLE [dbo].[DimProductCategory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') DROP TABLE [dbo].[DimProductSubcategory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') DROP TABLE [dbo].[DimSalesTerritory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') DROP TABLE [dbo].[DimPromotion];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') DROP TABLE [dbo].[DimCurrency];",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqldwh",
+				"poolName": "sqldwh"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
