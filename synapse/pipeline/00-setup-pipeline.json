@@ -73,14 +73,7 @@
 				"name": "Script SqlDwh",
 				"description": "Run setup script against dedicate pool",
 				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Replace characters",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -103,54 +96,10 @@
 					"scripts": [
 						{
 							"type": "NonQuery",
-							"text": {
-								"value": "@variables('setupsqlscript')",
-								"type": "Expression"
-							}
+							"text": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') CREATE TABLE [dbo].[FactInternetSales](\n\t[SalesOrderNumber] [nvarchar](20) NOT NULL,\n\t[SalesOrderLineNumber] [tinyint] NOT NULL,\n\t[CustomerKey] [int] NOT NULL,\n\t[ProductKey] [int] NOT NULL,\n\t[OrderDateKey] [int] NOT NULL,\n\t[DueDateKey] [int] NOT NULL,\n\t[ShipDateKey] [int] NULL,\n\t[PromotionKey] [int] NOT NULL,\n\t[CurrencyKey] [int] NOT NULL,\n\t[SalesTerritoryKey] [int] NOT NULL,\n\t[OrderQuantity] [smallint] NOT NULL,\n\t[UnitPrice] [money] NOT NULL,\n\t[ExtendedAmount] [money] NOT NULL,\n\t[UnitPriceDiscountPct] [decimal](7, 4) NOT NULL,\n\t[DiscountAmount] [float] NOT NULL,\n\t[ProductStandardCost] [money] NOT NULL,\n\t[TotalProductCost] [money] NOT NULL,\n\t[SalesAmount] [money] NOT NULL,\n\t[TaxAmount] [money] NOT NULL,\n\t[FreightAmount] [money] NOT NULL,\n\t[CarrierTrackingNumber] [nvarchar](25) NULL,\n\t[CustomerPONumber] [nvarchar](25) NULL,\n\t[RevisionNumber] [tinyint] NOT NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') CREATE TABLE [dbo].[DimCustomer](\n\t[CustomerKey] [int] IDENTITY(1,1) NOT NULL,\n\t[GeographyKey] [int] NULL,\n\t[CustomerAlternateKey] [nvarchar](15) NOT NULL,\n\t[Title] [nvarchar](8) NULL,\n\t[FirstName] [nvarchar](50) NULL,\n\t[MiddleName] [nvarchar](50) NULL,\n\t[LastName] [nvarchar](50) NULL,\n\t[NameStyle] [bit] NULL,\n\t[BirthDate] [date] NULL,\n\t[MaritalStatus] [nchar](1) NULL,\n\t[Suffix] [nvarchar](10) NULL,\n\t[Gender] [nvarchar](1) NULL,\n\t[EmailAddress] [nvarchar](50) NULL,\n\t[YearlyIncome] [money] NULL,\n\t[TotalChildren] [tinyint] NULL,\n\t[NumberChildrenAtHome] [tinyint] NULL,\n\t[EnglishEducation] [nvarchar](40) NULL,\n\t[SpanishEducation] [nvarchar](40) NULL,\n\t[FrenchEducation] [nvarchar](40) NULL,\n\t[EnglishOccupation] [nvarchar](100) NULL,\n\t[SpanishOccupation] [nvarchar](100) NULL,\n\t[FrenchOccupation] [nvarchar](100) NULL,\n\t[HouseOwnerFlag] [nchar](1) NULL,\n\t[NumberCarsOwned] [tinyint] NULL,\n\t[AddressLine1] [nvarchar](120) NULL,\n\t[AddressLine2] [nvarchar](120) NULL,\n\t[Phone] [nvarchar](20) NULL,\n\t[DateFirstPurchase] [date] NULL,\n\t[CommuteDistance] [nvarchar](15) NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') CREATE TABLE [dbo].[DimDate](\n\t[DateKey] [int] NOT NULL,\n\t[FullDateAlternateKey] [date] NOT NULL,\n\t[DayNumberOfWeek] [tinyint] NOT NULL,\n\t[EnglishDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[SpanishDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[FrenchDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[DayNumberOfMonth] [tinyint] NOT NULL,\n\t[DayNumberOfYear] [smallint] NOT NULL,\n\t[WeekNumberOfYear] [tinyint] NOT NULL,\n\t[EnglishMonthName] [nvarchar](10) NOT NULL,\n\t[SpanishMonthName] [nvarchar](10) NOT NULL,\n\t[FrenchMonthName] [nvarchar](10) NOT NULL,\n\t[MonthNumberOfYear] [tinyint] NOT NULL,\n\t[CalendarQuarter] [tinyint] NOT NULL,\n\t[CalendarYear] [smallint] NOT NULL,\n\t[CalendarSemester] [tinyint] NOT NULL,\n\t[FiscalQuarter] [tinyint] NOT NULL,\n\t[FiscalYear] [smallint] NOT NULL,\n\t[FiscalSemester] [tinyint] NOT NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') CREATE TABLE [dbo].[DimGeography](\n\t[GeographyKey] [int] IDENTITY(1,1) NOT NULL,\n\t[City] [nvarchar](30) NULL,\n\t[StateProvinceCode] [nvarchar](3) NULL,\n\t[StateProvinceName] [nvarchar](50) NULL,\n\t[CountryRegionCode] [nvarchar](3) NULL,\n\t[EnglishCountryRegionName] [nvarchar](50) NULL,\n\t[SpanishCountryRegionName] [nvarchar](50) NULL,\n\t[FrenchCountryRegionName] [nvarchar](50) NULL,\n\t[PostalCode] [nvarchar](15) NULL,\n\t[SalesTerritoryKey] [int] NULL,\n\t[IpAddressLocator] [nvarchar](15) NULL)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') CREATE TABLE [dbo].[DimProduct](\n\t[ProductKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductAlternateKey] [nvarchar](25) NULL,\n\t[ProductSubcategoryKey] [int] NULL,\n\t[WeightUnitMeasureCode] [nchar](3) NULL,\n\t[SizeUnitMeasureCode] [nchar](3) NULL,\n\t[EnglishProductName] [nvarchar](50) NOT NULL,\n\t[SpanishProductName] [nvarchar](50) NOT NULL,\n\t[FrenchProductName] [nvarchar](50) NOT NULL,\n\t[StandardCost] [money] NULL,\n\t[FinishedGoodsFlag] [bit] NOT NULL,\n\t[Color] [nvarchar](15) NOT NULL,\n\t[SafetyStockLevel] [smallint] NULL,\n\t[ReorderPoint] [smallint] NULL,\n\t[ListPrice] [money] NULL,\n\t[Size] [nvarchar](50) NULL,\n\t[SizeRange] [nvarchar](50) NULL,\n\t[Weight] [float] NULL,\n\t[DaysToManufacture] [int] NULL,\n\t[ProductLine] [nchar](2) NULL,\n\t[DealerPrice] [money] NULL,\n\t[Class] [nchar](2) NULL,\n\t[Style] [nchar](2) NULL,\n\t[ModelName] [nvarchar](50) NULL,\n\t[LargePhoto] [varbinary](max) NULL,\n\t[EnglishDescription] [nvarchar](400) NULL,\n\t[FrenchDescription] [nvarchar](400) NULL,\n\t[ChineseDescription] [nvarchar](400) NULL,\n\t[ArabicDescription] [nvarchar](400) NULL,\n\t[HebrewDescription] [nvarchar](400) NULL,\n\t[ThaiDescription] [nvarchar](400) NULL,\n\t[GermanDescription] [nvarchar](400) NULL,\n\t[JapaneseDescription] [nvarchar](400) NULL,\n\t[TurkishDescription] [nvarchar](400) NULL,\n\t[StartDate] [datetime] NULL,\n\t[EndDate] [datetime] NULL,\n\t[Status] [nvarchar](7) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (ProductKey)  \n  ); \nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') CREATE TABLE [dbo].[DimProductCategory](\n\t[ProductCategoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductCategoryAlternateKey] [int] NULL,\n\t[EnglishProductCategoryName] [nvarchar](50) NOT NULL,\n\t[SpanishProductCategoryName] [nvarchar](50) NOT NULL,\n\t[FrenchProductCategoryName] [nvarchar](50) NOT NULL)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') CREATE TABLE [dbo].[DimProductSubcategory](\n\t[ProductSubcategoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductSubcategoryAlternateKey] [int] NULL,\n\t[EnglishProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[SpanishProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[FrenchProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[ProductCategoryKey] [int] NULL)\nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') CREATE TABLE [dbo].[DimSalesTerritory](\n\t[SalesTerritoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[SalesTerritoryAlternateKey] [int] NULL,\n\t[SalesTerritoryRegion] [nvarchar](50) NOT NULL,\n\t[SalesTerritoryCountry] [nvarchar](50) NOT NULL,\n\t[SalesTerritoryGroup] [nvarchar](50) NULL,\n\t[SalesTerritoryImage] [varbinary](max) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (SalesTerritoryKey)  \n  ); \nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') CREATE TABLE [dbo].[DimPromotion](\n\t[PromotionKey] [int] IDENTITY(1,1) NOT NULL,\n\t[PromotionAlternateKey] [int] NULL,\n\t[EnglishPromotionName] [nvarchar](255) NULL,\n\t[SpanishPromotionName] [nvarchar](255) NULL,\n\t[FrenchPromotionName] [nvarchar](255) NULL,\n\t[DiscountPct] [float] NULL,\n\t[EnglishPromotionType] [nvarchar](50) NULL,\n\t[SpanishPromotionType] [nvarchar](50) NULL,\n\t[FrenchPromotionType] [nvarchar](50) NULL,\n\t[EnglishPromotionCategory] [nvarchar](50) NULL,\n\t[SpanishPromotionCategory] [nvarchar](50) NULL,\n\t[FrenchPromotionCategory] [nvarchar](50) NULL,\n\t[StartDate] [datetime] NOT NULL,\n\t[EndDate] [datetime] NULL,\n\t[MinQty] [int] NULL,\n\t[MaxQty] [int] NULL)\nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') CREATE TABLE [dbo].[DimCurrency](\n\t[CurrencyKey] [int] IDENTITY(1,1) NOT NULL,\n\t[CurrencyAlternateKey] [nchar](3) NOT NULL,\n\t[CurrencyName] [nvarchar](50) NOT NULL,\n\t[FormatString] [nvarchar](20) NULL)\n\nGO"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
-				"name": "Retrieve setup sql script",
-				"type": "WebActivity",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"url": "https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/setup.sql",
-					"connectVia": {
-						"referenceName": "AutoResolveIntegrationRuntime",
-						"type": "IntegrationRuntimeReference"
-					},
-					"method": "GET"
-				}
-			},
-			{
-				"name": "Replace characters",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Retrieve setup sql script",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "setupsqlscript",
-					"value": {
-						"value": "@uriComponentToString(replace(replace(replace(replace(uriComponent(activity('Retrieve setup sql script').output.response), '%0A', '  '), '%0D', '  '), '%09', '  '), ' GO ', '; '))",
-						"type": "Expression"
-					}
 				}
 			}
 		],
