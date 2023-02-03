@@ -104,7 +104,7 @@
 						{
 							"type": "NonQuery",
 							"text": {
-								"value": "@activity('Retrieve setup sql script').output",
+								"value": "@replace(replace(activity('Retrieve setup sql script').output.response, '\\n', ''), '\\t', '')",
 								"type": "Expression"
 							}
 						}
