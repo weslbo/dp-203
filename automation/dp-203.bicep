@@ -11,6 +11,9 @@ param sqlUser string
 @description('Password for SQL User')
 param sqlPassword string
 
+@description('Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using (az ad signed-in-user show --query userPrincipalName)')
+param userPrincipalName string
+
 var rdPrefix = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions'
 var role = {
   Owner: '${rdPrefix}/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
@@ -19,6 +22,7 @@ var role = {
   StorageBlobDataContributor: '${rdPrefix}/ba92f5b4-2d11-453d-a403-e96b0029c9fe'
   StorageBlobDataOwner: '${rdPrefix}/b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
 }
+var tenantId = subscription().tenantId
 
 resource deploymentId 'Microsoft.Resources/tags@2019-10-01' = {
   name: 'default'
@@ -92,16 +96,6 @@ resource workspace_allowAll 'Microsoft.Synapse/workspaces/firewallrules@2019-06-
   properties: {
     startIpAddress: '0.0.0.0'
     endIpAddress: '255.255.255.255'
-  }
-}
-
-resource roleassignment_synapse_to_datalake 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid('synapse_to_datalake_{resourceGroup().name}')
-  scope: dataLakeAccount
-  properties: {
-    roleDefinitionId: role['StorageBlobDataOwner']
-    principalId: workspace.identity.principalId
-    principalType: 'ServicePrincipal'
   }
 }
 
@@ -575,16 +569,6 @@ resource logicapp_pause_resources 'Microsoft.Logic/workflows@2017-07-01' = {
   }
 }
 
-resource id_Microsoft_Logic_workflows_logicapp_pause_synapse_b24988ac_6180_42a0_ab88_20f7382dd24c 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(concat(resourceGroup().id), logicapp_pause_resources.id, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  properties: {
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // contributor
-    principalId: reference(logicapp_pause_resources.id, '2017-07-01', 'full').identity.principalId
-    scope: resourceGroup().id
-    principalType: 'ServicePrincipal'
-  }
-}
-
 resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
   name: 'cosmos-${uniqueSuffix}'
   location: location
@@ -625,4 +609,93 @@ resource databricks 'Microsoft.Databricks/workspaces@2022-04-01-preview' = {
   }
 }
 
+resource keyvault 'Microsoft.KeyVault/vaults@2021-04-01-preview' = {
+  name: 'keyvault-${uniqueString(resourceGroup().id)}'
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    enableSoftDelete: false
+    tenantId: tenantId
+    accessPolicies: [
+      {
+        tenantId: tenantId
+        objectId: workspace.identity.principalId
+        permissions:{
+          secrets: [
+            'get'
+            'list'
+            'set'
+            'delete'
+            'recover'
+            'backup'
+            'restore'
+          ]
+        }
+      }
+      {
+        tenantId: tenantId
+        objectId: purviewAccount.identity.principalId
+        permissions: {
+          secrets: [
+            'get'
+            'list'
+          ]
+        }
+      }
+    ]
+  }
+  resource secret 'secrets' = {
+    name: 'sqlpassword'
+    properties: {
+      value: sqlPassword
+    }
+  }
+}
+
+
+resource roleassignment_synapse_to_datalake 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid('synapse_to_datalake_{resourceGroup().name}')
+  scope: dataLakeAccount
+  properties: {
+    roleDefinitionId: role['StorageBlobDataOwner']
+    principalId: workspace.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource rolesassignments_purview_to_datalake 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+  name: guid('purview_to_datalake_${resourceGroup().name}')
+  scope: dataLakeAccount
+  properties: {
+    principalId: purviewAccount.identity.principalId
+    roleDefinitionId: role['StorageBlobDataContributor']
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource rolesassignments_logical_to_resourcegroup 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name:  guid('logicapp_to_resourcegroup_${resourceGroup().name}')
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: role['Contributor']
+    principalId: logicapp_pause_resources.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Current user should become a Storage Blob Data Contributor 
+resource rolesassignments_currentuser_to_datalake 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid('currentuser_to_datalake_${resourceGroup().name}')
+  scope: dataLakeAccount
+  properties: {
+    principalId: userPrincipalName
+    roleDefinitionId: role['StorageBlobDataContributor']
+    principalType: 'User'
+  }
+}
+
 output workspaceid string = workspace.properties.workspaceUID
+
