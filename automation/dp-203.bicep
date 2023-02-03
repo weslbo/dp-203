@@ -73,6 +73,13 @@ resource workspace 'Microsoft.Synapse/workspaces@2019-06-01-preview' = {
     sqlAdministratorLogin: sqlUser
     sqlAdministratorLoginPassword: sqlPassword
     managedResourceGroupName: 'm${resourceGroup().name}-synapse'
+    workspaceRepositoryConfiguration: {
+      accountName: 'weslbo'
+      collaborationBranch: 'main'
+      repositoryName: 'dp-203'
+      rootFolder: '/synapse/'
+      type: 'WorkspaceGitHubConfiguration'
+    }
   }
   dependsOn: [
     dataLakeAccount
