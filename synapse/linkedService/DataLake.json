@@ -1,0 +1,22 @@
+{
+	"name": "DataLake",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"description": "The Azure Data Lake that is linked to this workspace",
+		"parameters": {
+			"suffix": {
+				"type": "string",
+				"defaultValue": "dyfk4ryjqex56"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "@{concat('https://datalake', linkedService().suffix, '.dfs.core.windows.net')}"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
