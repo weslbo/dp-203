@@ -75,7 +75,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Retrieve setup sql script",
+						"activity": "Replace characters",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -104,7 +104,7 @@
 						{
 							"type": "NonQuery",
 							"text": {
-								"value": "@replace(replace(activity('Retrieve setup sql script').output.response, '\\n', ''), '\\t', '')",
+								"value": "@variables('setupsqlscript')",
 								"type": "Expression"
 							}
 						}
@@ -131,6 +131,26 @@
 						"type": "IntegrationRuntimeReference"
 					},
 					"method": "GET"
+				}
+			},
+			{
+				"name": "Replace characters",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Retrieve setup sql script",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "setupsqlscript",
+					"value": {
+						"value": "@uriComponentToString(replace(replace(replace(replace(uriComponent(activity('Retrieve setup sql script').output.response), '%0A', '  '), '%0D', '  '), '%09', '  '), ' GO ', '; '))",
+						"type": "Expression"
+					}
 				}
 			}
 		],
@@ -277,6 +297,9 @@
 					"master/Allfiles/labs/27/Process-Data.dbc",
 					"master/Allfiles/labs/27/data/products.csv"
 				]
+			},
+			"setupsqlscript": {
+				"type": "String"
 			}
 		},
 		"annotations": [],
