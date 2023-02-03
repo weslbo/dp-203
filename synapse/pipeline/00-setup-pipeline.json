@@ -115,14 +115,7 @@
 			{
 				"name": "Retrieve setup sql script",
 				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "For each file in Github",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
