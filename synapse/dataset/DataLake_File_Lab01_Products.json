@@ -1,9 +1,15 @@
 {
-	"name": "DestinationDataset_4zy",
+	"name": "DataLake_File_Lab01_Products",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
-			"type": "LinkedServiceReference"
+			"referenceName": "DataLake",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"suffix": {
+					"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+					"type": "Expression"
+				}
+			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
