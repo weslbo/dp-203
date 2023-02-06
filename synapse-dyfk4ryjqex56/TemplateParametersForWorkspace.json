@@ -5,6 +5,9 @@
 		"workspaceName": {
 			"value": "synapse-dyfk4ryjqex56"
 		},
+		"SqlDwh_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=\"@{concat('synapse-', linkedService().suffix,'.sql.azuresynapse.net')}\";Initial Catalog=sqldwh"
+		},
 		"synapse-dyfk4ryjqex56-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synapse-dyfk4ryjqex56.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
@@ -13,6 +16,9 @@
 		},
 		"GitHubDP203AzureDataEngineer_properties_typeProperties_url": {
 			"value": "https://raw.githubusercontent.com/MicrosoftLearning/DP-203-Azure-Data-Engineer/"
+		},
+		"KeyVault_properties_typeProperties_baseUrl": {
+			"value": "@{concat('https://keyvault-', linkedService().suffix, '.vault.azure.net/')}"
 		},
 		"synapse-dyfk4ryjqex56-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://datalakedyfk4ryjqex56.dfs.core.windows.net"
