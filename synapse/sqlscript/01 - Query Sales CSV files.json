@@ -1,5 +1,5 @@
 {
-	"name": "Query Sales CSV files",
+	"name": "01 - Query Sales CSV files",
 	"properties": {
 		"folder": {
 			"name": "dp-203-03-Transform-data-with-sql"

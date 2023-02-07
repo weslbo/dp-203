@@ -1,5 +1,5 @@
 {
-	"name": "Create Sales DB with External table",
+	"name": "02 - Create Sales DB with External table",
 	"properties": {
 		"folder": {
 			"name": "dp-203-03-Transform-data-with-sql"
