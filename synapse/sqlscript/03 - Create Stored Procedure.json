@@ -1,0 +1,20 @@
+{
+	"name": "03 - Create Stored Procedure",
+	"properties": {
+		"folder": {
+			"name": "dp-203-03-Transform-data-with-sql"
+		},
+		"content": {
+			"query": "USE Sales;\nGO;\n\n-- f you will need to transform data frequently, you can use a stored procedure to encapsulate a CETAS statement.\n-- create a stored procedure in the Sales database that aggregates sales by \n-- year and saves the results in an external table:\nDROP PROCEDURE sp_GetYearlySales \n\nCREATE PROCEDURE sp_GetYearlySales\nAS\nBEGIN\n    IF EXISTS (\n            SELECT * FROM sys.external_tables\n            WHERE name = 'YearlySalesTotals'\n        )\n        DROP EXTERNAL TABLE YearlySalesTotals\n    \n    CREATE EXTERNAL TABLE YearlySalesTotals\n    WITH (\n            LOCATION = 'master/Allfiles/labs/03/data/yearlysales/',\n            DATA_SOURCE = sales_data,\n            FILE_FORMAT = ParquetFormat\n        )\n    AS\n    SELECT YEAR(OrderDate) AS CalendarYear,\n           SUM(Quantity) AS ItemsSold,\n           ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\n    FROM\n        OPENROWSET(\n            BULK 'master/Allfiles/labs/03/data/*.csv',\n            DATA_SOURCE = 'sales_data',\n            FORMAT = 'CSV',\n            PARSER_VERSION = '2.0',\n            HEADER_ROW = TRUE\n        ) AS orders\n    GROUP BY YEAR(OrderDate)\nEND\n\n-- Execute the stored procedure:\nEXEC sp_GetYearlySales;\n\n-- On the files tab containing the file system for your data lake, \n-- view the contents of the sales folder (refreshing the view if necessary) \n-- and verify that a new yearlysales folder has been created.\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Sales",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
