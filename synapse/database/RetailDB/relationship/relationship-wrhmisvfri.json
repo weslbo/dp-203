@@ -1,0 +1,23 @@
+{
+	"name": "relationship-wrhmisvfri",
+	"properties": {
+		"Name": "relationship-wrhmisvfri",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "RetailDB"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "SalesOrder",
+		"ToTableName": "Product",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "ProductId",
+				"ToColumnName": "ProductId"
+			}
+		],
+		"RelationshipType": 0
+	},
+	"type": "RELATIONSHIP"
+}
