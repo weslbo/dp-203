@@ -29,6 +29,10 @@
 			"type": "string",
 			"defaultValue": "@{concat('https://keyvault-', linkedService().suffix, '.vault.azure.net/')}"
 		},
+		"Products_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/adventureworks/products.csv"
+		},
 		"synapse-dyfk4ryjqex56-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://datalakedyfk4ryjqex56.dfs.core.windows.net"
@@ -91,7 +95,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "FilesFromGithub",
+											"referenceName": "GithubDP_203_AllFiles",
 											"type": "DatasetReference",
 											"parameters": {
 												"fileName": {
@@ -103,7 +107,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "DestinationFilesOnDataLake",
+											"referenceName": "DataLake_FileContainer_AllFiles",
 											"type": "DatasetReference",
 											"parameters": {}
 										}
@@ -332,7 +336,7 @@
 					}
 				},
 				"folder": {
-					"name": "00_setup"
+					"name": "dp-203-00-setup"
 				},
 				"annotations": [],
 				"lastPublishTime": "2023-02-03T06:46:19Z"
@@ -340,12 +344,91 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/SqlDwh')]",
 				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
-				"[concat(variables('workspaceId'), '/datasets/FilesFromGithub')]",
-				"[concat(variables('workspaceId'), '/datasets/DestinationFilesOnDataLake')]"
+				"[concat(variables('workspaceId'), '/datasets/GithubDP_203_AllFiles')]",
+				"[concat(variables('workspaceId'), '/datasets/DataLake_FileContainer_AllFiles')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/DestinationFilesOnDataLake')]",
+			"name": "[concat(parameters('workspaceName'), '/dp-203-lab-01-copy products')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Copy products data",
+				"activities": [
+					{
+						"name": "Copy products",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Destination",
+								"value": "files/product_data/products.csv"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "GithubDP_203_Lab01_Products",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataLake_File_Lab01_Products",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "dp-203-01"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/GithubDP_203_Lab01_Products')]",
+				"[concat(variables('workspaceId'), '/datasets/DataLake_File_Lab01_Products')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DataLake_FileContainer_AllFiles')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -373,7 +456,43 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/FilesFromGithub')]",
+			"name": "[concat(parameters('workspaceName'), '/DataLake_File_Lab01_Products')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLake",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"suffix": {
+							"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+							"type": "Expression"
+						}
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "products.csv",
+						"folderPath": "product_data",
+						"fileSystem": "files"
+					},
+					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/DataLake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/GithubDP_203_AllFiles')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -400,6 +519,50 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/GitHubDP203AzureDataEngineer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/GithubDP_203_Lab01_Products')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Products",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					},
+					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "String"
+					},
+					{
+						"name": "ProductName",
+						"type": "String"
+					},
+					{
+						"name": "Category",
+						"type": "String"
+					},
+					{
+						"name": "ListPrice",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/Products')]"
 			]
 		},
 		{
@@ -466,6 +629,28 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Products')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "used in Lab 1",
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('Products_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/SqlDwh')]",
@@ -569,7 +754,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "00_setup"
+					"name": "dp-203-00-setup"
 				},
 				"content": {
 					"query": "IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') DROP TABLE [dbo].[FactInternetSales];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') DROP TABLE [dbo].[DimCustomer];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') DROP TABLE [dbo].[DimDate];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') DROP TABLE [dbo].[DimGeography];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') DROP TABLE [dbo].[DimProductCategory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') DROP TABLE [dbo].[DimProductSubcategory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') DROP TABLE [dbo].[DimSalesTerritory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') DROP TABLE [dbo].[DimPromotion];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') DROP TABLE [dbo].[DimCurrency];",
@@ -592,7 +777,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "00_setup"
+					"name": "dp-203-00-setup"
 				},
 				"content": {
 					"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') CREATE TABLE [dbo].[FactInternetSales](\n\t[SalesOrderNumber] [nvarchar](20) NOT NULL,\n\t[SalesOrderLineNumber] [tinyint] NOT NULL,\n\t[CustomerKey] [int] NOT NULL,\n\t[ProductKey] [int] NOT NULL,\n\t[OrderDateKey] [int] NOT NULL,\n\t[DueDateKey] [int] NOT NULL,\n\t[ShipDateKey] [int] NULL,\n\t[PromotionKey] [int] NOT NULL,\n\t[CurrencyKey] [int] NOT NULL,\n\t[SalesTerritoryKey] [int] NOT NULL,\n\t[OrderQuantity] [smallint] NOT NULL,\n\t[UnitPrice] [money] NOT NULL,\n\t[ExtendedAmount] [money] NOT NULL,\n\t[UnitPriceDiscountPct] [decimal](7, 4) NOT NULL,\n\t[DiscountAmount] [float] NOT NULL,\n\t[ProductStandardCost] [money] NOT NULL,\n\t[TotalProductCost] [money] NOT NULL,\n\t[SalesAmount] [money] NOT NULL,\n\t[TaxAmount] [money] NOT NULL,\n\t[FreightAmount] [money] NOT NULL,\n\t[CarrierTrackingNumber] [nvarchar](25) NULL,\n\t[CustomerPONumber] [nvarchar](25) NULL,\n\t[RevisionNumber] [tinyint] NOT NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') CREATE TABLE [dbo].[DimCustomer](\n\t[CustomerKey] [int] IDENTITY(1,1) NOT NULL,\n\t[GeographyKey] [int] NULL,\n\t[CustomerAlternateKey] [nvarchar](15) NOT NULL,\n\t[Title] [nvarchar](8) NULL,\n\t[FirstName] [nvarchar](50) NULL,\n\t[MiddleName] [nvarchar](50) NULL,\n\t[LastName] [nvarchar](50) NULL,\n\t[NameStyle] [bit] NULL,\n\t[BirthDate] [date] NULL,\n\t[MaritalStatus] [nchar](1) NULL,\n\t[Suffix] [nvarchar](10) NULL,\n\t[Gender] [nvarchar](1) NULL,\n\t[EmailAddress] [nvarchar](50) NULL,\n\t[YearlyIncome] [money] NULL,\n\t[TotalChildren] [tinyint] NULL,\n\t[NumberChildrenAtHome] [tinyint] NULL,\n\t[EnglishEducation] [nvarchar](40) NULL,\n\t[SpanishEducation] [nvarchar](40) NULL,\n\t[FrenchEducation] [nvarchar](40) NULL,\n\t[EnglishOccupation] [nvarchar](100) NULL,\n\t[SpanishOccupation] [nvarchar](100) NULL,\n\t[FrenchOccupation] [nvarchar](100) NULL,\n\t[HouseOwnerFlag] [nchar](1) NULL,\n\t[NumberCarsOwned] [tinyint] NULL,\n\t[AddressLine1] [nvarchar](120) NULL,\n\t[AddressLine2] [nvarchar](120) NULL,\n\t[Phone] [nvarchar](20) NULL,\n\t[DateFirstPurchase] [date] NULL,\n\t[CommuteDistance] [nvarchar](15) NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') CREATE TABLE [dbo].[DimDate](\n\t[DateKey] [int] NOT NULL,\n\t[FullDateAlternateKey] [date] NOT NULL,\n\t[DayNumberOfWeek] [tinyint] NOT NULL,\n\t[EnglishDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[SpanishDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[FrenchDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[DayNumberOfMonth] [tinyint] NOT NULL,\n\t[DayNumberOfYear] [smallint] NOT NULL,\n\t[WeekNumberOfYear] [tinyint] NOT NULL,\n\t[EnglishMonthName] [nvarchar](10) NOT NULL,\n\t[SpanishMonthName] [nvarchar](10) NOT NULL,\n\t[FrenchMonthName] [nvarchar](10) NOT NULL,\n\t[MonthNumberOfYear] [tinyint] NOT NULL,\n\t[CalendarQuarter] [tinyint] NOT NULL,\n\t[CalendarYear] [smallint] NOT NULL,\n\t[CalendarSemester] [tinyint] NOT NULL,\n\t[FiscalQuarter] [tinyint] NOT NULL,\n\t[FiscalYear] [smallint] NOT NULL,\n\t[FiscalSemester] [tinyint] NOT NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') CREATE TABLE [dbo].[DimGeography](\n\t[GeographyKey] [int] IDENTITY(1,1) NOT NULL,\n\t[City] [nvarchar](30) NULL,\n\t[StateProvinceCode] [nvarchar](3) NULL,\n\t[StateProvinceName] [nvarchar](50) NULL,\n\t[CountryRegionCode] [nvarchar](3) NULL,\n\t[EnglishCountryRegionName] [nvarchar](50) NULL,\n\t[SpanishCountryRegionName] [nvarchar](50) NULL,\n\t[FrenchCountryRegionName] [nvarchar](50) NULL,\n\t[PostalCode] [nvarchar](15) NULL,\n\t[SalesTerritoryKey] [int] NULL,\n\t[IpAddressLocator] [nvarchar](15) NULL)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') CREATE TABLE [dbo].[DimProduct](\n\t[ProductKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductAlternateKey] [nvarchar](25) NULL,\n\t[ProductSubcategoryKey] [int] NULL,\n\t[WeightUnitMeasureCode] [nchar](3) NULL,\n\t[SizeUnitMeasureCode] [nchar](3) NULL,\n\t[EnglishProductName] [nvarchar](50) NOT NULL,\n\t[SpanishProductName] [nvarchar](50) NOT NULL,\n\t[FrenchProductName] [nvarchar](50) NOT NULL,\n\t[StandardCost] [money] NULL,\n\t[FinishedGoodsFlag] [bit] NOT NULL,\n\t[Color] [nvarchar](15) NOT NULL,\n\t[SafetyStockLevel] [smallint] NULL,\n\t[ReorderPoint] [smallint] NULL,\n\t[ListPrice] [money] NULL,\n\t[Size] [nvarchar](50) NULL,\n\t[SizeRange] [nvarchar](50) NULL,\n\t[Weight] [float] NULL,\n\t[DaysToManufacture] [int] NULL,\n\t[ProductLine] [nchar](2) NULL,\n\t[DealerPrice] [money] NULL,\n\t[Class] [nchar](2) NULL,\n\t[Style] [nchar](2) NULL,\n\t[ModelName] [nvarchar](50) NULL,\n\t[LargePhoto] [varbinary](max) NULL,\n\t[EnglishDescription] [nvarchar](400) NULL,\n\t[FrenchDescription] [nvarchar](400) NULL,\n\t[ChineseDescription] [nvarchar](400) NULL,\n\t[ArabicDescription] [nvarchar](400) NULL,\n\t[HebrewDescription] [nvarchar](400) NULL,\n\t[ThaiDescription] [nvarchar](400) NULL,\n\t[GermanDescription] [nvarchar](400) NULL,\n\t[JapaneseDescription] [nvarchar](400) NULL,\n\t[TurkishDescription] [nvarchar](400) NULL,\n\t[StartDate] [datetime] NULL,\n\t[EndDate] [datetime] NULL,\n\t[Status] [nvarchar](7) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (ProductKey)  \n  ); \nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') CREATE TABLE [dbo].[DimProductCategory](\n\t[ProductCategoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductCategoryAlternateKey] [int] NULL,\n\t[EnglishProductCategoryName] [nvarchar](50) NOT NULL,\n\t[SpanishProductCategoryName] [nvarchar](50) NOT NULL,\n\t[FrenchProductCategoryName] [nvarchar](50) NOT NULL)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') CREATE TABLE [dbo].[DimProductSubcategory](\n\t[ProductSubcategoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductSubcategoryAlternateKey] [int] NULL,\n\t[EnglishProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[SpanishProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[FrenchProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[ProductCategoryKey] [int] NULL)\nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') CREATE TABLE [dbo].[DimSalesTerritory](\n\t[SalesTerritoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[SalesTerritoryAlternateKey] [int] NULL,\n\t[SalesTerritoryRegion] [nvarchar](50) NOT NULL,\n\t[SalesTerritoryCountry] [nvarchar](50) NOT NULL,\n\t[SalesTerritoryGroup] [nvarchar](50) NULL,\n\t[SalesTerritoryImage] [varbinary](max) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (SalesTerritoryKey)  \n  ); \nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') CREATE TABLE [dbo].[DimPromotion](\n\t[PromotionKey] [int] IDENTITY(1,1) NOT NULL,\n\t[PromotionAlternateKey] [int] NULL,\n\t[EnglishPromotionName] [nvarchar](255) NULL,\n\t[SpanishPromotionName] [nvarchar](255) NULL,\n\t[FrenchPromotionName] [nvarchar](255) NULL,\n\t[DiscountPct] [float] NULL,\n\t[EnglishPromotionType] [nvarchar](50) NULL,\n\t[SpanishPromotionType] [nvarchar](50) NULL,\n\t[FrenchPromotionType] [nvarchar](50) NULL,\n\t[EnglishPromotionCategory] [nvarchar](50) NULL,\n\t[SpanishPromotionCategory] [nvarchar](50) NULL,\n\t[FrenchPromotionCategory] [nvarchar](50) NULL,\n\t[StartDate] [datetime] NOT NULL,\n\t[EndDate] [datetime] NULL,\n\t[MinQty] [int] NULL,\n\t[MaxQty] [int] NULL)\nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') CREATE TABLE [dbo].[DimCurrency](\n\t[CurrencyKey] [int] IDENTITY(1,1) NOT NULL,\n\t[CurrencyAlternateKey] [nchar](3) NOT NULL,\n\t[CurrencyName] [nvarchar](50) NOT NULL,\n\t[FormatString] [nvarchar](20) NULL)\n\nGO",
@@ -606,6 +791,309 @@
 					"resultLimit": 5000
 				},
 				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/01-Count Products by Category')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Used in lab 1 - task \"Use a serverless SQL pool to analyze data\"",
+				"folder": {
+					"name": "dp-203-01-Explore Azure Synapse Analytics"
+				},
+				"content": {
+					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        --HEADER_ROW = TRUE -- Note the results consist of four columns named C1, C2, C3, and C4; \n    ) AS [result]           -- and that the first row in the results contains the names of the data fields. To fix this problem, add a HEADER_ROW = TRUE\n\n\nSELECT\n    Category, COUNT(*) AS ProductCount\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]\nGROUP BY Category;\n\n-- select the Chart view, and then select the following settings for the chart\n-- Chart type: Column\n-- Category colunn: Category\n-- legend Series columns: ProductCount",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ingest-data')]",
+			"type": "Microsoft.Synapse/workspaces/kqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "ingest-data.kql",
+				"folder": {
+					"name": "dp-203-01-Explore Azure Synapse Analytics"
+				},
+				"content": {
+					"query": "// Execute following statements separately\n.create table sales (\n    SalesOrderNumber: string,\n    SalesOrderLineItem: int,\n    OrderDate: datetime,\n    CustomerName: string,\n    EmailAddress: string,\n    Item: string,\n    Quantity: int,\n    UnitPrice: real,\n    TaxAmount: real)\n\n.ingest into table sales 'https://raw.githubusercontent.com/MicrosoftLearning/mslearn-synapse/master/Allfiles/Labs/01/files/sales.csv' \nwith (ignoreFirstRecord = true)",
+					"metadata": {
+						"language": "kql"
+					},
+					"currentConnection": {
+						"poolName": "adxdyfk4ryjqex56",
+						"databaseName": "sales-data"
+					}
+				},
+				"type": "KqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/select-data')]",
+			"type": "Microsoft.Synapse/workspaces/kqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-01-Explore Azure Synapse Analytics"
+				},
+				"content": {
+					"query": "sales\n| take 1000\n\nsales\n| where Item == 'Road-250 Black, 48'\n\nsales\n| where Item == 'Road-250 Black, 48'\n| where datetime_part('year', OrderDate) > 2020\n\nsales\n| where OrderDate between (datetime(2020-01-01 00:00:00) .. datetime(2020-12-31 23:59:59))\n| summarize TotalNetRevenue = sum(UnitPrice) by Item\n| sort by Item asc",
+					"metadata": {
+						"language": "kql"
+					},
+					"currentConnection": {
+						"poolName": "adxdyfk4ryjqex56",
+						"databaseName": "sales-data"
+					}
+				},
+				"type": "KqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Explore products')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Used in DP-203 Lab 01",
+				"folder": {
+					"name": "dp-203-01-Explore Azure Synapse Analytics"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "134c8c7b-60b8-4df6-a1d9-fd84fa8c2d6c"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-dyfk4ryjqex56/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://synapse-dyfk4ryjqex56.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Use a Spark pool to analyze data\n",
+							"\n",
+							"Review the code in the first cell in the notebook, and run it. The first time you run a cell in a notebook, the Spark pool is started - so it may take a minute or so to return any results.\n",
+							"\n",
+							"This cell will retrieve the name of the current Synapse Workspace, and derive the datalake name from it. We will use this datalake variable later when retrieving files"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Import library\n",
+							"from pyspark.context import SparkContext\n",
+							"\n",
+							"# Create context\n",
+							"sc = SparkContext.getOrCreate()\n",
+							"\n",
+							"# Get configuration\n",
+							"tuples = sc.getConf().getAll()\n",
+							"\n",
+							"\n",
+							"# Find spark pool name\n",
+							"for element in tuples:\n",
+							"    if element[0].find('spark.synapse.workspace.name') != -1:\n",
+							"        datalakename = element[1].replace('synapse-', 'datalake')\n",
+							"\n",
+							"print(datalakename)"
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Here's the cell that was generated when selecting a file from the datalake. Notice we set the datalake name variable AND we use an f-string (string interpolation)"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\r\n",
+							"## If header exists uncomment line below\r\n",
+							"##, header=True\r\n",
+							")\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 27
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Set Header=True\n",
+							"(because the products.csv file has the column headers in the first line)"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\n",
+							"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\n",
+							"    , header=True \n",
+							")\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 28
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Count by category\n",
+							"\n",
+							""
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df_counts = df.groupby(df.Category).count()\n",
+							"display(df_counts)"
+						],
+						"outputs": [],
+						"execution_count": 29
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Create a chart\n",
+							"\n",
+							"In the results output for the cell, select the Chart view. "
+						]
+					}
+				]
 			},
 			"dependsOn": []
 		},

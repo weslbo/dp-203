@@ -20,6 +20,9 @@
 		"KeyVault_properties_typeProperties_baseUrl": {
 			"value": "@{concat('https://keyvault-', linkedService().suffix, '.vault.azure.net/')}"
 		},
+		"Products_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/adventureworks/products.csv"
+		},
 		"synapse-dyfk4ryjqex56-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://datalakedyfk4ryjqex56.dfs.core.windows.net"
 		}
