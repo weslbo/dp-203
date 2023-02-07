@@ -115,71 +115,6 @@
 								}
 							]
 						}
-					},
-					{
-						"name": "Script SqlDwh",
-						"description": "Run setup script against dedicate pool",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Fetch setup sql",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "SqlDwh",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"suffix": {
-									"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
-									"type": "Expression"
-								}
-							}
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "NonQuery",
-									"text": {
-										"value": "@uriComponentToString(replace(replace(replace(replace(uriComponent(activity('Fetch setup sql').output.response), '%0A', '  '), '%0D', '  '), '%09', '  '), 'GO', '; '))",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "Fetch setup sql",
-						"type": "WebActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://raw.githubusercontent.com/weslbo/dp-203/main/automation/setupsqldwh.sql",
-							"connectVia": {
-								"referenceName": "AutoResolveIntegrationRuntime",
-								"type": "IntegrationRuntimeReference"
-							},
-							"method": "GET",
-							"headers": {}
-						}
 					}
 				],
 				"policy": {
@@ -342,8 +277,6 @@
 				"lastPublishTime": "2023-02-03T06:46:19Z"
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/SqlDwh')]",
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
 				"[concat(variables('workspaceId'), '/datasets/GithubDP_203_AllFiles')]",
 				"[concat(variables('workspaceId'), '/datasets/DataLake_FileContainer_AllFiles')]"
 			]
