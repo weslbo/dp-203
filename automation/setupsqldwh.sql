@@ -1,8 +1,19 @@
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') DROP TABLE [dbo].[FactInternetSales];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') DROP TABLE [dbo].[DimCustomer];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') DROP TABLE [dbo].[DimDate];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') DROP TABLE [dbo].[DimGeography];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') DROP TABLE [dbo].[DimProductCategory];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') DROP TABLE [dbo].[DimProductSubcategory];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') DROP TABLE [dbo].[DimSalesTerritory];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') DROP TABLE [dbo].[DimPromotion];
+IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') DROP TABLE [dbo].[DimCurrency];
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') CREATE TABLE [dbo].[FactInternetSales](
+CREATE TABLE [dbo].[FactInternetSales](
 	[SalesOrderNumber] [nvarchar](20) NOT NULL,
 	[SalesOrderLineNumber] [tinyint] NOT NULL,
 	[CustomerKey] [int] NOT NULL,
@@ -29,7 +40,7 @@ IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 )
 
 GO
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') CREATE TABLE [dbo].[DimCustomer](
+CREATE TABLE [dbo].[DimCustomer](
 	[CustomerKey] [int] IDENTITY(1,1) NOT NULL,
 	[GeographyKey] [int] NULL,
 	[CustomerAlternateKey] [nvarchar](15) NOT NULL,
@@ -62,7 +73,7 @@ IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 )
 
 GO
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') CREATE TABLE [dbo].[DimDate](
+CREATE TABLE [dbo].[DimDate](
 	[DateKey] [int] NOT NULL,
 	[FullDateAlternateKey] [date] NOT NULL,
 	[DayNumberOfWeek] [tinyint] NOT NULL,
@@ -85,7 +96,7 @@ IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 )
 
 GO
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') CREATE TABLE [dbo].[DimGeography](
+CREATE TABLE [dbo].[DimGeography](
 	[GeographyKey] [int] IDENTITY(1,1) NOT NULL,
 	[City] [nvarchar](30) NULL,
 	[StateProvinceCode] [nvarchar](3) NULL,
@@ -99,7 +110,7 @@ IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 	[IpAddressLocator] [nvarchar](15) NULL)
 
 GO
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') CREATE TABLE [dbo].[DimProduct](
+CREATE TABLE [dbo].[DimProduct](
 	[ProductKey] [int] IDENTITY(1,1) NOT NULL,
 	[ProductAlternateKey] [nvarchar](25) NULL,
 	[ProductSubcategoryKey] [int] NULL,
@@ -142,7 +153,7 @@ WITH
   ); 
 GO
 
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') CREATE TABLE [dbo].[DimProductCategory](
+CREATE TABLE [dbo].[DimProductCategory](
 	[ProductCategoryKey] [int] IDENTITY(1,1) NOT NULL,
 	[ProductCategoryAlternateKey] [int] NULL,
 	[EnglishProductCategoryName] [nvarchar](50) NOT NULL,
@@ -150,7 +161,7 @@ IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 	[FrenchProductCategoryName] [nvarchar](50) NOT NULL)
 
 GO
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') CREATE TABLE [dbo].[DimProductSubcategory](
+CREATE TABLE [dbo].[DimProductSubcategory](
 	[ProductSubcategoryKey] [int] IDENTITY(1,1) NOT NULL,
 	[ProductSubcategoryAlternateKey] [int] NULL,
 	[EnglishProductSubcategoryName] [nvarchar](50) NOT NULL,
@@ -159,7 +170,7 @@ IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 	[ProductCategoryKey] [int] NULL)
 GO
 
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') CREATE TABLE [dbo].[DimSalesTerritory](
+CREATE TABLE [dbo].[DimSalesTerritory](
 	[SalesTerritoryKey] [int] IDENTITY(1,1) NOT NULL,
 	[SalesTerritoryAlternateKey] [int] NULL,
 	[SalesTerritoryRegion] [nvarchar](50) NOT NULL,
@@ -172,7 +183,7 @@ WITH
   ); 
 GO
 
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') CREATE TABLE [dbo].[DimPromotion](
+CREATE TABLE [dbo].[DimPromotion](
 	[PromotionKey] [int] IDENTITY(1,1) NOT NULL,
 	[PromotionAlternateKey] [int] NULL,
 	[EnglishPromotionName] [nvarchar](255) NULL,
@@ -191,7 +202,7 @@ IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 	[MaxQty] [int] NULL)
 GO
 
-IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') CREATE TABLE [dbo].[DimCurrency](
+CREATE TABLE [dbo].[DimCurrency](
 	[CurrencyKey] [int] IDENTITY(1,1) NOT NULL,
 	[CurrencyAlternateKey] [nchar](3) NOT NULL,
 	[CurrencyName] [nvarchar](50) NOT NULL,
