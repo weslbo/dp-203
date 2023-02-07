@@ -1,0 +1,20 @@
+{
+	"name": "Query RetailDB",
+	"properties": {
+		"folder": {
+			"name": "dp-203-04-Create-a-Lake-Database"
+		},
+		"content": {
+			"query": "SELECT TOP (100) [CustomerId]\n,[FirstName]\n,[LastName]\n,[EmailAddress]\n,[Phone]\n FROM [RetailDB].[dbo].[Customer]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "default",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
