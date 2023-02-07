@@ -49,7 +49,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "FilesFromGithub",
+									"referenceName": "GithubDP_203_AllFiles",
 									"type": "DatasetReference",
 									"parameters": {
 										"fileName": {
@@ -61,7 +61,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DestinationFilesOnDataLake",
+									"referenceName": "DataLake_FileContainer_AllFiles",
 									"type": "DatasetReference"
 								}
 							]
@@ -284,7 +284,7 @@
 			}
 		},
 		"folder": {
-			"name": "00_setup"
+			"name": "dp-203-00-setup"
 		},
 		"annotations": [],
 		"lastPublishTime": "2023-02-03T06:46:19Z"

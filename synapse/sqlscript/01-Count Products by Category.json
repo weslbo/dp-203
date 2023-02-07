@@ -1,0 +1,21 @@
+{
+	"name": "01-Count Products by Category",
+	"properties": {
+		"description": "Used in lab 1 - task \"Use a serverless SQL pool to analyze data\"",
+		"folder": {
+			"name": "dp-203-01-Explore Azure Synapse Analytics"
+		},
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        --HEADER_ROW = TRUE -- Note the results consist of four columns named C1, C2, C3, and C4; \n    ) AS [result]           -- and that the first row in the results contains the names of the data fields. To fix this problem, add a HEADER_ROW = TRUE\n\n\nSELECT\n    Category, COUNT(*) AS ProductCount\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]\nGROUP BY Category;\n\n-- select the Chart view, and then select the following settings for the chart\n-- Chart type: Column\n-- Category colunn: Category\n-- legend Series columns: ProductCount",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,5 +1,5 @@
 {
-	"name": "FilesFromGithub",
+	"name": "GithubDP_203_AllFiles",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "GitHubDP203AzureDataEngineer",

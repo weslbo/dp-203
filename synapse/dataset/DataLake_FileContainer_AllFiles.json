@@ -1,5 +1,5 @@
 {
-	"name": "DestinationFilesOnDataLake",
+	"name": "DataLake_FileContainer_AllFiles",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "DataLake",
