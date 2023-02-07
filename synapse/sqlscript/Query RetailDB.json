@@ -5,7 +5,7 @@
 			"name": "dp-203-04-Create-a-Lake-Database"
 		},
 		"content": {
-			"query": "SELECT TOP (100) [CustomerId]\n,[FirstName]\n,[LastName]\n,[EmailAddress]\n,[Phone]\n FROM [RetailDB].[dbo].[Customer]",
+			"query": "\n--Make sure to connect to the Build-In, default database\nSELECT TOP (100) [CustomerId]\n    ,[FirstName]\n    ,[LastName]\n    ,[EmailAddress]\n    ,[Phone]\n FROM [RetailDB].[dbo].[Customer]\n\n SELECT TOP (100) [ProductId]\n    ,[ProductName]\n    ,[IntroductionDate]\n    ,[ActualAbandonmentDate]\n    ,[ProductGrossWeight]\n    ,[ItemSku]\n    ,[ListPrice]\n FROM [RetailDB].[dbo].[Product]",
 			"metadata": {
 				"language": "sql"
 			},
