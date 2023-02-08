@@ -17,3 +17,8 @@ do
 done
 
 az synapse kusto database create --database-name sales-data --kusto-pool-name adx$uniqueSuffix --resource-group rg-dp-203 --workspace-name synapse-$uniqueSuffix --no-wait --read-write-database location="westeurope" soft-delete-period="P1D"
+
+az storage fs directory create -n RetailDB -f files --account-name datalake$uniqueSuffix --auth-mode login
+
+azcopy login
+azcopy copy "https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/master/Allfiles/labs/04/data/customer.csv" "https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/RetailDB/Customer/customer.csv"
