@@ -7,7 +7,14 @@
 				"name": "For each file in Github",
 				"description": "For each file in the official github account https://github.com/MicrosoftLearning/DP-203-Azure-Data-Engineer, copy the files into the data lake",
 				"type": "ForEach",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Delete DataLake files",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
@@ -62,11 +69,45 @@
 							"outputs": [
 								{
 									"referenceName": "DataLake_FileContainer_AllFiles",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
 					]
+				}
+			},
+			{
+				"name": "Delete DataLake files",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DataLake_FileContainer_AllFiles",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "*"
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"fileListPath": "files/labs",
+						"enablePartitionDiscovery": false
+					}
 				}
 			}
 		],

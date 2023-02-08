@@ -11,11 +11,20 @@
 				}
 			}
 		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@replace(dataset().fileName, 'master/Allfiles/labs', 'labs')",
+					"type": "Expression"
+				},
 				"fileSystem": "files"
 			}
 		}
