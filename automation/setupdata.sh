@@ -21,4 +21,4 @@ az synapse kusto database create --database-name sales-data --kusto-pool-name ad
 az storage fs directory create -n RetailDB -f files --account-name datalake$uniqueSuffix --auth-mode login
 
 azcopy login
-azcopy copy "https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/master/Allfiles/labs/04/data/customer.csv" "https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/RetailDB/Customer/customer.csv"
+azcopy copy "https://datalake$uniqueSuffix.dfs.core.windows.net/files/labs/04/data/customer.csv" "https://datalake$uniqueSuffix.dfs.core.windows.net/files/labs/04/RetailDB/Customer/customer.csv"

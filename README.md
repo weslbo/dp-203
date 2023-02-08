@@ -61,4 +61,4 @@ To deploy this environment:
     ![publish](./images/publish.png)
 
 1. Open the pipeline **00-setup-pipeline** and **execute** it (trigger now).
-1. Validate files have been stored on the data lake container **files**/master/Allfiles/labs.
+1. Validate files have been stored on the data lake container **files**/labs.

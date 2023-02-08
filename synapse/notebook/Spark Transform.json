@@ -74,7 +74,7 @@
 					"collapsed": false
 				},
 				"source": [
-					"order_details = spark.read.csv('/master/Allfiles/labs/06/data/*.csv', header=True, inferSchema=True)\n",
+					"order_details = spark.read.csv('/labs/06/data/*.csv', header=True, inferSchema=True)\n",
 					"display(order_details.limit(5))"
 				],
 				"execution_count": 2
@@ -158,7 +158,7 @@
 					}
 				},
 				"source": [
-					"transformed_df.write.mode(\"overwrite\").parquet('/master/Allfiles/labs/06/transformed_data/orders.parquet')\r\n",
+					"transformed_df.write.mode(\"overwrite\").parquet('/labs/06/transformed_data/orders.parquet')\r\n",
 					"print (\"Transformed data saved!\")"
 				],
 				"execution_count": 4
@@ -212,7 +212,7 @@
 					"\r\n",
 					"dated_df = transformed_df.withColumn(\"Year\", year(col(\"OrderDate\"))).withColumn(\"Month\", month(col(\"OrderDate\")))\r\n",
 					"display(dated_df.limit(5))\r\n",
-					"dated_df.write.partitionBy(\"Year\",\"Month\").mode(\"overwrite\").parquet(\"/master/Allfiles/labs/06/partitioned_data\")\r\n",
+					"dated_df.write.partitionBy(\"Year\",\"Month\").mode(\"overwrite\").parquet(\"/labs/06/partitioned_data\")\r\n",
 					"print (\"Transformed data saved!\")"
 				],
 				"execution_count": 5
@@ -247,7 +247,7 @@
 					"collapsed": false
 				},
 				"source": [
-					"orders_2020 = spark.read.parquet('/master/Allfiles/labs/06/partitioned_data/Year=2020/Month=*')\r\n",
+					"orders_2020 = spark.read.parquet('/labs/06/partitioned_data/Year=2020/Month=*')\r\n",
 					"display(orders_2020.limit(5))"
 				],
 				"execution_count": 6
@@ -285,7 +285,7 @@
 					}
 				},
 				"source": [
-					"order_details.write.saveAsTable('sales_orders', format='parquet', mode='overwrite', path='/master/Allfiles/labs/06/sales_orders_table')"
+					"order_details.write.saveAsTable('sales_orders', format='parquet', mode='overwrite', path='/labs/06/sales_orders_table')"
 				],
 				"execution_count": null
 			},
