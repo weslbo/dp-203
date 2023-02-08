@@ -1,5 +1,5 @@
 {
-	"name": "01-Count Products by Category",
+	"name": "Count Products by Category",
 	"properties": {
 		"description": "Used in lab 1 - task \"Use a serverless SQL pool to analyze data\"",
 		"folder": {
