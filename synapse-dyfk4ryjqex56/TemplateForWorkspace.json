@@ -53,7 +53,14 @@
 						"name": "For each file in Github",
 						"description": "For each file in the official github account https://github.com/MicrosoftLearning/DP-203-Azure-Data-Engineer, copy the files into the data lake",
 						"type": "ForEach",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Delete DataLake files",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
@@ -109,11 +116,44 @@
 										{
 											"referenceName": "DataLake_FileContainer_AllFiles",
 											"type": "DatasetReference",
-											"parameters": {}
+											"parameters": {
+												"fileName": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
 										}
 									]
 								}
 							]
+						}
+					},
+					{
+						"name": "Delete DataLake files",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataLake_FileContainer_AllFiles",
+								"type": "DatasetReference",
+								"parameters": {
+									"fileName": "*"
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"fileListPath": "files/labs",
+								"enablePartitionDiscovery": false
+							}
 						}
 					}
 				],
@@ -277,8 +317,8 @@
 				"lastPublishTime": "2023-02-03T06:46:19Z"
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/GithubDP_203_AllFiles')]",
-				"[concat(variables('workspaceId'), '/datasets/DataLake_FileContainer_AllFiles')]"
+				"[concat(variables('workspaceId'), '/datasets/DataLake_FileContainer_AllFiles')]",
+				"[concat(variables('workspaceId'), '/datasets/GithubDP_203_AllFiles')]"
 			]
 		},
 		{
@@ -375,11 +415,20 @@
 						}
 					}
 				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "Binary",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@replace(dataset().fileName, 'master/Allfiles/labs', 'labs')",
+							"type": "Expression"
+						},
 						"fileSystem": "files"
 					}
 				}
@@ -728,6 +777,29 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/01 - Query RetailDB')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-04-Create-a-Lake-Database"
+				},
+				"content": {
+					"query": "\n--Make sure to connect to the Build-In, default database\nSELECT TOP (100) [CustomerId]\n    ,[FirstName]\n    ,[LastName]\n    ,[EmailAddress]\n    ,[Phone]\n FROM [RetailDB].[dbo].[Customer]\n\n SELECT TOP (100) [ProductId]\n    ,[ProductName]\n    ,[IntroductionDate]\n    ,[ActualAbandonmentDate]\n    ,[ProductGrossWeight]\n    ,[ItemSku]\n    ,[ListPrice]\n FROM [RetailDB].[dbo].[Product]",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "default",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/01 - Query Sales CSV files')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -765,6 +837,75 @@
 					},
 					"currentConnection": {
 						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/02 - Work with lake database tables')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-04-Create-a-Lake-Database"
+				},
+				"content": {
+					"query": "-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "RetailDB",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/03 - Create Stored Procedure')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-03-Transform-data-with-sql"
+				},
+				"content": {
+					"query": "USE Sales;\nGO;\n\n-- f you will need to transform data frequently, you can use a stored procedure to encapsulate a CETAS statement.\n-- create a stored procedure in the Sales database that aggregates sales by \n-- year and saves the results in an external table:\nDROP PROCEDURE sp_GetYearlySales \n\nCREATE PROCEDURE sp_GetYearlySales\nAS\nBEGIN\n    IF EXISTS (\n            SELECT * FROM sys.external_tables\n            WHERE name = 'YearlySalesTotals'\n        )\n        DROP EXTERNAL TABLE YearlySalesTotals\n    \n    CREATE EXTERNAL TABLE YearlySalesTotals\n    WITH (\n            LOCATION = 'master/Allfiles/labs/03/data/yearlysales/',\n            DATA_SOURCE = sales_data,\n            FILE_FORMAT = ParquetFormat\n        )\n    AS\n    SELECT YEAR(OrderDate) AS CalendarYear,\n           SUM(Quantity) AS ItemsSold,\n           ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\n    FROM\n        OPENROWSET(\n            BULK 'master/Allfiles/labs/03/data/*.csv',\n            DATA_SOURCE = 'sales_data',\n            FORMAT = 'CSV',\n            PARSER_VERSION = '2.0',\n            HEADER_ROW = TRUE\n        ) AS orders\n    GROUP BY YEAR(OrderDate)\nEND\n\nGO;\n\n-- Execute the stored procedure:\nEXEC sp_GetYearlySales;\n\n-- On the files tab containing the file system for your data lake, \n-- view the contents of the sales folder (refreshing the view if necessary) \n-- and verify that a new yearlysales folder has been created.\n\nSELECT * FROM YearlySalesTotals\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Sales",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/03 - Validate Insert after Spark')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-04-Create-a-Lake-Database"
+				},
+				"content": {
+					"query": "Use RetailDB\n\n-- This statement should not return any data before the notebook has executed.\n\nSELECT *\nFROM SalesOrder WHERE SalesOrderId = 99999\n\n-- cleanup for next demo\n-- This will not work: DML Operations are not supported with external tables.\nDELETE FROM SalesOrder WHERE SalesOrderId = 99999",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "RetailDB",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -1077,669 +1218,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
-			"type": "Microsoft.Synapse/workspaces/bigDataPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"autoPause": {
-					"enabled": true,
-					"delayInMinutes": 15
-				},
-				"autoScale": {
-					"enabled": true,
-					"maxNodeCount": 4,
-					"minNodeCount": 3
-				},
-				"nodeCount": 0,
-				"nodeSize": "Small",
-				"nodeSizeFamily": "MemoryOptimized",
-				"sparkVersion": "3.2",
-				"isComputeIsolationEnabled": false,
-				"sessionLevelPackagesEnabled": false,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "westeurope"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "westeurope"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/03 - Create Stored Procedure')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "dp-203-03-Transform-data-with-sql"
-				},
-				"content": {
-					"query": "USE Sales;\nGO;\n\n-- f you will need to transform data frequently, you can use a stored procedure to encapsulate a CETAS statement.\n-- create a stored procedure in the Sales database that aggregates sales by \n-- year and saves the results in an external table:\nDROP PROCEDURE sp_GetYearlySales \n\nCREATE PROCEDURE sp_GetYearlySales\nAS\nBEGIN\n    IF EXISTS (\n            SELECT * FROM sys.external_tables\n            WHERE name = 'YearlySalesTotals'\n        )\n        DROP EXTERNAL TABLE YearlySalesTotals\n    \n    CREATE EXTERNAL TABLE YearlySalesTotals\n    WITH (\n            LOCATION = 'master/Allfiles/labs/03/data/yearlysales/',\n            DATA_SOURCE = sales_data,\n            FILE_FORMAT = ParquetFormat\n        )\n    AS\n    SELECT YEAR(OrderDate) AS CalendarYear,\n           SUM(Quantity) AS ItemsSold,\n           ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\n    FROM\n        OPENROWSET(\n            BULK 'master/Allfiles/labs/03/data/*.csv',\n            DATA_SOURCE = 'sales_data',\n            FORMAT = 'CSV',\n            PARSER_VERSION = '2.0',\n            HEADER_ROW = TRUE\n        ) AS orders\n    GROUP BY YEAR(OrderDate)\nEND\n\nGO;\n\n-- Execute the stored procedure:\nEXEC sp_GetYearlySales;\n\n-- On the files tab containing the file system for your data lake, \n-- view the contents of the sales folder (refreshing the view if necessary) \n-- and verify that a new yearlysales folder has been created.\n\nSELECT * FROM YearlySalesTotals\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "Sales",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/RetailDB')]",
-			"type": "Microsoft.Synapse/workspaces/databases",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"Ddls": [
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "RetailDB",
-							"EntityType": "DATABASE",
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"Properties": {
-								"IsSyMSCDMDatabase": true,
-								"DerivedModelDBInfo": "{\"ModelDirectives\":{\"BaseModel\":{\"Name\":\"Retail\",\"Version\":\"0.1.0\"}}}"
-							},
-							"Source": {
-								"Provider": "ADLS",
-								"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/RetailDB",
-								"Properties": {
-									"FormatType": "csv",
-									"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage"
-								}
-							}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					},
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "Customer",
-							"EntityType": "TABLE",
-							"Namespace": {
-								"DatabaseName": "RetailDB"
-							},
-							"Description": "",
-							"TableType": "EXTERNAL",
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"StorageDescriptor": {
-								"Columns": [
-									{
-										"Name": "CustomerId",
-										"Description": "Unique customer ID",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "FirstName",
-										"Description": "Customer first name",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Length": 256,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "LastName",
-										"Description": "Customer last name\t",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Length": 256,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "EmailAddress",
-										"Description": "Customer email",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Length": 256,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "Phone",
-										"Description": "Customer phone",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Length": 256,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									}
-								],
-								"Format": {
-									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
-									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
-									"FormatType": "csv",
-									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
-									"Properties": {
-										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/RetailDB/Customer",
-										"delimiter": ",",
-										"multiLine": "false",
-										"firstRowAsHeader": "false",
-										"serialization.format": "1",
-										"escape": "\\",
-										"quote": "\"",
-										"FormatTypeSetToDatabaseDefault": true,
-										"header": "false"
-									}
-								},
-								"Source": {
-									"Provider": "ADLS",
-									"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/RetailDB/Customer",
-									"Properties": {
-										"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
-										"LocationSetToDatabaseDefault": true
-									}
-								},
-								"Properties": {
-									"textinputformat.record.delimiter": ",",
-									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
-									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
-								},
-								"Compressed": false,
-								"IsStoredAsSubdirectories": false
-							},
-							"Properties": {
-								"Description": "",
-								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
-								"PrimaryKeys": "CustomerId",
-								"spark.sql.sources.provider": "csv",
-								"sql:IsAppendOnly": false
-							},
-							"Retention": 0,
-							"Temporary": false,
-							"IsRewriteEnabled": false,
-							"Partitioning": {}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					},
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "Product",
-							"EntityType": "TABLE",
-							"Namespace": {
-								"DatabaseName": "RetailDB"
-							},
-							"Description": "A product is anything that can be offered to a market that might satisfy a want or need by potential customers.    That product is the sum of all physical, psychological, symbolic, and service attributes associated with it.\n\nThere are two basic types of products:\n\n- Tangible (physical)\n- Intangible (non-physical) such as services\n\nA service is a non-material or intangible product - such as professional consultancy, maintenance service, repair service etc.\nEach product has its own benefits, application, brand name, and packaging that gives it its own identity and distinguishing characteristics.\n\nEvery business or organization has business rules that define precisely what a product is.    While we intuitively know what a product is, we must quantify that knowledge and associated business rules with consistent definitions that can be implemented within the organization in strategies and applications.\n\nA product typically goes through five stages of development:\n\n(1) Idea Stage - involving a thorough evaluation of the potential product\n\n(2) Concept Stage - determines customer acceptance by testing and presentation to consumers and distribution channel members.   Specific aspects regarding quality, dependability, reliability, warranty, packaging, service, pricing, terms of sale, sales and distribution channels, advertising and promotions are evaluated.\n\n(3) Product Development Stage - transforms the prototype product into an actual product for mass sale.   This stage requires close interaction between both marketing and manufacturing.\n\n(4) Test Marketing Stage - may or may not be used since it is an expensive and time-consuming process.  Test marketing involves evaluating various product options and alternatives.\n\n(5) Commercialization - It is very expensive to launch a new product so commercialization only applies to those specific products that are actually going to be sold to the market.\n\nProducts tend to be categorized as either:  Industrial goods and consumer goods\n\nIndustrial goods are used to produce other products .\n\nIndustrial goods may be further divided into:\n\n- Raw materials\n- Equipment\n- Pre-built materials \n- Supplies.\n\nConsumer goods are intended for consumption by the general public.\n\nConsumer goods may be further divided into:\n\n- Durable goods\n- Nondurable goods\n- Packaged goods\n\nA product may be a member of a product family or product line.\n\nA product family is a grouping of products or services that are related to each other by common function, functionality, design platform or similar characteristics.\n\nMembers of a product family frequently have many common parts and assemblies.\n\nProduct families are the highest level of grouping for forecasting, capacity planning or related functions.\n\nEx:\nThe Apple Macintosh family of products consists of the product lines:\n- Mac mini\n- MacBook Pro\n- Mac Pro\n\nA product line is a grouping of products that are closely related in usage, functionality or marketing characteristics.\n\nA Product Family typically is created to address one or five functions:\n\n1. To increase profits and not erode the sales of existing products\n\n2. To attract additional Markets or Market Segments\n\n3. To counter competitor's products\n\n4. To fill a gap in an existing Product Family.\n\n5. To promote sales of other products in the family line\n\nLine Depth refers to the number of products in the product line.\n\nLine consistency refers to how closely related the products are that make up the product line.\n\nLine vulnerability refers to the percentage of sales or profits that are derived from only a few products in the product line.\n\nProduct width refers to the number of different product lines sold by a company.\n\nProduct mix refers to the total number of products sold in all product lines.\n\nLine extension refers to the adding of a new product to a line.\n\n\"Trading up or brand leveraging\" refers to adding a product of better quality to a product line than the other products in that line.\n\n\"Trading down\" refers to adding a product of lesser quality to a product line than the other products in that line.\n\nIf a line of products is sold with the same brand name, this is referred to as family branding.\nStrategy and decisions regarding a product line are usually incorporated in a high-level marketing plan addressing product line strategy, sales, channels, distribution channels, pricing and related issues.\nA product-line manager is responsible for a product line and supervises several product managers who are responsible for individual products within the line.\nProduct-line managers typically have the following responsibilities:\n- Expansion and composition of a product line\n- Evaluate the effects of product mixes on the profitability of other items in the line\n- Planning and allocation of resources to individual products in the line\nA product is normally associated with a brand strategy - manufacturer, private or generic.\n\n1. Manufacturer-  or 'national' branding in which the brand is assigned by the manufacturer of the Product.\n\n2. Private - or 'dealer' branding in which the brand is assigned by the retailer or wholesaler of the Product.\n\n3. Generic - in which the Product is not marked with any identification.   Generic brands are a means for manufacturers to increase profits by saving on advertising, packaging or other costs associated with manufacturer or private branding.\n\nA brand is name, term, sign, symbol or design or a combination of these which identify the goods or services and differentiate them from those of competitors'\n\nA Trade mark is a brand or some part of the brand that is given legal protection because it is capable of exclusive appropriation and representation.\n\nManufacturers can use their own brands (known as Manufacturers' brands) or brands of their distributors (Distributors' brands).\n\nManufacturers/ distributors use brand names for a variety of reasons ranging from simple identification purposes to having legal protection for unique features of the products from imitations.\n\nBrands help consumers recognize certain quality parameters. In some cases, brands are just used to endow the product with unique story and character which itself can be a basis for product differentiation.\n\nIndividual brands have their own identity and the corporate or common name is not used to promote its equity.\n\nIndividual branding requires more expensive advertising and brand extensive brand creation investments.  By extension, each new brand does not benefit from the positive perceptions of earlier brands.\n\nBy contrast, family branding has several advantages.\n\nEach new product is quickly associated with the other products and brand in terms of quality and benefits.\n\nReduced or eliminated time for name identification and advertising for name recognition purposes.",
-							"TableType": "EXTERNAL",
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"StorageDescriptor": {
-								"Columns": [
-									{
-										"Name": "ProductId",
-										"Description": "The unique identifier of a Product.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ProductId"
-										},
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsComplexType": false,
-											"IsNullable": false,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "ProductName",
-										"Description": "The name of the Product, which normally corresponds to the 'marketing name' of the Product.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ProductName"
-										},
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 128,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "IntroductionDate",
-										"Description": "The date that the Product was introduced for sale.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "IntroductionDate"
-										},
-										"OriginDataTypeName": {
-											"TypeName": "date",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"DateFormat": "YYYY-MM-DD",
-												"HIVE_TYPE_STRING": "date"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "ActualAbandonmentDate",
-										"Description": "The actual date that the marketing of the product was discontinued. \n\nAbandonment is a component in the decline stage of the product's life cycle characterized by a reduced market demand for the product and an increased number of competing products with similar characteristics.\n\nThere are three (3) strategies for abandoning a product:\n\n(1)  Reduced marketing and expenditures to maintain profits.\n\n(2)  Concentrating on the strongest market segments and eliminating the weaker market segments\n\n(3)  Maintain the marketing level until the product is discontinued.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ActualAbandonmentDate"
-										},
-										"OriginDataTypeName": {
-											"TypeName": "date",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Properties": {
-												"DateFormat": "YYYY-MM-DD",
-												"HIVE_TYPE_STRING": "date"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "ProductGrossWeight",
-										"Description": "The gross product weight.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ProductGrossWeight"
-										},
-										"OriginDataTypeName": {
-											"TypeName": "decimal",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Precision": 18,
-											"Scale": 8,
-											"Properties": {
-												"HIVE_TYPE_STRING": "decimal"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "ItemSku",
-										"Description": "The Stock Keeping Unit identifier, which is typically used for inventory-related activities.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ItemSku"
-										},
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsComplexType": false,
-											"IsNullable": true,
-											"Length": 20,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "ListPrice",
-										"Description": "The product price.",
-										"OriginDataTypeName": {
-											"TypeName": "decimal",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Precision": 18,
-											"Scale": 2,
-											"Properties": {
-												"HIVE_TYPE_STRING": "decimal"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									}
-								],
-								"Format": {
-									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
-									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
-									"FormatType": "csv",
-									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
-									"Properties": {
-										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/RetailDB/Product",
-										"delimiter": ",",
-										"multiLine": "false",
-										"firstRowAsHeader": "false",
-										"serialization.format": "1",
-										"escape": "\\",
-										"quote": "\"",
-										"FormatTypeSetToDatabaseDefault": true,
-										"header": "false"
-									}
-								},
-								"Source": {
-									"Provider": "ADLS",
-									"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/RetailDB/Product",
-									"Properties": {
-										"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
-										"LocationSetToDatabaseDefault": true
-									}
-								},
-								"Properties": {
-									"textinputformat.record.delimiter": ",",
-									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
-									"derivedModelAttributeInfo": "{\"attributeReferences\":{\"ProductId\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ProductId\"},\"ProductName\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ProductName\"},\"IntroductionDate\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"IntroductionDate\"},\"ActualAbandonmentDate\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ActualAbandonmentDate\"},\"ProductGrossWeight\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ProductGrossWeight\"},\"ItemSku\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ItemSku\"}}}"
-								},
-								"Compressed": false,
-								"IsStoredAsSubdirectories": false
-							},
-							"Properties": {
-								"DerivedModelEntityInfo": "{\"entityDirectives\":{\"name\":\"Product\",\"description\":\"A product is anything that can be offered to a market that might satisfy a want or need by potential customers.    That product is the sum of all physical, psychological, symbolic, and service attributes associated with it.\\n\\nThere are two basic types of products:\\n\\n- Tangible (physical)\\n- Intangible (non-physical) such as services\\n\\nA service is a non-material or intangible product - such as professional consultancy, maintenance service, repair service etc.\\nEach product has its own benefits, application, brand name, and packaging that gives it its own identity and distinguishing characteristics.\\n\\nEvery business or organization has business rules that define precisely what a product is.    While we intuitively know what a product is, we must quantify that knowledge and associated business rules with consistent definitions that can be implemented within the organization in strategies and applications.\\n\\nA product typically goes through five stages of development:\\n\\n(1) Idea Stage - involving a thorough evaluation of the potential product\\n\\n(2) Concept Stage - determines customer acceptance by testing and presentation to consumers and distribution channel members.   Specific aspects regarding quality, dependability, reliability, warranty, packaging, service, pricing, terms of sale, sales and distribution channels, advertising and promotions are evaluated.\\n\\n(3) Product Development Stage - transforms the prototype product into an actual product for mass sale.   This stage requires close interaction between both marketing and manufacturing.\\n\\n(4) Test Marketing Stage - may or may not be used since it is an expensive and time-consuming process.  Test marketing involves evaluating various product options and alternatives.\\n\\n(5) Commercialization - It is very expensive to launch a new product so commercialization only applies to those specific products that are actually going to be sold to the market.\\n\\nProducts tend to be categorized as either:  Industrial goods and consumer goods\\n\\nIndustrial goods are used to produce other products .\\n\\nIndustrial goods may be further divided into:\\n\\n- Raw materials\\n- Equipment\\n- Pre-built materials \\n- Supplies.\\n\\nConsumer goods are intended for consumption by the general public.\\n\\nConsumer goods may be further divided into:\\n\\n- Durable goods\\n- Nondurable goods\\n- Packaged goods\\n\\nA product may be a member of a product family or product line.\\n\\nA product family is a grouping of products or services that are related to each other by common function, functionality, design platform or similar characteristics.\\n\\nMembers of a product family frequently have many common parts and assemblies.\\n\\nProduct families are the highest level of grouping for forecasting, capacity planning or related functions.\\n\\nEx:\\nThe Apple Macintosh family of products consists of the product lines:\\n- Mac mini\\n- MacBook Pro\\n- Mac Pro\\n\\nA product line is a grouping of products that are closely related in usage, functionality or marketing characteristics.\\n\\nA Product Family typically is created to address one or five functions:\\n\\n1. To increase profits and not erode the sales of existing products\\n\\n2. To attract additional Markets or Market Segments\\n\\n3. To counter competitor's products\\n\\n4. To fill a gap in an existing Product Family.\\n\\n5. To promote sales of other products in the family line\\n\\nLine Depth refers to the number of products in the product line.\\n\\nLine consistency refers to how closely related the products are that make up the product line.\\n\\nLine vulnerability refers to the percentage of sales or profits that are derived from only a few products in the product line.\\n\\nProduct width refers to the number of different product lines sold by a company.\\n\\nProduct mix refers to the total number of products sold in all product lines.\\n\\nLine extension refers to the adding of a new product to a line.\\n\\n\\\"Trading up or brand leveraging\\\" refers to adding a product of better quality to a product line than the other products in that line.\\n\\n\\\"Trading down\\\" refers to adding a product of lesser quality to a product line than the other products in that line.\\n\\nIf a line of products is sold with the same brand name, this is referred to as family branding.\\nStrategy and decisions regarding a product line are usually incorporated in a high-level marketing plan addressing product line strategy, sales, channels, distribution channels, pricing and related issues.\\nA product-line manager is responsible for a product line and supervises several product managers who are responsible for individual products within the line.\\nProduct-line managers typically have the following responsibilities:\\n- Expansion and composition of a product line\\n- Evaluate the effects of product mixes on the profitability of other items in the line\\n- Planning and allocation of resources to individual products in the line\\nA product is normally associated with a brand strategy - manufacturer, private or generic.\\n\\n1. Manufacturer-  or 'national' branding in which the brand is assigned by the manufacturer of the Product.\\n\\n2. Private - or 'dealer' branding in which the brand is assigned by the retailer or wholesaler of the Product.\\n\\n3. Generic - in which the Product is not marked with any identification.   Generic brands are a means for manufacturers to increase profits by saving on advertising, packaging or other costs associated with manufacturer or private branding.\\n\\nA brand is name, term, sign, symbol or design or a combination of these which identify the goods or services and differentiate them from those of competitors'\\n\\nA Trade mark is a brand or some part of the brand that is given legal protection because it is capable of exclusive appropriation and representation.\\n\\nManufacturers can use their own brands (known as Manufacturers' brands) or brands of their distributors (Distributors' brands).\\n\\nManufacturers/ distributors use brand names for a variety of reasons ranging from simple identification purposes to having legal protection for unique features of the products from imitations.\\n\\nBrands help consumers recognize certain quality parameters. In some cases, brands are just used to endow the product with unique story and character which itself can be a basis for product differentiation.\\n\\nIndividual brands have their own identity and the corporate or common name is not used to promote its equity.\\n\\nIndividual branding requires more expensive advertising and brand extensive brand creation investments.  By extension, each new brand does not benefit from the positive perceptions of earlier brands.\\n\\nBy contrast, family branding has several advantages.\\n\\nEach new product is quickly associated with the other products and brand in terms of quality and benefits.\\n\\nReduced or eliminated time for name identification and advertising for name recognition purposes.\",\"baseEntityReference\":{\"name\":\"RetailProduct\",\"path\":\"RetailProduct.cdm.json/RetailProduct\"},\"primaryKey\":[\"ProductId\"],\"projectionInfo\":{\"attributes\":[{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ProductId\"},\"dataType\":\"long\",\"description\":\"The unique identifier of a Product.\",\"isNullable\":false,\"name\":\"ProductId\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ProductName\"},\"dataType\":\"string\",\"dataTypeLength\":128,\"description\":\"The name of the Product, which normally corresponds to the 'marketing name' of the Product.\",\"isNullable\":true,\"name\":\"ProductName\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"IntroductionDate\"},\"dataType\":\"date\",\"dateFormat\":\"YYYY-MM-DD\",\"description\":\"The date that the Product was introduced for sale.\",\"isNullable\":true,\"name\":\"IntroductionDate\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ActualAbandonmentDate\"},\"dataType\":\"date\",\"dateFormat\":\"YYYY-MM-DD\",\"description\":\"The actual date that the marketing of the product was discontinued. \\n\\nAbandonment is a component in the decline stage of the product's life cycle characterized by a reduced market demand for the product and an increased number of competing products with similar characteristics.\\n\\nThere are three (3) strategies for abandoning a product:\\n\\n(1)  Reduced marketing and expenditures to maintain profits.\\n\\n(2)  Concentrating on the strongest market segments and eliminating the weaker market segments\\n\\n(3)  Maintain the marketing level until the product is discontinued.\",\"isNullable\":true,\"name\":\"ActualAbandonmentDate\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ProductGrossWeight\"},\"dataType\":\"decimal\",\"dataTypeLength\":18,\"description\":\"The gross product weight.\",\"isNullable\":true,\"scale\":8,\"name\":\"ProductGrossWeight\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"RetailProduct.cdm.json/RetailProduct\",\"name\":\"ItemSku\"},\"dataType\":\"string\",\"dataTypeLength\":20,\"description\":\"The Stock Keeping Unit identifier, which is typically used for inventory-related activities.\",\"isNullable\":true,\"name\":\"ItemSku\"},{\"type\":\"New\",\"dataType\":\"decimal\",\"dataTypeLength\":18,\"description\":\"The product price.\",\"isNullable\":false,\"scale\":2,\"name\":\"ListPrice\"}]}}}",
-								"Description": "A product is anything that can be offered to a market that might satisfy a want or need by potential customers.    That product is the sum of all physical, psychological, symbolic, and service attributes associated with it.\n\nThere are two basic types of products:\n\n- Tangible (physical)\n- Intangible (non-physical) such as services\n\nA service is a non-material or intangible product - such as professional consultancy, maintenance service, repair service etc.\nEach product has its own benefits, application, brand name, and packaging that gives it its own identity and distinguishing characteristics.\n\nEvery business or organization has business rules that define precisely what a product is.    While we intuitively know what a product is, we must quantify that knowledge and associated business rules with consistent definitions that can be implemented within the organization in strategies and applications.\n\nA product typically goes through five stages of development:\n\n(1) Idea Stage - involving a thorough evaluation of the potential product\n\n(2) Concept Stage - determines customer acceptance by testing and presentation to consumers and distribution channel members.   Specific aspects regarding quality, dependability, reliability, warranty, packaging, service, pricing, terms of sale, sales and distribution channels, advertising and promotions are evaluated.\n\n(3) Product Development Stage - transforms the prototype product into an actual product for mass sale.   This stage requires close interaction between both marketing and manufacturing.\n\n(4) Test Marketing Stage - may or may not be used since it is an expensive and time-consuming process.  Test marketing involves evaluating various product options and alternatives.\n\n(5) Commercialization - It is very expensive to launch a new product so commercialization only applies to those specific products that are actually going to be sold to the market.\n\nProducts tend to be categorized as either:  Industrial goods and consumer goods\n\nIndustrial goods are used to produce other products .\n\nIndustrial goods may be further divided into:\n\n- Raw materials\n- Equipment\n- Pre-built materials \n- Supplies.\n\nConsumer goods are intended for consumption by the general public.\n\nConsumer goods may be further divided into:\n\n- Durable goods\n- Nondurable goods\n- Packaged goods\n\nA product may be a member of a product family or product line.\n\nA product family is a grouping of products or services that are related to each other by common function, functionality, design platform or similar characteristics.\n\nMembers of a product family frequently have many common parts and assemblies.\n\nProduct families are the highest level of grouping for forecasting, capacity planning or related functions.\n\nEx:\nThe Apple Macintosh family of products consists of the product lines:\n- Mac mini\n- MacBook Pro\n- Mac Pro\n\nA product line is a grouping of products that are closely related in usage, functionality or marketing characteristics.\n\nA Product Family typically is created to address one or five functions:\n\n1. To increase profits and not erode the sales of existing products\n\n2. To attract additional Markets or Market Segments\n\n3. To counter competitor's products\n\n4. To fill a gap in an existing Product Family.\n\n5. To promote sales of other products in the family line\n\nLine Depth refers to the number of products in the product line.\n\nLine consistency refers to how closely related the products are that make up the product line.\n\nLine vulnerability refers to the percentage of sales or profits that are derived from only a few products in the product line.\n\nProduct width refers to the number of different product lines sold by a company.\n\nProduct mix refers to the total number of products sold in all product lines.\n\nLine extension refers to the adding of a new product to a line.\n\n\"Trading up or brand leveraging\" refers to adding a product of better quality to a product line than the other products in that line.\n\n\"Trading down\" refers to adding a product of lesser quality to a product line than the other products in that line.\n\nIf a line of products is sold with the same brand name, this is referred to as family branding.\nStrategy and decisions regarding a product line are usually incorporated in a high-level marketing plan addressing product line strategy, sales, channels, distribution channels, pricing and related issues.\nA product-line manager is responsible for a product line and supervises several product managers who are responsible for individual products within the line.\nProduct-line managers typically have the following responsibilities:\n- Expansion and composition of a product line\n- Evaluate the effects of product mixes on the profitability of other items in the line\n- Planning and allocation of resources to individual products in the line\nA product is normally associated with a brand strategy - manufacturer, private or generic.\n\n1. Manufacturer-  or 'national' branding in which the brand is assigned by the manufacturer of the Product.\n\n2. Private - or 'dealer' branding in which the brand is assigned by the retailer or wholesaler of the Product.\n\n3. Generic - in which the Product is not marked with any identification.   Generic brands are a means for manufacturers to increase profits by saving on advertising, packaging or other costs associated with manufacturer or private branding.\n\nA brand is name, term, sign, symbol or design or a combination of these which identify the goods or services and differentiate them from those of competitors'\n\nA Trade mark is a brand or some part of the brand that is given legal protection because it is capable of exclusive appropriation and representation.\n\nManufacturers can use their own brands (known as Manufacturers' brands) or brands of their distributors (Distributors' brands).\n\nManufacturers/ distributors use brand names for a variety of reasons ranging from simple identification purposes to having legal protection for unique features of the products from imitations.\n\nBrands help consumers recognize certain quality parameters. In some cases, brands are just used to endow the product with unique story and character which itself can be a basis for product differentiation.\n\nIndividual brands have their own identity and the corporate or common name is not used to promote its equity.\n\nIndividual branding requires more expensive advertising and brand extensive brand creation investments.  By extension, each new brand does not benefit from the positive perceptions of earlier brands.\n\nBy contrast, family branding has several advantages.\n\nEach new product is quickly associated with the other products and brand in terms of quality and benefits.\n\nReduced or eliminated time for name identification and advertising for name recognition purposes.",
-								"DisplayFolderInfo": "{\"name\":\"Product\",\"colorCode\":\"#BD4B37\"}",
-								"PrimaryKeys": "ProductId",
-								"spark.sql.sources.provider": "csv",
-								"sql:IsAppendOnly": false
-							},
-							"Retention": 0,
-							"Temporary": false,
-							"IsRewriteEnabled": false,
-							"Partitioning": {}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					},
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "SalesOrder",
-							"EntityType": "TABLE",
-							"Namespace": {
-								"DatabaseName": "RetailDB"
-							},
-							"Description": "",
-							"TableType": "EXTERNAL",
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"StorageDescriptor": {
-								"Columns": [
-									{
-										"Name": "SalesOrderId",
-										"Description": "The unique identifier of an order.",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsNullable": true,
-											"IsComplexType": false,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "OrderDate",
-										"Description": "The date of the order.",
-										"OriginDataTypeName": {
-											"TypeName": "timestamp",
-											"IsNullable": true,
-											"IsComplexType": false,
-											"Properties": {
-												"TimestampFormat": "yyyy-MM-dd",
-												"HIVE_TYPE_STRING": "timestamp"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "LineItemId",
-										"Description": "The ID of an individual line item.\t",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsNullable": true,
-											"IsComplexType": false,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "CustomerId",
-										"Description": "The customer.",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsNullable": true,
-											"IsComplexType": false,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "ProductId",
-										"Description": "The product.",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsNullable": true,
-											"IsComplexType": false,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "Quantity",
-										"Description": "The order quantity.",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsNullable": true,
-											"IsComplexType": false,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									}
-								],
-								"Format": {
-									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
-									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
-									"FormatType": "csv",
-									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
-									"Properties": {
-										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/RetailDB/SalesOrder",
-										"delimiter": ",",
-										"multiLine": "false",
-										"firstRowAsHeader": "false",
-										"serialization.format": "1",
-										"FormatTypeSetToDatabaseDefault": false,
-										"header": "false"
-									}
-								},
-								"Source": {
-									"Provider": "ADLS",
-									"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/RetailDB/SalesOrder",
-									"Properties": {
-										"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
-										"LocationSetToDatabaseDefault": false
-									}
-								},
-								"Properties": {
-									"textinputformat.record.delimiter": ",",
-									"compression": "",
-									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
-								},
-								"Compressed": false,
-								"IsStoredAsSubdirectories": false
-							},
-							"Properties": {
-								"Description": "",
-								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
-								"PrimaryKeys": "",
-								"spark.sql.sources.provider": "csv"
-							},
-							"Retention": 0,
-							"Temporary": false,
-							"IsRewriteEnabled": false,
-							"Partitioning": {}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					},
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "relationship-geteaiicup",
-							"EntityType": "RELATIONSHIP",
-							"Namespace": {
-								"DatabaseName": "RetailDB"
-							},
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"FromTableName": "SalesOrder",
-							"ToTableName": "Customer",
-							"ColumnRelationshipInformations": [
-								{
-									"FromColumnName": "CustomerId",
-									"ToColumnName": "CustomerId"
-								}
-							],
-							"RelationshipType": 0,
-							"Properties": {}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					},
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "relationship-wrhmisvfri",
-							"EntityType": "RELATIONSHIP",
-							"Namespace": {
-								"DatabaseName": "RetailDB"
-							},
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"FromTableName": "SalesOrder",
-							"ToTableName": "Product",
-							"ColumnRelationshipInformations": [
-								{
-									"FromColumnName": "ProductId",
-									"ToColumnName": "ProductId"
-								}
-							],
-							"RelationshipType": 0,
-							"Properties": {}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/01 - Query RetailDB')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "dp-203-04-Create-a-Lake-Database"
-				},
-				"content": {
-					"query": "\n--Make sure to connect to the Build-In, default database\nSELECT TOP (100) [CustomerId]\n    ,[FirstName]\n    ,[LastName]\n    ,[EmailAddress]\n    ,[Phone]\n FROM [RetailDB].[dbo].[Customer]\n\n SELECT TOP (100) [ProductId]\n    ,[ProductName]\n    ,[IntroductionDate]\n    ,[ActualAbandonmentDate]\n    ,[ProductGrossWeight]\n    ,[ItemSku]\n    ,[ListPrice]\n FROM [RetailDB].[dbo].[Product]",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "default",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/02 - Work with lake database tables')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "dp-203-04-Create-a-Lake-Database"
-				},
-				"content": {
-					"query": "-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "RetailDB",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/Insert data into lake database')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -1763,7 +1241,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "10833ec1-c200-4596-aa1f-be2c6bfda34b"
+						"spark.autotune.trackingId": "3d79b412-a09c-449a-8ac3-dd0f7befcabb"
 					}
 				},
 				"metadata": {
@@ -1788,8 +1266,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -1904,27 +1381,447 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/03 - Validate Insert after Spark')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"name": "[concat(parameters('workspaceName'), '/Spark Transform')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "dp-203-04-Create-a-Lake-Database"
+					"name": "dp-203-06-Transform-Data-with-Spark"
 				},
-				"content": {
-					"query": "Use RetailDB\n\n-- This statement should not return any data before the notebook has executed.\n\nSELECT *\nFROM SalesOrder WHERE SalesOrderId = 99999\n\n-- cleanup for next demo\n-- This will not work: DML Operations are not supported with external tables.\nDELETE FROM SalesOrder WHERE SalesOrderId = 99999",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "RetailDB",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
 				},
-				"type": "SqlQuery"
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "36becb30-8f04-4ecf-a7c7-a4bbe678af14"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-dyfk4ryjqex56/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://synapse-dyfk4ryjqex56.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"source": [
+							"# Transform data by using Spark\n",
+							"\n",
+							"Apache Spark provides a distributed data processing platform that you can use to perform complex data transformations at scale.\n",
+							"\n",
+							"\n",
+							"## Load source data\n",
+							"\n",
+							"Let's start by loading some historical sales order data into a dataframe.\n",
+							"\n",
+							"Review the code in the cell below, which loads the sales order from all of the csv files within the **data** directory. Then click the **&#9655;** button to the left of the cell to run it.\n",
+							"\n",
+							"> **Note**: The first time you run a cell in a notebook, the Spark pool must be started; which can take several minutes."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"collapsed": false
+						},
+						"source": [
+							"order_details = spark.read.csv('/master/Allfiles/labs/06/data/*.csv', header=True, inferSchema=True)\n",
+							"display(order_details.limit(5))"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Transform the data structure\r\n",
+							"\r\n",
+							"The source data includes a **CustomerName** field, that contains the customer's first and last name. Let's modify the dataframe to separate this field into separate **FirstName** and **LastName** fields."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from pyspark.sql.functions import split, col\r\n",
+							"\r\n",
+							"# Create the new FirstName and LastName fields\r\n",
+							"transformed_df = order_details.withColumn(\"FirstName\", split(col(\"CustomerName\"), \" \").getItem(0)).withColumn(\"LastName\", split(col(\"CustomerName\"), \" \").getItem(1))\r\n",
+							"\r\n",
+							"# Remove the CustomerName field\r\n",
+							"transformed_df = transformed_df.drop(\"CustomerName\")\r\n",
+							"\r\n",
+							"display(transformed_df.limit(5))"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"The code above creates a new dataframe with the **CustomerName** field removed and two new **FirstName** and **LastName** fields.\r\n",
+							"\r\n",
+							"You can use the full power of the Spark SQL library to transform the data by filtering rows, deriving, removing, renaming columns, and any applying other required data modifications.\r\n",
+							"\r\n",
+							"## Save the transformed data\r\n",
+							"\r\n",
+							"After making the required changes to the data, you can save the results in a supported file format.\r\n",
+							"\r\n",
+							"> **Note**: Commonly, *Parquet* format is preferred for data files that you will use for further analysis or ingestion into an analytical store. Parquet is a very efficient format that is supported by most large scale data analytics systems. In fact, sometimes your data transformation requirement may simply be to convert data from another format (such as CSV) to Parquet!\r\n",
+							"\r\n",
+							"Use the following code to save the transformed dataframe in Parquet format (Overwriting the data if it already exists)."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"transformed_df.write.mode(\"overwrite\").parquet('/master/Allfiles/labs/06/transformed_data/orders.parquet')\r\n",
+							"print (\"Transformed data saved!\")"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"In the **files** tab (which should still be open above), navigate to the root **files** container and verify that a new folder named **transformed_data** has been created, containing a file named **orders.parquet**. Then return to this notebook."
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Partition data\n",
+							"\n",
+							"A common way to optimize performance when dealing with large volumes of data is to partition the data files based on one or more field values. This can significant improve performance and make it easier to filter data.\n",
+							"\n",
+							"Use the following cell to derive new **Year** and **Month** fields and then save the resulting data in Parquet format, partitioned by year and month."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from pyspark.sql.functions import year, month, col\r\n",
+							"\r\n",
+							"dated_df = transformed_df.withColumn(\"Year\", year(col(\"OrderDate\"))).withColumn(\"Month\", month(col(\"OrderDate\")))\r\n",
+							"display(dated_df.limit(5))\r\n",
+							"dated_df.write.partitionBy(\"Year\",\"Month\").mode(\"overwrite\").parquet(\"/master/Allfiles/labs/06/partitioned_data\")\r\n",
+							"print (\"Transformed data saved!\")"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"In the **files** tab (which should still be open above), navigate to the root **files** container and verify that a new folder named **partitioned_data** has been created, containing a hierachy of folders in the format **Year=*NNNN*** / **Month=*N***, each containing a .parquet file for the orders placed in the corresponding year and month. Then return to this notebook.\r\n",
+							"\r\n",
+							"You can read this data into a dataframe from any folder in the hierarchy, using explicit values or wildcards for partitioning fields. For example, use the following code to get the sales orders placed in 2020 for all months."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"orders_2020 = spark.read.parquet('/master/Allfiles/labs/06/partitioned_data/Year=2020/Month=*')\r\n",
+							"display(orders_2020.limit(5))"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Note that the partitioning columns specified in the file path are omitted in the resulting dataframe.\r\n",
+							"\r\n",
+							"## Use SQL to transform data\r\n",
+							"\r\n",
+							"Spark is a very flexible platform, and the **SQL** library that provides the dataframe also enables you to work with data using SQL semantics. You can query and transform data in dataframes by using SQL queries, and persist the results as tables - which are metadata abstractions over files.\r\n",
+							"\r\n",
+							"First, use the following code to save the original sales orders data (loaded from CSV files) as a table. Technically, this is an *external* table because the **path** parameter is used to specify where the data files for the table are stored (an *internal* table is stored in the system storage for the Spark metastore and managed automatically)."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"outputs_hidden": false,
+								"source_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"order_details.write.saveAsTable('sales_orders', format='parquet', mode='overwrite', path='/master/Allfiles/labs/06/sales_orders_table')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"In the **files** tab (which should still be open above), navigate to the root **files** container and verify that a new folder named **sales_orders_table** has been created, containing parquet files for the table data. Then return to this notebook.\r\n",
+							"\r\n",
+							"Now that the table has been created, you can use SQL to transform it. For example, the following code derives new Year and Month columns and then saves the results as a partitioned external table."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"sql_transform = spark.sql(\"SELECT *, YEAR(OrderDate) AS Year, MONTH(OrderDate) AS Month FROM sales_orders\")\r\n",
+							"display(sql_transform.limit(5))\r\n",
+							"sql_transform.write.partitionBy(\"Year\",\"Month\").saveAsTable('transformed_orders', format='parquet', mode='overwrite', path='/transformed_orders_table')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"In the **files** tab (which should still be open above), navigate to the root **files** container and verify that a new folder named **transformed_orders_table** has been created, containing a hierachy of folders in the format **Year=*NNNN*** / **Month=*N***, each containing a .parquet file for the orders placed in the corresponding year and month. Then return to this notebook.\n",
+							"\n",
+							"Essentially you've performed the same data transformation into partitioned parquet files as s before, but by using SQL instead of native dataframe methods.\n",
+							"\n",
+							"You can read this data into a dataframe from any folder in the hierarchy as before, but because the data files are also abstracted by a table in the metastore, you can query the data directly using SQL."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\r\n",
+							"\r\n",
+							"SELECT * FROM transformed_orders\r\n",
+							"WHERE Year = 2021\r\n",
+							"    AND Month = 1"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Because these are *external* tables, you can drop the tables from the metastore without deleting the files - so the transfomed data remains available for other downstream data analytics or ingestion processes."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\r\n",
+							"\r\n",
+							"DROP TABLE transformed_orders;\r\n",
+							"DROP TABLE sales_orders;"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 4,
+					"minNodeCount": 3
+				},
+				"nodeCount": 0,
+				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.2",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
 		}
 	]
 }
