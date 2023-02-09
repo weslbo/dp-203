@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "87511ad7-027e-4978-b4c8-1b422a614e34"
+				"spark.autotune.trackingId": "6ee8ee0f-8b24-49e9-8fba-e711429eda58"
 			}
 		},
 		"metadata": {
@@ -52,11 +52,28 @@
 		},
 		"cells": [
 			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Query Azure Cosmos DB from Azure Synapse Analytics\n",
+					"\n",
+					"Read from Cosmos DB analytical store into a Spark DataFrame and display 10 rows from the DataFrame\n",
+					"\n",
+					"To select a preferred list of regions in a multi-region Cosmos DB account, add .option(\"spark.cosmos.preferredRegions\", \"<Region1>,<Region2>\")\n",
+					"\n",
+					"The results should include three records; one for each of the items you added to the Cosmos DB database. Each record includes the fields you entered when you created the items as well as some of the metadata fields that were automatically generated.\n",
+					""
+				]
+			},
+			{
 				"cell_type": "code",
 				"source": [
-					"# Read from Cosmos DB analytical store into a Spark DataFrame and display 10 rows from the DataFrame\n",
-					"# To select a preferred list of regions in a multi-region Cosmos DB account, add .option(\"spark.cosmos.preferredRegions\", \"<Region1>,<Region2>\")\n",
-					"\n",
 					"df = spark.read\\\n",
 					"    .format(\"cosmos.olap\")\\\n",
 					"    .option(\"spark.synapse.linkedService\", \"AdventureWorks\")\\\n",
@@ -65,7 +82,58 @@
 					"\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 2
+				"execution_count": 3
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"The following query creates a new dataframe containing only the customerid and customerdetails columns. Observe that the customerdetails column contains the JSON structure for the nested data in the source item. In the table of results that is displayed, you can use the ► icon next to the JSON value to expand it and see the individual fields it contains."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"customer_df = df.select(\"customerid\", \"customerdetails\")\n",
+					"display(customer_df)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"customerdetails_df = df.select(\"customerid\", \"customerdetails.*\")\n",
+					"display(customerdetails_df)"
+				],
+				"execution_count": null
 			}
 		]
 	}
