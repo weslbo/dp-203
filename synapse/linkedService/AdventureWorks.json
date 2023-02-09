@@ -2,28 +2,11 @@
 	"name": "AdventureWorks",
 	"properties": {
 		"description": "AdventureWorks Cosmos DB database",
-		"parameters": {
-			"suffix": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "CosmosDb",
 		"typeProperties": {
-			"connectionString": {
-				"type": "AzureKeyVaultSecret",
-				"store": {
-					"referenceName": "KeyVault",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"suffix": {
-							"value": "@linkedService().suffix",
-							"type": "Expression"
-						}
-					}
-				},
-				"secretName": "cosmosdbprimaryendpoint"
-			}
+			"accountEndpoint": "https://cosmos-dyfk4ryjqex56.documents.azure.com:443/",
+			"database": "AdventureWorks"
 		},
 		"connectVia": {
 			"referenceName": "AutoResolveIntegrationRuntime",
