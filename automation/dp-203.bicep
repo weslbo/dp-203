@@ -565,13 +565,17 @@ resource logicapp_pause_resources 'Microsoft.Logic/workflows@2017-07-01' = {
   }
 }
 
-resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
+resource cosmosaccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
   name: 'cosmos-${uniqueSuffix}'
   location: location
   properties: {
     databaseAccountOfferType: 'Standard'
     consistencyPolicy: {
       defaultConsistencyLevel: 'Session'
+    }
+    enableAnalyticalStorage: true
+    analyticalStorageConfiguration: {
+      schemaType: 'WellDefined'
     }
     locations: [
       {
@@ -643,10 +647,17 @@ resource keyvault 'Microsoft.KeyVault/vaults@2021-04-01-preview' = {
       }
     ]
   }
-  resource secret 'secrets' = {
+  resource sqlpasswordsecret 'secrets' = {
     name: 'sqlpassword'
     properties: {
       value: sqlPassword
+    }
+  }
+
+  resource cosmosdbprimaryendpointsecret 'secrets' = {
+    name: 'cosmosdbprimaryendpoint'
+    properties: {
+      value: cosmosaccount.listConnectionStrings().connectionStrings[0].connectionString
     }
   }
 }
