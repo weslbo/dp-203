@@ -322,6 +322,100 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Load Product Data')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "LoadProducts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "LoadProductsData",
+								"type": "DataFlowReference",
+								"parameters": {
+									"suffix": {
+										"value": "'@{replace(pipeline().DataFactory, 'synapse-', '')}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"ProductsText": {
+										"suffix": {
+											"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+											"type": "Expression"
+										}
+									},
+									"ProductTable": {
+										"suffix": {
+											"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+											"type": "Expression"
+										}
+									},
+									"DimProductTable": {
+										"suffix": "@replace(pipeline().DataFactory, 'synapse-', '')"
+									}
+								},
+								"linkedServiceParameters": {
+									"ProductsText": {
+										"schemaLinkedService": {
+											"suffix": {
+												"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+												"type": "Expression"
+											}
+										}
+									},
+									"ProductTable": {
+										"schemaLinkedService": {
+											"suffix": {
+												"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "files/labs/stage_products"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "dp-203-10-Synpase-pipeline"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synapse-dyfk4ryjqex56-WorkspaceDefaultStorage')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/dataflows/LoadProductsData')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/dp-203-lab-01-copy products')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -391,7 +485,7 @@
 					"cancelAfter": {}
 				},
 				"folder": {
-					"name": "dp-203-01"
+					"name": "dp-203-01-Explore-Azure-Synapse"
 				},
 				"annotations": []
 			},
@@ -739,7 +833,7 @@
 					"name": "dp-203-00-setup"
 				},
 				"content": {
-					"query": "IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') DROP TABLE [dbo].[FactInternetSales];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') DROP TABLE [dbo].[DimCustomer];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') DROP TABLE [dbo].[DimDate];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') DROP TABLE [dbo].[DimGeography];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') DROP TABLE [dbo].[DimProductCategory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') DROP TABLE [dbo].[DimProductSubcategory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') DROP TABLE [dbo].[DimSalesTerritory];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') DROP TABLE [dbo].[DimPromotion];\nIF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') DROP TABLE [dbo].[DimCurrency];",
+					"query": "IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'vFactSales') DROP VIEW [dbo].[vFactSales];\n\nwhile(exists(select 1 from INFORMATION_SCHEMA.TABLES))\nbegin\n\tdeclare @sql2 nvarchar(2000)\n\tSELECT TOP 1 @sql2=('DROP TABLE ' + TABLE_SCHEMA + '.[' + TABLE_NAME\n\t+ ']')\n\tFROM INFORMATION_SCHEMA.TABLES\n\texec (@sql2)\n\tPRINT @sql2\nend\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -762,7 +856,7 @@
 					"name": "dp-203-00-setup"
 				},
 				"content": {
-					"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') CREATE TABLE [dbo].[FactInternetSales](\n\t[SalesOrderNumber] [nvarchar](20) NOT NULL,\n\t[SalesOrderLineNumber] [tinyint] NOT NULL,\n\t[CustomerKey] [int] NOT NULL,\n\t[ProductKey] [int] NOT NULL,\n\t[OrderDateKey] [int] NOT NULL,\n\t[DueDateKey] [int] NOT NULL,\n\t[ShipDateKey] [int] NULL,\n\t[PromotionKey] [int] NOT NULL,\n\t[CurrencyKey] [int] NOT NULL,\n\t[SalesTerritoryKey] [int] NOT NULL,\n\t[OrderQuantity] [smallint] NOT NULL,\n\t[UnitPrice] [money] NOT NULL,\n\t[ExtendedAmount] [money] NOT NULL,\n\t[UnitPriceDiscountPct] [decimal](7, 4) NOT NULL,\n\t[DiscountAmount] [float] NOT NULL,\n\t[ProductStandardCost] [money] NOT NULL,\n\t[TotalProductCost] [money] NOT NULL,\n\t[SalesAmount] [money] NOT NULL,\n\t[TaxAmount] [money] NOT NULL,\n\t[FreightAmount] [money] NOT NULL,\n\t[CarrierTrackingNumber] [nvarchar](25) NULL,\n\t[CustomerPONumber] [nvarchar](25) NULL,\n\t[RevisionNumber] [tinyint] NOT NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') CREATE TABLE [dbo].[DimCustomer](\n\t[CustomerKey] [int] IDENTITY(1,1) NOT NULL,\n\t[GeographyKey] [int] NULL,\n\t[CustomerAlternateKey] [nvarchar](15) NOT NULL,\n\t[Title] [nvarchar](8) NULL,\n\t[FirstName] [nvarchar](50) NULL,\n\t[MiddleName] [nvarchar](50) NULL,\n\t[LastName] [nvarchar](50) NULL,\n\t[NameStyle] [bit] NULL,\n\t[BirthDate] [date] NULL,\n\t[MaritalStatus] [nchar](1) NULL,\n\t[Suffix] [nvarchar](10) NULL,\n\t[Gender] [nvarchar](1) NULL,\n\t[EmailAddress] [nvarchar](50) NULL,\n\t[YearlyIncome] [money] NULL,\n\t[TotalChildren] [tinyint] NULL,\n\t[NumberChildrenAtHome] [tinyint] NULL,\n\t[EnglishEducation] [nvarchar](40) NULL,\n\t[SpanishEducation] [nvarchar](40) NULL,\n\t[FrenchEducation] [nvarchar](40) NULL,\n\t[EnglishOccupation] [nvarchar](100) NULL,\n\t[SpanishOccupation] [nvarchar](100) NULL,\n\t[FrenchOccupation] [nvarchar](100) NULL,\n\t[HouseOwnerFlag] [nchar](1) NULL,\n\t[NumberCarsOwned] [tinyint] NULL,\n\t[AddressLine1] [nvarchar](120) NULL,\n\t[AddressLine2] [nvarchar](120) NULL,\n\t[Phone] [nvarchar](20) NULL,\n\t[DateFirstPurchase] [date] NULL,\n\t[CommuteDistance] [nvarchar](15) NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') CREATE TABLE [dbo].[DimDate](\n\t[DateKey] [int] NOT NULL,\n\t[FullDateAlternateKey] [date] NOT NULL,\n\t[DayNumberOfWeek] [tinyint] NOT NULL,\n\t[EnglishDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[SpanishDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[FrenchDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[DayNumberOfMonth] [tinyint] NOT NULL,\n\t[DayNumberOfYear] [smallint] NOT NULL,\n\t[WeekNumberOfYear] [tinyint] NOT NULL,\n\t[EnglishMonthName] [nvarchar](10) NOT NULL,\n\t[SpanishMonthName] [nvarchar](10) NOT NULL,\n\t[FrenchMonthName] [nvarchar](10) NOT NULL,\n\t[MonthNumberOfYear] [tinyint] NOT NULL,\n\t[CalendarQuarter] [tinyint] NOT NULL,\n\t[CalendarYear] [smallint] NOT NULL,\n\t[CalendarSemester] [tinyint] NOT NULL,\n\t[FiscalQuarter] [tinyint] NOT NULL,\n\t[FiscalYear] [smallint] NOT NULL,\n\t[FiscalSemester] [tinyint] NOT NULL\n)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') CREATE TABLE [dbo].[DimGeography](\n\t[GeographyKey] [int] IDENTITY(1,1) NOT NULL,\n\t[City] [nvarchar](30) NULL,\n\t[StateProvinceCode] [nvarchar](3) NULL,\n\t[StateProvinceName] [nvarchar](50) NULL,\n\t[CountryRegionCode] [nvarchar](3) NULL,\n\t[EnglishCountryRegionName] [nvarchar](50) NULL,\n\t[SpanishCountryRegionName] [nvarchar](50) NULL,\n\t[FrenchCountryRegionName] [nvarchar](50) NULL,\n\t[PostalCode] [nvarchar](15) NULL,\n\t[SalesTerritoryKey] [int] NULL,\n\t[IpAddressLocator] [nvarchar](15) NULL)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') CREATE TABLE [dbo].[DimProduct](\n\t[ProductKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductAlternateKey] [nvarchar](25) NULL,\n\t[ProductSubcategoryKey] [int] NULL,\n\t[WeightUnitMeasureCode] [nchar](3) NULL,\n\t[SizeUnitMeasureCode] [nchar](3) NULL,\n\t[EnglishProductName] [nvarchar](50) NOT NULL,\n\t[SpanishProductName] [nvarchar](50) NOT NULL,\n\t[FrenchProductName] [nvarchar](50) NOT NULL,\n\t[StandardCost] [money] NULL,\n\t[FinishedGoodsFlag] [bit] NOT NULL,\n\t[Color] [nvarchar](15) NOT NULL,\n\t[SafetyStockLevel] [smallint] NULL,\n\t[ReorderPoint] [smallint] NULL,\n\t[ListPrice] [money] NULL,\n\t[Size] [nvarchar](50) NULL,\n\t[SizeRange] [nvarchar](50) NULL,\n\t[Weight] [float] NULL,\n\t[DaysToManufacture] [int] NULL,\n\t[ProductLine] [nchar](2) NULL,\n\t[DealerPrice] [money] NULL,\n\t[Class] [nchar](2) NULL,\n\t[Style] [nchar](2) NULL,\n\t[ModelName] [nvarchar](50) NULL,\n\t[LargePhoto] [varbinary](max) NULL,\n\t[EnglishDescription] [nvarchar](400) NULL,\n\t[FrenchDescription] [nvarchar](400) NULL,\n\t[ChineseDescription] [nvarchar](400) NULL,\n\t[ArabicDescription] [nvarchar](400) NULL,\n\t[HebrewDescription] [nvarchar](400) NULL,\n\t[ThaiDescription] [nvarchar](400) NULL,\n\t[GermanDescription] [nvarchar](400) NULL,\n\t[JapaneseDescription] [nvarchar](400) NULL,\n\t[TurkishDescription] [nvarchar](400) NULL,\n\t[StartDate] [datetime] NULL,\n\t[EndDate] [datetime] NULL,\n\t[Status] [nvarchar](7) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (ProductKey)  \n  ); \nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') CREATE TABLE [dbo].[DimProductCategory](\n\t[ProductCategoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductCategoryAlternateKey] [int] NULL,\n\t[EnglishProductCategoryName] [nvarchar](50) NOT NULL,\n\t[SpanishProductCategoryName] [nvarchar](50) NOT NULL,\n\t[FrenchProductCategoryName] [nvarchar](50) NOT NULL)\n\nGO\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') CREATE TABLE [dbo].[DimProductSubcategory](\n\t[ProductSubcategoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductSubcategoryAlternateKey] [int] NULL,\n\t[EnglishProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[SpanishProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[FrenchProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[ProductCategoryKey] [int] NULL)\nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') CREATE TABLE [dbo].[DimSalesTerritory](\n\t[SalesTerritoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[SalesTerritoryAlternateKey] [int] NULL,\n\t[SalesTerritoryRegion] [nvarchar](50) NOT NULL,\n\t[SalesTerritoryCountry] [nvarchar](50) NOT NULL,\n\t[SalesTerritoryGroup] [nvarchar](50) NULL,\n\t[SalesTerritoryImage] [varbinary](max) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (SalesTerritoryKey)  \n  ); \nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') CREATE TABLE [dbo].[DimPromotion](\n\t[PromotionKey] [int] IDENTITY(1,1) NOT NULL,\n\t[PromotionAlternateKey] [int] NULL,\n\t[EnglishPromotionName] [nvarchar](255) NULL,\n\t[SpanishPromotionName] [nvarchar](255) NULL,\n\t[FrenchPromotionName] [nvarchar](255) NULL,\n\t[DiscountPct] [float] NULL,\n\t[EnglishPromotionType] [nvarchar](50) NULL,\n\t[SpanishPromotionType] [nvarchar](50) NULL,\n\t[FrenchPromotionType] [nvarchar](50) NULL,\n\t[EnglishPromotionCategory] [nvarchar](50) NULL,\n\t[SpanishPromotionCategory] [nvarchar](50) NULL,\n\t[FrenchPromotionCategory] [nvarchar](50) NULL,\n\t[StartDate] [datetime] NOT NULL,\n\t[EndDate] [datetime] NULL,\n\t[MinQty] [int] NULL,\n\t[MaxQty] [int] NULL)\nGO\n\nIF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') CREATE TABLE [dbo].[DimCurrency](\n\t[CurrencyKey] [int] IDENTITY(1,1) NOT NULL,\n\t[CurrencyAlternateKey] [nchar](3) NOT NULL,\n\t[CurrencyName] [nvarchar](50) NOT NULL,\n\t[FormatString] [nvarchar](20) NULL)\n\nGO",
+					"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\nCREATE TABLE [dbo].[FactInternetSales](\n\t[SalesOrderNumber] [nvarchar](20) NOT NULL,\n\t[SalesOrderLineNumber] [tinyint] NOT NULL,\n\t[CustomerKey] [int] NOT NULL,\n\t[ProductKey] [int] NOT NULL,\n\t[OrderDateKey] [int] NOT NULL,\n\t[DueDateKey] [int] NOT NULL,\n\t[ShipDateKey] [int] NULL,\n\t[PromotionKey] [int] NOT NULL,\n\t[CurrencyKey] [int] NOT NULL,\n\t[SalesTerritoryKey] [int] NOT NULL,\n\t[OrderQuantity] [smallint] NOT NULL,\n\t[UnitPrice] [money] NOT NULL,\n\t[ExtendedAmount] [money] NOT NULL,\n\t[UnitPriceDiscountPct] [decimal](7, 4) NOT NULL,\n\t[DiscountAmount] [float] NOT NULL,\n\t[ProductStandardCost] [money] NOT NULL,\n\t[TotalProductCost] [money] NOT NULL,\n\t[SalesAmount] [money] NOT NULL,\n\t[TaxAmount] [money] NOT NULL,\n\t[FreightAmount] [money] NOT NULL,\n\t[CarrierTrackingNumber] [nvarchar](25) NULL,\n\t[CustomerPONumber] [nvarchar](25) NULL,\n\t[RevisionNumber] [tinyint] NOT NULL\n)\n\nGO\nCREATE TABLE [dbo].[DimCustomer](\n\t[CustomerKey] [int] IDENTITY(1,1) NOT NULL,\n\t[GeographyKey] [int] NULL,\n\t[CustomerAlternateKey] [nvarchar](15) NOT NULL,\n\t[Title] [nvarchar](8) NULL,\n\t[FirstName] [nvarchar](50) NULL,\n\t[MiddleName] [nvarchar](50) NULL,\n\t[LastName] [nvarchar](50) NULL,\n\t[NameStyle] [bit] NULL,\n\t[BirthDate] [date] NULL,\n\t[MaritalStatus] [nchar](1) NULL,\n\t[Suffix] [nvarchar](10) NULL,\n\t[Gender] [nvarchar](1) NULL,\n\t[EmailAddress] [nvarchar](50) NULL,\n\t[YearlyIncome] [money] NULL,\n\t[TotalChildren] [tinyint] NULL,\n\t[NumberChildrenAtHome] [tinyint] NULL,\n\t[EnglishEducation] [nvarchar](40) NULL,\n\t[SpanishEducation] [nvarchar](40) NULL,\n\t[FrenchEducation] [nvarchar](40) NULL,\n\t[EnglishOccupation] [nvarchar](100) NULL,\n\t[SpanishOccupation] [nvarchar](100) NULL,\n\t[FrenchOccupation] [nvarchar](100) NULL,\n\t[HouseOwnerFlag] [nchar](1) NULL,\n\t[NumberCarsOwned] [tinyint] NULL,\n\t[AddressLine1] [nvarchar](120) NULL,\n\t[AddressLine2] [nvarchar](120) NULL,\n\t[Phone] [nvarchar](20) NULL,\n\t[DateFirstPurchase] [date] NULL,\n\t[CommuteDistance] [nvarchar](15) NULL\n)\n\nGO\nCREATE TABLE [dbo].[DimDate](\n\t[DateKey] [int] NOT NULL,\n\t[FullDateAlternateKey] [date] NOT NULL,\n\t[DayNumberOfWeek] [tinyint] NOT NULL,\n\t[EnglishDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[SpanishDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[FrenchDayNameOfWeek] [nvarchar](10) NOT NULL,\n\t[DayNumberOfMonth] [tinyint] NOT NULL,\n\t[DayNumberOfYear] [smallint] NOT NULL,\n\t[WeekNumberOfYear] [tinyint] NOT NULL,\n\t[EnglishMonthName] [nvarchar](10) NOT NULL,\n\t[SpanishMonthName] [nvarchar](10) NOT NULL,\n\t[FrenchMonthName] [nvarchar](10) NOT NULL,\n\t[MonthNumberOfYear] [tinyint] NOT NULL,\n\t[CalendarQuarter] [tinyint] NOT NULL,\n\t[CalendarYear] [smallint] NOT NULL,\n\t[CalendarSemester] [tinyint] NOT NULL,\n\t[FiscalQuarter] [tinyint] NOT NULL,\n\t[FiscalYear] [smallint] NOT NULL,\n\t[FiscalSemester] [tinyint] NOT NULL\n)\n\nGO\nCREATE TABLE [dbo].[DimGeography](\n\t[GeographyKey] [int] IDENTITY(1,1) NOT NULL,\n\t[City] [nvarchar](30) NULL,\n\t[StateProvinceCode] [nvarchar](3) NULL,\n\t[StateProvinceName] [nvarchar](50) NULL,\n\t[CountryRegionCode] [nvarchar](3) NULL,\n\t[EnglishCountryRegionName] [nvarchar](50) NULL,\n\t[SpanishCountryRegionName] [nvarchar](50) NULL,\n\t[FrenchCountryRegionName] [nvarchar](50) NULL,\n\t[PostalCode] [nvarchar](15) NULL,\n\t[SalesTerritoryKey] [int] NULL,\n\t[IpAddressLocator] [nvarchar](15) NULL)\n\nGO\nCREATE TABLE [dbo].[DimProduct](\n\t[ProductKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductAlternateKey] [nvarchar](25) NULL,\n\t[ProductSubcategoryKey] [int] NULL,\n\t[WeightUnitMeasureCode] [nchar](3) NULL,\n\t[SizeUnitMeasureCode] [nchar](3) NULL,\n\t[EnglishProductName] [nvarchar](50) NOT NULL,\n\t[SpanishProductName] [nvarchar](50) NOT NULL,\n\t[FrenchProductName] [nvarchar](50) NOT NULL,\n\t[StandardCost] [money] NULL,\n\t[FinishedGoodsFlag] [bit] NOT NULL,\n\t[Color] [nvarchar](15) NOT NULL,\n\t[SafetyStockLevel] [smallint] NULL,\n\t[ReorderPoint] [smallint] NULL,\n\t[ListPrice] [money] NULL,\n\t[Size] [nvarchar](50) NULL,\n\t[SizeRange] [nvarchar](50) NULL,\n\t[Weight] [float] NULL,\n\t[DaysToManufacture] [int] NULL,\n\t[ProductLine] [nchar](2) NULL,\n\t[DealerPrice] [money] NULL,\n\t[Class] [nchar](2) NULL,\n\t[Style] [nchar](2) NULL,\n\t[ModelName] [nvarchar](50) NULL,\n\t[LargePhoto] [varbinary](max) NULL,\n\t[EnglishDescription] [nvarchar](400) NULL,\n\t[FrenchDescription] [nvarchar](400) NULL,\n\t[ChineseDescription] [nvarchar](400) NULL,\n\t[ArabicDescription] [nvarchar](400) NULL,\n\t[HebrewDescription] [nvarchar](400) NULL,\n\t[ThaiDescription] [nvarchar](400) NULL,\n\t[GermanDescription] [nvarchar](400) NULL,\n\t[JapaneseDescription] [nvarchar](400) NULL,\n\t[TurkishDescription] [nvarchar](400) NULL,\n\t[StartDate] [datetime] NULL,\n\t[EndDate] [datetime] NULL,\n\t[Status] [nvarchar](7) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (ProductKey)  \n  ); \nGO\n\nCREATE TABLE [dbo].[DimProductCategory](\n\t[ProductCategoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductCategoryAlternateKey] [int] NULL,\n\t[EnglishProductCategoryName] [nvarchar](50) NOT NULL,\n\t[SpanishProductCategoryName] [nvarchar](50) NOT NULL,\n\t[FrenchProductCategoryName] [nvarchar](50) NOT NULL)\n\nGO\nCREATE TABLE [dbo].[DimProductSubcategory](\n\t[ProductSubcategoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductSubcategoryAlternateKey] [int] NULL,\n\t[EnglishProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[SpanishProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[FrenchProductSubcategoryName] [nvarchar](50) NOT NULL,\n\t[ProductCategoryKey] [int] NULL)\nGO\n\nCREATE TABLE [dbo].[DimSalesTerritory](\n\t[SalesTerritoryKey] [int] IDENTITY(1,1) NOT NULL,\n\t[SalesTerritoryAlternateKey] [int] NULL,\n\t[SalesTerritoryRegion] [nvarchar](50) NOT NULL,\n\t[SalesTerritoryCountry] [nvarchar](50) NOT NULL,\n\t[SalesTerritoryGroup] [nvarchar](50) NULL,\n\t[SalesTerritoryImage] [varbinary](max) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (SalesTerritoryKey)  \n  ); \nGO\n\n\nCREATE TABLE [dbo].[FactResellerSales](\n\t[SalesOrderNumber] [nvarchar](20) NOT NULL,\n\t[SalesOrderLineNumber] [tinyint] NOT NULL,\n\t[ResellerKey] [int] NOT NULL,\n\t[ProductKey] [int] NOT NULL,\n\t[OrderDateKey] [int] NOT NULL,\n\t[DueDateKey] [int] NOT NULL,\n\t[ShipDateKey] [int] NULL,\n\t[EmployeeKey] [int] NOT NULL,\n\t[PromotionKey] [int] NOT NULL,\n\t[CurrencyKey] [int] NOT NULL,\n\t[SalesTerritoryKey] [int] NOT NULL,\n\t[OrderQuantity] [smallint] NOT NULL,\n\t[UnitPrice] [money] NOT NULL,\n\t[ExtendedAmount] [money] NOT NULL,\n\t[UnitPriceDiscountPct] [decimal](7, 4) NOT NULL,\n\t[DiscountAmount] [money] NOT NULL,\n\t[ProductStandardCost] [money] NOT NULL,\n\t[TotalProductCost] [money] NOT NULL,\n\t[SalesAmount] [money] NOT NULL,\n\t[TaxAmount] [money] NOT NULL,\n\t[FreightAmount] [money] NOT NULL,\n\t[CarrierTrackingNumber] [nvarchar](25) NULL,\n\t[CustomerPONumber] [nvarchar](25) NULL,\n\t[RevisionNumber] [tinyint] NOT NULL)\nGO\n\nCREATE VIEW [dbo].[vFactSales]\nAS\n\tSELECT\n\t\tCAST(N'Reseller' AS NVARCHAR(10)) AS [Channel]\n\t\t,CAST(RIGHT([SalesOrderNumber], (LEN([SalesOrderNumber]) - 2)) AS INT) AS [SalesOrderKey]\n\t\t,((CAST(RIGHT([SalesOrderNumber], (LEN([SalesOrderNumber]) - 2)) AS INT) * 1000) + [SalesOrderLineNumber]) AS [SalesOrderLineKey]\n\t\t,[SalesOrderNumber]\n\t\t,[SalesOrderLineNumber]\n\t\t,[ResellerKey]\n\t\t,CAST(-1 AS INT) AS [CustomerKey]\n\t\t,[ProductKey]\n\t\t,[OrderDateKey]\n\t\t,[DueDateKey]\n\t\t,[ShipDateKey]\n\t\t,[PromotionKey]\n\t\t,[CurrencyKey]\n\t\t,[SalesTerritoryKey]\n\t\t,[EmployeeKey]\n\t\t,[OrderQuantity]\n\t\t,[UnitPrice]\n\t\t,[ExtendedAmount]\n\t\t,[UnitPriceDiscountPct]\n\t\t,[DiscountAmount]\n\t\t,[ProductStandardCost]\n\t\t,[TotalProductCost]\n\t\t,[SalesAmount]\n\t\t,[TaxAmount]\n\t\t,[FreightAmount]\n\t\t,[CarrierTrackingNumber]\n\t\t,[CustomerPONumber]\n\t\t,[RevisionNumber]\n\tFROM\n\t\t[dbo].[FactResellerSales]\n\tUNION ALL\n\tSELECT\n\t\tCAST(N'Internet' AS NVARCHAR(10)) AS [Channel]\n\t\t,CAST(RIGHT([SalesOrderNumber], (LEN([SalesOrderNumber]) - 2)) AS INT) AS [SalesOrderKey]\n\t\t,((CAST(RIGHT([SalesOrderNumber], (LEN([SalesOrderNumber]) - 2)) AS INT) * 1000) + [SalesOrderLineNumber]) AS [SalesOrderLineKey]\n\t\t,[SalesOrderNumber]\n\t\t,[SalesOrderLineNumber]\n\t\t,CAST(-1 AS INT) AS [ResellerKey]\n\t\t,[CustomerKey]\n\t\t,[ProductKey]\n\t\t,[OrderDateKey]\n\t\t,[DueDateKey]\n\t\t,[ShipDateKey]\n\t\t,[PromotionKey]\n\t\t,[CurrencyKey]\n\t\t,[SalesTerritoryKey]\n\t\t,CAST(-1 AS INT) AS [EmployeeKey]\n\t\t,[OrderQuantity]\n\t\t,[UnitPrice]\n\t\t,[ExtendedAmount]\n\t\t,[UnitPriceDiscountPct]\n\t\t,[DiscountAmount]\n\t\t,[ProductStandardCost]\n\t\t,[TotalProductCost]\n\t\t,[SalesAmount]\n\t\t,[TaxAmount]\n\t\t,[FreightAmount]\n\t\t,[CarrierTrackingNumber]\n\t\t,[CustomerPONumber]\n\t\t,[RevisionNumber]\n\tFROM\n\t\t[dbo].[FactInternetSales];\nGO\n\n\nCREATE TABLE [dbo].[DimAccount](\n\t[AccountKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ParentAccountKey] [int] NULL,\n\t[AccountCodeAlternateKey] [int] NULL,\n\t[ParentAccountCodeAlternateKey] [int] NULL,\n\t[AccountDescription] [nvarchar](50) NULL,\n\t[AccountType] [nvarchar](50) NULL,\n\t[Operator] [nvarchar](50) NULL,\n\t[CustomMembers] [nvarchar](300) NULL,\n\t[ValueType] [nvarchar](50) NULL,\n\t[CustomMemberOptions] [nvarchar](200) NULL)\n\nGO\nCREATE TABLE [dbo].[DimCurrency](\n\t[CurrencyKey] [int] IDENTITY(1,1) NOT NULL,\n\t[CurrencyAlternateKey] [nchar](3) NOT NULL,\n\t[CurrencyName] [nvarchar](50) NOT NULL,\n\t[FormatString] [nvarchar](20) NULL)\n\nGO\nCREATE TABLE [dbo].[DimDepartmentGroup](\n\t[DepartmentGroupKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ParentDepartmentGroupKey] [int] NULL,\n\t[DepartmentGroupName] [nvarchar](50) NULL)\n\nGO\nCREATE TABLE [dbo].[DimEmployee](\n\t[EmployeeKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ParentEmployeeKey] [int] NULL,\n\t[EmployeeNationalIDAlternateKey] [nvarchar](15) NULL,\n\t[ParentEmployeeNationalIDAlternateKey] [nvarchar](15) NULL,\n\t[SalesTerritoryKey] [int] NULL,\n\t[FirstName] [nvarchar](50) NOT NULL,\n\t[LastName] [nvarchar](50) NOT NULL,\n\t[MiddleName] [nvarchar](50) NULL,\n\t[NameStyle] [bit] NOT NULL,\n\t[Title] [nvarchar](50) NULL,\n\t[HireDate] [date] NULL,\n\t[BirthDate] [date] NULL,\n\t[LoginID] [nvarchar](256) NULL,\n\t[EmailAddress] [nvarchar](50) NULL,\n\t[Phone] [nvarchar](25) NULL,\n\t[MaritalStatus] [nchar](1) NULL,\n\t[EmergencyContactName] [nvarchar](50) NULL,\n\t[EmergencyContactPhone] [nvarchar](25) NULL,\n\t[SalariedFlag] [bit] NULL,\n\t[Gender] [nchar](1) NULL,\n\t[PayFrequency] [tinyint] NULL,\n\t[BaseRate] [money] NULL,\n\t[VacationHours] [smallint] NULL,\n\t[SickLeaveHours] [smallint] NULL,\n\t[CurrentFlag] [bit] NOT NULL,\n\t[SalespersonFlag] [bit] NOT NULL,\n\t[DepartmentName] [nvarchar](50) NULL,\n\t[StartDate] [date] NULL,\n\t[EndDate] [date] NULL,\n\t[Status] [nvarchar](50) NULL,\n\t[EmployeePhoto] [varbinary](max) NULL)\nWITH  \n  (   \n    CLUSTERED INDEX (EmployeeKey)  \n  ); \nGO\nCREATE TABLE [dbo].[DimOrganization](\n\t[OrganizationKey] [int] IDENTITY(1,1) NOT NULL,\n\t[ParentOrganizationKey] [int] NULL,\n\t[PercentageOfOwnership] [nvarchar](16) NULL,\n\t[OrganizationName] [nvarchar](50) NULL,\n\t[CurrencyKey] [int] NULL)\n\nGO\nCREATE TABLE [dbo].[DimPromotion](\n\t[PromotionKey] [int] IDENTITY(1,1) NOT NULL,\n\t[PromotionAlternateKey] [int] NULL,\n\t[EnglishPromotionName] [nvarchar](255) NULL,\n\t[SpanishPromotionName] [nvarchar](255) NULL,\n\t[FrenchPromotionName] [nvarchar](255) NULL,\n\t[DiscountPct] [float] NULL,\n\t[EnglishPromotionType] [nvarchar](50) NULL,\n\t[SpanishPromotionType] [nvarchar](50) NULL,\n\t[FrenchPromotionType] [nvarchar](50) NULL,\n\t[EnglishPromotionCategory] [nvarchar](50) NULL,\n\t[SpanishPromotionCategory] [nvarchar](50) NULL,\n\t[FrenchPromotionCategory] [nvarchar](50) NULL,\n\t[StartDate] [datetime] NOT NULL,\n\t[EndDate] [datetime] NULL,\n\t[MinQty] [int] NULL,\n\t[MaxQty] [int] NULL)\nGO\n\nCREATE TABLE [dbo].[DimReseller](\n\t[ResellerKey] [int] IDENTITY(1,1) NOT NULL,\n\t[GeographyKey] [int] NULL,\n\t[ResellerAlternateKey] [nvarchar](15) NULL,\n\t[Phone] [nvarchar](25) NULL,\n\t[BusinessType] [varchar](20) NOT NULL,\n\t[ResellerName] [nvarchar](50) NOT NULL,\n\t[NumberEmployees] [int] NULL,\n\t[OrderFrequency] [char](1) NULL,\n\t[OrderMonth] [tinyint] NULL,\n\t[FirstOrderYear] [int] NULL,\n\t[LastOrderYear] [int] NULL,\n\t[ProductLine] [nvarchar](50) NULL,\n\t[AddressLine1] [nvarchar](60) NULL,\n\t[AddressLine2] [nvarchar](60) NULL,\n\t[AnnualSales] [money] NULL,\n\t[BankName] [nvarchar](50) NULL,\n\t[MinPaymentType] [tinyint] NULL,\n\t[MinPaymentAmount] [money] NULL,\n\t[AnnualRevenue] [money] NULL,\n\t[YearOpened] [int] NULL)\nGO\n\nCREATE TABLE [dbo].[StageProduct](\n    [ProductID] [nvarchar](30) NULL,\n    [ProductName] [nvarchar](50) NULL,\n    [ProductCategory] [nvarchar](24) NULL,\n    [Color] [nvarchar](30) NULL,\n    [Size] [nvarchar](50) NULL,\n    [ListPrice] [money] NULL,\n    [Discontinued] [bit] NULL)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\nCREATE TABLE [dbo].[StageCustomer]\n( \n\t[GeographyKey] [int]  NULL,\n\t[CustomerAlternateKey] [nvarchar](15)  NOT NULL,\n\t[Title] [nvarchar](8)  NULL,\n\t[FirstName] [nvarchar](50)  NULL,\n\t[MiddleName] [nvarchar](50)  NULL,\n\t[LastName] [nvarchar](50)  NULL,\n\t[NameStyle] [bit]  NULL,\n\t[BirthDate] [date]  NULL,\n\t[MaritalStatus] [nchar](1)  NULL,\n\t[Suffix] [nvarchar](10)  NULL,\n\t[Gender] [nvarchar](1)  NULL,\n\t[EmailAddress] [nvarchar](50)  NULL,\n\t[YearlyIncome] [money]  NULL,\n\t[TotalChildren] [tinyint]  NULL,\n\t[NumberChildrenAtHome] [tinyint]  NULL,\n\t[EnglishEducation] [nvarchar](40)  NULL,\n\t[SpanishEducation] [nvarchar](40)  NULL,\n\t[FrenchEducation] [nvarchar](40)  NULL,\n\t[EnglishOccupation] [nvarchar](100)  NULL,\n\t[SpanishOccupation] [nvarchar](100)  NULL,\n\t[FrenchOccupation] [nvarchar](100)  NULL,\n\t[HouseOwnerFlag] [nchar](1)  NULL,\n\t[NumberCarsOwned] [tinyint]  NULL,\n\t[AddressLine1] [nvarchar](120)  NULL,\n\t[AddressLine2] [nvarchar](120)  NULL,\n\t[Phone] [nvarchar](20)  NULL,\n\t[DateFirstPurchase] [date]  NULL,\n\t[CommuteDistance] [nvarchar](15)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO",
 					"metadata": {
 						"language": "sql"
 					},
@@ -915,6 +1009,29 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/03_count rows from ALL tables')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-00-setup"
+				},
+				"content": {
+					"query": "CREATE TABLE #temp_row_count\n\n    (   row_num INT,\n        table_name VARCHAR(100),\n        row_count INT\n    )\n\nINSERT INTO #temp_row_count \n(row_num, table_name)\n(SELECT \n    ROW_NUMBER() OVER(ORDER BY SCHEMA_NAME(tbl.schema_id)+'.'+tbl.name ASC),\n    SCHEMA_NAME(tbl.schema_id)+'.'+tbl.name\nFROM sys.tables AS tbl\nWHERE SCHEMA_NAME(tbl.schema_id) = 'dbo')\n\nDECLARE @Counter INT \nDECLARE @Table VARCHAR(100)\nSET @Counter = 1\n\nWHILE @Counter <= (SELECT COUNT(*) FROM #temp_row_count)\nBEGIN\n    SET @Table = (SELECT table_name FROM #temp_row_count WHERE row_num = @Counter)\n    EXEC('UPDATE #temp_row_count SET row_count = (SELECT COUNT(*) FROM '+ @Table +') WHERE row_num='''+ @Counter +'''')\n    SET @Counter = @Counter + 1\nEND\n\nSELECT * FROM #temp_row_count\nDROP TABLE #temp_row_count",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sqldwh",
+						"poolName": "sqldwh"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Count Products by Category')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -924,13 +1041,106 @@
 					"name": "dp-203-01-Explore Azure Synapse Analytics"
 				},
 				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        --HEADER_ROW = TRUE -- Note the results consist of four columns named C1, C2, C3, and C4; \n    ) AS [result]           -- and that the first row in the results contains the names of the data fields. To fix this problem, add a HEADER_ROW = TRUE\n\n\nSELECT\n    Category, COUNT(*) AS ProductCount\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]\nGROUP BY Category;\n\n-- select the Chart view, and then select the following settings for the chart\n-- Chart type: Column\n-- Category colunn: Category\n-- legend Series columns: ProductCount",
+					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n        --,HEADER_ROW = TRUE -- Note the results consist of four columns named C1, C2, C3, and C4; \n    ) AS [result]           -- and that the first row in the results contains the names of the data fields. To fix this problem, add a HEADER_ROW = TRUE\n\n\nSELECT\n    Category, COUNT(*) AS ProductCount\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]\nGROUP BY Category;\n\n-- select the Chart view, and then select the following settings for the chart\n-- Chart type: Column\n-- Category colunn: Category\n-- legend Series columns: ProductCount",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
 						"databaseName": "master",
 						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Explore a relational data warehouse')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-08-Explore-data-warehouse"
+				},
+				"content": {
+					"query": "/* This exercise is shared with the DP-500 (Azure Data Analyst) curriculum and is available at\n   https://microsoftlearning.github.io/DP-500-Azure-Data-Analyst/Instructions/labs/03-Explore-data-warehouse.html\n\nExplore the data warehouse schema\n=================================\n- Make sure the sqldwh has been resumed\n- View the tables in the database\n\nA relational data warehouse is typically based on a schema that consists of fact and dimension tables. \nThe tables are optimized for analytical queries in which numeric metrics in the fact tables are aggregated \nby attributes of the entities represented by the dimension tables - for example, enabling you to aggregate\nInternet sales revenue by product, customer, date, and so on.\n\nExpand the dbo.FactInternetSales table and its Columns folder to see the columns in this table. \nNote that many of the columns are keys that reference rows in the dimension tables. Others are numeric values\n(measures) for analysis. The keys are used to relate a fact table to one or more dimension tables, \noften in a star schema; in which the fact table is directly related to each dimension table (forming a \nmulti-pointed “star” with the fact table at the center).\n\n*/\n\nselect column_name, data_type from information_schema.columns where table_name = 'FactInternetSales' order by ordinal_position\n\n/*\nView the columns for the dbo.DimPromotion table, and note that it has a unique PromotionKey that uniquely\nidentifies each row in the table. It also has an AlternateKey. Usually, data in a data warehouse has been \nimported from one or more transactional sources. The alternate key reflects the business identifier for the \ninstance of this entity in the source, but a unique numeric surrogate key is usually generated to uniquely \nidentify each row in the data warehouse dimension table. One of the benefits of this approach is that it \nenables the data warehouse to contain multiple instances of the same entity at different points in time \n(for example, records for the same customer reflecting their address at the time an order was placed).\n*/\n\nselect column_name, data_type from information_schema.columns where table_name = 'DimPromotion' order by ordinal_position\n\n/*\nView the columns for the dbo.DimProduct, and note that it contains a ProductSubcategoryKey column, \nwhich references the dbo.DimProductSubcategory table, which in turn contains a ProductCategoryKey \ncolumn that references the dbo.DimProductCategory table. In some cases, dimensions are partially normalized \ninto multiple related tables to allow for different levels of granularity - such as products that can be \ngrouped into subcategories and categories. This results in a simple star being extended to a snowflake schema, \nin which the central fact table is related to a dimension table, which is turn related to further dimension tables.\n*/\n\nselect column_name, data_type from information_schema.columns where table_name = 'DimProduct' order by ordinal_position\nselect column_name, data_type from information_schema.columns where table_name = 'DimProductSubcategory' order by ordinal_position\nselect column_name, data_type from information_schema.columns where table_name = 'DimProductCategory' order by ordinal_position\n\n/*\nView the columns for the dbo.DimDate table, and note that it contains multiple columns that reflect different temporal \nattributes of a date - including the day of week, day of month, month, year, day name, month name, and so on. \nTime dimensions in a data warehouse are usually implemented as a dimension table containing a row for each of \nthe smallest temporal units of granularity (often called the grain of the dimension) by which you want to aggregate \nthe measures in the fact tables. In this case, the lowest grain at which measures can be aggregated is an individual date, \nand the table contains a row for each date from the first to the last date referenced in the data. The attributes in the \nDimDate table enable analysts to aggregate measures based on any date key in the fact table, using a consistent set of \ntemporal attributes (for example, viewing orders by month based on the order date). The FactInternetSales table contains \nthree keys that relate to the DimDate table: OrderDateKey, DueDateKey, and ShipDateKey.\n*/\n\nselect column_name, data_type from information_schema.columns where table_name = 'DimDate' order by ordinal_position\n\n/*\nQuery the data warehouse tables\n===============================\n\nNow that you have explored some of the more important aspects of the data warehouse schema, you’re ready to to query \nthe tables and retrieve some data.\n\n1. Query fact and dimension tables\n----------------------------------\nNumeric values in a relational data warehouse are stored in fact tables with related dimension tables that you can use \nto aggregate the data across multiple attributes. This design means that most queries in a relational data warehouse \ninvolve aggregating and grouping data (using aggregate functions and GROUP BY clauses) across related tables (using JOIN clauses).\n\nThe following query should show the Internet sales totals for each year. This query joins the fact table for Internet sales \nto a time dimension table based on the order date, and aggregates the sales amount measure in the fact table by \nthe calendar month attribute of the dimension table.\n*/\n\nSELECT  d.CalendarYear AS Year,\n        SUM(i.SalesAmount) AS InternetSalesAmount\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nGROUP BY d.CalendarYear\nORDER BY Year;\n\n/*\nModify the query as follows to add the month attribute from the time dimension, and then run the modified query.\nNote that the attributes in the time dimension enable you to aggregate the measures in the fact table at multiple \nhierarchical levels - in this case, year and month. This is a common pattern in data warehouses.\n*/\n\nSELECT  d.CalendarYear AS Year,\n        d.MonthNumberOfYear AS Month,\n        SUM(i.SalesAmount) AS InternetSalesAmount\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nGROUP BY d.CalendarYear, d.MonthNumberOfYear\nORDER BY Year, Month;\n\n/*\nModify the query as follows to remove the month and add a second dimension to the aggregation, and then run \nit to view the results (which show yearly Internet sales totals for each region):\n\nNote that geography is a snowflake dimension that is related to the Internet sales fact table through the customer\ndimension. You therefore need two joins in the query to aggregate Internet sales by geography.\n*/\n\nSELECT  d.CalendarYear AS Year,\n        g.EnglishCountryRegionName AS Region,\n        SUM(i.SalesAmount) AS InternetSalesAmount\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nJOIN DimCustomer AS c ON i.CustomerKey = c.CustomerKey\nJOIN DimGeography AS g ON c.GeographyKey = g.GeographyKey\nGROUP BY d.CalendarYear, g.EnglishCountryRegionName\nORDER BY Year, Region;\n\n/*\nModify and re-run the query to add another snowflake dimension and aggregate the yearly regional sales by product category:\n\nThis time, the snowflake dimension for product category requires three joins to reflect the hierarchical relationship \nbetween products, subcategories, and categories.\n*/\n\nSELECT  d.CalendarYear AS Year,\n        pc.EnglishProductCategoryName AS ProductCategory,\n        g.EnglishCountryRegionName AS Region,\n        SUM(i.SalesAmount) AS InternetSalesAmount\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nJOIN DimCustomer AS c ON i.CustomerKey = c.CustomerKey\nJOIN DimGeography AS g ON c.GeographyKey = g.GeographyKey\nJOIN DimProduct AS p ON i.ProductKey = p.ProductKey\nJOIN DimProductSubcategory AS ps ON p.ProductSubcategoryKey = ps.ProductSubcategoryKey\nJOIN DimProductCategory AS pc ON ps.ProductCategoryKey = pc.ProductCategoryKey\nGROUP BY d.CalendarYear, pc.EnglishProductCategoryName, g.EnglishCountryRegionName\nORDER BY Year, ProductCategory, Region;\n\n/*\n2. Use ranking functions\n------------------------\n\nAnother common requirement when analyzing large volumes of data is to group the data by partitions and determine \nthe rank of each entity in the partition based on a specific metric.\n\nThe following SQL retrieves sales values for 2022 over partitions based on country/region name. Observe the following facts about these results:\n\n- There’s a row for each sales order line item.\n- The rows are organized in partitions based on the geography where the sale was made.\n- The rows within each geographical partition are numbered in order of sales amount (from smallest to highest).\n- For each row, the line item sales amount as well as the regional total and average sales amounts are included.\n*/\n\nSELECT  g.EnglishCountryRegionName AS Region,\n      ROW_NUMBER() OVER(PARTITION BY g.EnglishCountryRegionName\n                        ORDER BY i.SalesAmount ASC) AS RowNumber,\n      i.SalesOrderNumber AS OrderNo,\n      i.SalesOrderLineNumber AS LineItem,\n      i.SalesAmount AS SalesAmount,\n      SUM(i.SalesAmount) OVER(PARTITION BY g.EnglishCountryRegionName) AS RegionTotal,\n      AVG(i.SalesAmount) OVER(PARTITION BY g.EnglishCountryRegionName) AS RegionAverage\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nJOIN DimCustomer AS c ON i.CustomerKey = c.CustomerKey\nJOIN DimGeography AS g ON c.GeographyKey = g.GeographyKey\nWHERE d.CalendarYear = 2022\nORDER BY Region;\n\n/*\nApply windowing functions within a GROUP BY query and rank the cities in each region based on their total sales amount:\n\nObserve the following:\n- The results include a row for each city, grouped by region.\n- The total sales (sum of individual sales amounts) is calculated for each city\n- The regional sales total (the sum of the sum of sales amounts for each city in the region) is calculated based on the regional partition.\n- The rank for each city within its regional partition is calculated by ordering the total sales amount per city in descending order.\n*/\n\nSELECT  g.EnglishCountryRegionName AS Region,\n      g.City,\n      SUM(i.SalesAmount) AS CityTotal,\n      SUM(SUM(i.SalesAmount)) OVER(PARTITION BY g.EnglishCountryRegionName) AS RegionTotal,\n      RANK() OVER(PARTITION BY g.EnglishCountryRegionName\n                  ORDER BY SUM(i.SalesAmount) DESC) AS RegionalRank\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nJOIN DimCustomer AS c ON i.CustomerKey = c.CustomerKey\nJOIN DimGeography AS g ON c.GeographyKey = g.GeographyKey\nGROUP BY g.EnglishCountryRegionName, g.City\nORDER BY Region;\n\n/*\n3. Retrieve an approximate count\n--------------------------------\nWhen exploring very large volumes of data, queries can take significant time and resources to run. Often, data analysis doesn’t \nrequire absolutely precise values - a comparison of approximate values may be sufficient.\n\nThe following SQL code retrieves the number of sales orders for each calendar year:\n\nThen review the output that is returned:\n- On the Results tab under the query, view the order counts for each year.\n- On the Messages tab, view the total execution time for the query.\n\n*/\n\nSELECT d.CalendarYear AS CalendarYear,\n   COUNT(DISTINCT i.SalesOrderNumber) AS Orders\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nGROUP BY d.CalendarYear\nORDER BY CalendarYear;\n\n/*\nNow, return an approximate count for each year. Review the output that is returned:\n- On the Results tab under the query, view the order counts for each year. These should be within 2% of the actual counts retrieved by the previous query.\n- On the Messages tab, view the total execution time for the query. This should be shorter than for the previous query.\n*/\n\nSELECT d.CalendarYear AS CalendarYear,\n   APPROX_COUNT_DISTINCT(i.SalesOrderNumber) AS Orders\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nGROUP BY d.CalendarYear\nORDER BY CalendarYear;\n\n/*\nLet's see if there's a difference in the number we get returned (notice that the following query might not be optimized)\n*/\nSELECT d.CalendarYear AS CalendarYear,\n   COUNT(DISTINCT i.SalesOrderNumber) AS OrdersCount,\n   APPROX_COUNT_DISTINCT(i.SalesOrderNumber) AS OrdersApproxCount\nFROM FactInternetSales AS i\nJOIN DimDate AS d ON i.OrderDateKey = d.DateKey\nGROUP BY d.CalendarYear\nORDER BY CalendarYear\n\n/*\n3. Challenge - Analyze reseller sales\n-------------------------------------\nCreate SQL queries in the script to find the following information based on the FactResellerSales fact table and the dimension tables to which it is related:\n- The total quantity of items sold per fiscal year and quarter.\n- The total quantity of items sold per fiscal year, quarter, and sales territory region associated with the employee who made the sale.\n- The total quantity of items sold per fiscal year, quarter, and sales territory region by product category.\n- The rank of each sales territory per fiscal year based on total sales amount for the year.\n- The approximate number of sales order per year in each sales territory\n*/\n\n-- Items sold by Fiscal Year and Quarter\nSELECT  d.FiscalYear AS FY,\n        d.FiscalQuarter AS FQ,\n        SUM(r.OrderQuantity) AS ItemsSold\nFROM FactResellerSales AS r\nJOIN DimDate AS d ON r.OrderDateKey = d.DateKey\nGROUP BY d.FiscalYear, d.FiscalQuarter\nORDER BY FY, FQ;\n\n\n-- Items sold by Fiscal Year, Quarter, and sales territory region\nSELECT  d.FiscalYear AS FY,\n        d.FiscalQuarter AS FQ,\n        t. SalesTerritoryRegion AS SalesTerritory,\n        SUM(r.OrderQuantity) AS ItemsSold\nFROM FactResellerSales AS r\nJOIN DimDate AS d ON r.OrderDateKey = d.DateKey\nJOIN DimEmployee AS e ON r.EmployeeKey = e.EmployeeKey\nJOIN DimSalesTerritory AS t ON e.SalesTerritoryKey = t.SalesTerritoryKey\nGROUP BY d.FiscalYear, d.FiscalQuarter, t. SalesTerritoryRegion\nORDER BY FY, FQ, SalesTerritory\n\n\n-- Items sold by Fiscal Year, Quarter, sales territory region, and product category\nSELECT  d.FiscalYear AS FY,\n        d.FiscalQuarter AS FQ,\n        t. SalesTerritoryRegion AS SalesTerritory,\n        pc.EnglishProductCategoryName AS ProductCategory,\n        SUM(r.OrderQuantity) AS ItemsSold\nFROM FactResellerSales AS r\nJOIN DimDate AS d ON r.OrderDateKey = d.DateKey\nJOIN DimEmployee AS e ON r.EmployeeKey = e.EmployeeKey\nJOIN DimSalesTerritory AS t ON e.SalesTerritoryKey = t.SalesTerritoryKey\nJOIN DimProduct AS p ON r.ProductKey = p.ProductKey\nJOIN DimProductSubcategory AS ps ON p.ProductSubcategoryKey = ps.ProductSubcategoryKey\nJOIN DimProductCategory AS pc ON ps.ProductCategoryKey = pc.ProductCategoryKey\nGROUP BY d.FiscalYear, d.FiscalQuarter, t. SalesTerritoryRegion, pc.EnglishProductCategoryName\nORDER BY FY, FQ, SalesTerritory, ProductCategory\n\n\n-- Ranked sales territories by year based on total sales amount\nSELECT  d.FiscalYear,\n        t. SalesTerritoryRegion AS SalesTerritory,\n        SUM(s.SalesAmount) AS TerritoryTotal,\n        SUM(SUM(s.SalesAmount)) OVER(PARTITION BY d.FiscalYear) AS YearTotal,\n        RANK() OVER(PARTITION BY d.FiscalYear\n                    ORDER BY SUM(s.SalesAmount) DESC) AS RankForYear\nFROM FactResellerSales AS s\nJOIN DimDate AS d ON s.OrderDateKey = d.DateKey\nJOIN DimEmployee AS e ON s.EmployeeKey = e.EmployeeKey\nJOIN DimSalesTerritory AS t ON e.SalesTerritoryKey = t.SalesTerritoryKey\nGROUP BY d.FiscalYear, t.SalesTerritoryRegion\nORDER BY d.FiscalYear;\n\n-- Approximate number of sales orders per fiscal year by territory\nSELECT  d.FiscalYear,\n        t. SalesTerritoryRegion AS SalesTerritory,\n        APPROX_COUNT_DISTINCT(s.SalesOrderNumber) AS ApproxOrders\nFROM FactResellerSales AS s\nJOIN DimDate AS d ON s.OrderDateKey = d.DateKey\nJOIN DimEmployee AS e ON s.EmployeeKey = e.EmployeeKey\nJOIN DimSalesTerritory AS t ON e.SalesTerritoryKey = t.SalesTerritoryKey\nGROUP BY d.FiscalYear, t.SalesTerritoryRegion\nORDER BY d.FiscalYear, ApproxOrders;",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sqldwh",
+						"poolName": "sqldwh"
+					},
+					"resultLimit": -1
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Load Data into a Relational Data Warehouse')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-09-Load-Data-into-Data-Warehouse"
+				},
+				"content": {
+					"query": "/*\n1. Load data from a data lake by using the COPY statement\n---------------------------------------------------------\n\nConfirm that there are 0 rows currently in the StageProduct table.\n*/\n\nSELECT COUNT(1) \nFROM dbo.StageProduct\n\n/*\nRun the following command. 11 rows should have been loaded into the StageProduct table.\n*/\n\nCOPY INTO dbo.StageProduct\n    (ProductID, ProductName, ProductCategory, Color, Size, ListPrice, Discontinued)\nFROM 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs/09/data/Product.csv'\nWITH\n(\n    FILE_TYPE = 'CSV',\n    MAXERRORS = 0,\n    IDENTITY_INSERT = 'OFF',\n    FIRSTROW = 2 --Skip header row\n);\n\n/*\nNow let's use the same technique to load another table, this time logging any errors that might occur.\n\nNotice the messages tab:\nQuery completed. Rows were rejected while reading from external source(s). 1 row rejected from table [StageCustomer] \nin plan step 4 of query execution: Bulk load data conversion error (type mismatch or invalid character for the \nspecified codepage) for row starting at byte offset 2261, column 1 (GeographyKey) in data file /labs/09/data/Customer.csv.\n*/\n\nCOPY INTO dbo.StageCustomer\n    (GeographyKey, CustomerAlternateKey, Title, FirstName, MiddleName, LastName, NameStyle, BirthDate, \n    MaritalStatus, Suffix, Gender, EmailAddress, YearlyIncome, TotalChildren, NumberChildrenAtHome, EnglishEducation, \n    SpanishEducation, FrenchEducation, EnglishOccupation, SpanishOccupation, FrenchOccupation, HouseOwnerFlag, \n    NumberCarsOwned, AddressLine1, AddressLine2, Phone, DateFirstPurchase, CommuteDistance)\nFROM 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs/09/data/Customer.csv'\nWITH\n(\nFILE_TYPE = 'CSV'\n,MAXERRORS = 5\n,FIRSTROW = 2 -- skip header row\n,ERRORFILE = 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs/09/errors/'\n);\n\n/*\nThe source file contains a row with invalid data, so one row is rejected. The code above specifies a maximum of 5 errors, so a single \nerror should not have prevented the valid rows from being loaded. You can view the rows that have been loaded by running the following query.\n*/\n\nSELECT *\nFROM dbo.StageCustomer\n\n/*\nOn the files tab, view the folder of your data lake (files/labs/09) and verify that a new folder named _rejectedrows has been created \n(if you don't see this folder, in the More menu, select Refresh to refresh the view).\n\nOpen the _rejectedrows folder and the date and time specific subfolder it contains, and note that files with names similar to QID123_1_2.Error.Txt \nand QID123_1_2.Row.Txt have been created. You can right-click each of these files and select Preview to see details of the error and the row that was rejected.\n\n- \"Bulk load data conversion error (type mismatch or invalid character for the specified codepage) for row starting at byte offset 2261, column 1 (GeographyKey) in data file /labs/09/data/Customer.csv.\"\n- \"US,AW99,,Billy,L,Jones,FALSE,Dec 12th 2001\"\n\n(notice the value \"US\")\n\nThe use of staging tables enables you to validate or transform data before moving or using it to append to or upsert into any existing dimension tables. \nThe COPY statement provides a simple but high-performance technique that you can use to easily load data from files in a data lake into staging tables, \nand as you've seen, identify and redirect invalid rows.\n*/\n\n/*\n2. Use a CREATE TABLE AS (CTAS) statement\n-----------------------------------------\n\nThe following SQL creates a new table named DimProduct from the staged product data that uses ProductAltKey as its\nhash distribution key and has a clustered columnstore index.\n*/\n\nIF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];\n\nCREATE TABLE dbo.DimProduct\nWITH\n(\n    DISTRIBUTION = HASH(ProductAltKey),\n    CLUSTERED COLUMNSTORE INDEX\n)\nAS\nSELECT ROW_NUMBER() OVER(ORDER BY ProductID) AS ProductKey,\n    ProductID AS ProductAltKey,\n    ProductName,\n    ProductCategory,\n    Color,\n    Size,\n    ListPrice,\n    Discontinued\nFROM dbo.StageProduct;\n\n/*\nUse the following query to view the contents of the new DimProduct table:\n\nThe CREATE TABLE AS SELECT (CTAS) expression has various uses, which include:\n\n- Redistributing the hash key of a table to align with other tables for better query performance.\n- Assigning a surrogate key to a staging table based upon existing values after performing a delta analysis.\n- Creating aggregate tables quickly for report purposes.\n\n*/\n\nSELECT ProductKey,\n    ProductAltKey,\n    ProductName,\n    ProductCategory,\n    Color,\n    Size,\n    ListPrice,\n    Discontinued\nFROM dbo.DimProduct;\n\n/*\n3. Combine INSERT and UPDATE statements to load a slowly changing dimension table\n---------------------------------------------------------------------------------\nThe DimCustomer table supports type 1 and type 2 slowly changing dimensions (SCDs), where type 1 changes result in \nan in-place update to an existing row, and type 2 changes result in a new row to indicate the latest version of a \nparticular dimension entity instance. Loading this table requires a combination of INSERT statements (to load new customers) \nand UPDATE statements (to apply type 1 or type 2 changes).\n*/\n\n\nINSERT INTO dbo.DimCustomer ([GeographyKey],[CustomerAlternateKey],[Title],[FirstName],[MiddleName],[LastName],[NameStyle],[BirthDate],[MaritalStatus],\n[Suffix],[Gender],[EmailAddress],[YearlyIncome],[TotalChildren],[NumberChildrenAtHome],[EnglishEducation],[SpanishEducation],[FrenchEducation],\n[EnglishOccupation],[SpanishOccupation],[FrenchOccupation],[HouseOwnerFlag],[NumberCarsOwned],[AddressLine1],[AddressLine2],[Phone],\n[DateFirstPurchase],[CommuteDistance])\nSELECT *\nFROM dbo.StageCustomer AS stg\nWHERE NOT EXISTS\n    (SELECT * FROM dbo.DimCustomer AS dim\n    WHERE dim.CustomerAlternateKey = stg.CustomerAlternateKey);\n\n-- Type 1 updates (change name, email, or phone in place)\nUPDATE dbo.DimCustomer\nSET LastName = stg.LastName,\n    EmailAddress = stg.EmailAddress,\n    Phone = stg.Phone\nFROM DimCustomer dim inner join StageCustomer stg\nON dim.CustomerAlternateKey = stg.CustomerAlternateKey\nWHERE dim.LastName <> stg.LastName OR dim.EmailAddress <> stg.EmailAddress OR dim.Phone <> stg.Phone\n\n-- Type 2 updates (address changes triggers new entry)\nINSERT INTO dbo.DimCustomer\nSELECT stg.GeographyKey,stg.CustomerAlternateKey,stg.Title,stg.FirstName,stg.MiddleName,stg.LastName,stg.NameStyle,stg.BirthDate,stg.MaritalStatus,\nstg.Suffix,stg.Gender,stg.EmailAddress,stg.YearlyIncome,stg.TotalChildren,stg.NumberChildrenAtHome,stg.EnglishEducation,stg.SpanishEducation,stg.FrenchEducation,\nstg.EnglishOccupation,stg.SpanishOccupation,stg.FrenchOccupation,stg.HouseOwnerFlag,stg.NumberCarsOwned,stg.AddressLine1,stg.AddressLine2,stg.Phone,\nstg.DateFirstPurchase,stg.CommuteDistance\nFROM dbo.StageCustomer AS stg\nJOIN dbo.DimCustomer AS dim\nON stg.CustomerAlternateKey = dim.CustomerAlternateKey\nAND stg.AddressLine1 <> dim.AddressLine1;\n\n/*\n4. Perform post-load optimization\n---------------------------------\n\nAfter loading new data into the data warehouse, it's recommended to rebuild the table indexes and update statistics on commonly queried columns.\n*/\n\nALTER INDEX ALL ON dbo.DimProduct REBUILD;\n\nCREATE STATISTICS customergeo_stats ON dbo.DimCustomer (GeographyKey);\n\n/*\nGet ready for the next demo (10-pipelines)\n*/\n\nDELETE FROM DimProduct\nDROP TABLE DimProduct\n\nSET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n CREATE TABLE [dbo].[DimProduct](\n    [ProductKey] [int] IDENTITY NOT NULL,\n    [ProductAltKey] [nvarchar](30) NULL,\n    [ProductName] [nvarchar](50) NULL,\n    [Color] [nvarchar](30) NULL,\n    [Size] [nvarchar](50) NULL,\n    [ListPrice] [money] NULL,\n    [Discontinued] [bit] NULL)\nWITH\n(\n\tDISTRIBUTION = HASH(ProductAltKey),\n\tCLUSTERED COLUMNSTORE INDEX\n);\nGO\n\nINSERT DimProduct\nVALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO\n\nINSERT DimProduct VALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sqldwh",
+						"poolName": "sqldwh"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Query a delta table from a serverless SQL pool')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Query a delta table from a serverless SQL pool",
+				"folder": {
+					"name": "dp-203-07-07-Use-delta-lake"
+				},
+				"content": {
+					"query": "-- This demonstrates how you can use a serverless SQL pool to query delta format files that were created using Spark, \n-- and use the results for reporting or analysis.\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs/07/data/delta/products-delta/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\n\n-- Observe that you can also use the serverless SQL pool to query Delta Lake data in catalog \n-- tables that are defined the Spark metastore.\n\nUSE AdventureWorks;\n\nSELECT * FROM Products;\n\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "adventureworks",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Setup and validation')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-10-Synpase-pipeline"
+				},
+				"content": {
+					"query": "/*\nGet ready for the next demo (10-pipelines)\n\nThe following code will drop and recreate the product data table - there should be a single row in it.\n*/\n\nIF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];\n\nSET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n CREATE TABLE [dbo].[DimProduct](\n    [ProductKey] [int] IDENTITY NOT NULL,\n    [ProductAltKey] [nvarchar](30) NULL,\n    [ProductName] [nvarchar](50) NULL,\n    [Color] [nvarchar](30) NULL,\n    [Size] [nvarchar](50) NULL,\n    [ListPrice] [money] NULL,\n    [Discontinued] [bit] NULL)\nWITH\n(\n\tDISTRIBUTION = HASH(ProductAltKey),\n\tCLUSTERED COLUMNSTORE INDEX\n);\nGO\n\nINSERT DimProduct VALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO\n\n/*\nNow go the pipeline dataflow and after the execution, return there to validate the number of records\n*/\n\nSELECT TOP 100 * from DimProduct",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sqldwh",
+						"poolName": "sqldwh"
 					},
 					"resultLimit": 5000
 				},
@@ -1787,6 +1997,1069 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Use Delta Lake')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-07-07-Use-delta-lake"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "11fe4ab5-bc84-442d-b5ef-2c71cd55c88a"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-dyfk4ryjqex56/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://synapse-dyfk4ryjqex56.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Use Delta Lake with Spark in Azure Synapse Analytics\n",
+							"\n",
+							"Explore a CSV file on the data lake: /07/data/products.csv"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs/07/data/products.csv', format='csv', header=True)\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Load the file data into a delta table"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"delta_table_path = \"/labs/07/data/delta/products-delta\"\n",
+							"df.write.format(\"delta\").save(delta_table_path)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Browse the files container\n",
+							"\n",
+							"On the files tab, use the ↑ icon in the toolbar to return to the root of the files container, and note that a new folder named delta has been created. Open this folder and the products-delta table it contains, where you should see the parquet format file(s) containing the data."
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Load the DeltaTable and update some data\n",
+							"\n",
+							"The data is loaded into a DeltaTable object and updated. You can see the update reflected in the query results."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from delta.tables import *\n",
+							"from pyspark.sql.functions import *\n",
+							"\n",
+							"# Create a deltaTable object\n",
+							"deltaTable = DeltaTable.forPath(spark, delta_table_path)\n",
+							"\n",
+							"# Update the table (reduce price of product 771 by 10%)\n",
+							"deltaTable.update(\n",
+							"    condition = \"ProductID == 771\",\n",
+							"    set = { \"ListPrice\": \"ListPrice * 0.9\" })\n",
+							"\n",
+							"# View the updated data as a dataframe\n",
+							"deltaTable.toDF().show(10)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Load delta table in data frame\n",
+							"\n",
+							"The following code loads the delta table data into a data frame from its location in the data lake, verifying that the change you made via a DeltaTable object has been persisted."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"new_df = spark.read.format(\"delta\").load(delta_table_path)\n",
+							"new_df.show(10)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Time travel\n",
+							"\n",
+							"The following code uses the time travel feature of delta lake to view a previous version of the data."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"new_df = spark.read.format(\"delta\").option(\"versionAsOf\", 0).load(delta_table_path)\n",
+							"new_df.show(10)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Delta table history\n",
+							"\n",
+							"The history of the last 20 changes to the table is shown - there should be two (the original creation, and the update you made.)"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"deltaTable.history(10).show(20, False, True)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Create catalog tables\n",
+							"\n",
+							"So far you've worked with delta tables by loading data from the folder containing the parquet files on which the table is based. You can define catalog tables that encapsulate the data and provide a named table entity that you can reference in SQL code. Spark supports two kinds of catalog tables for delta lake:\n",
+							"\n",
+							"- **External tables** that are defined by the path to the parquet files containing the table data.\n",
+							"- **Managed tables**, that are defined in the Hive metastore for the Spark pool.\n",
+							""
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Create an external table\n",
+							"\n",
+							"The following code creates a new database named AdventureWorks and then creates an external tabled named ProductsExternal in that database based on the path to the parquet files you defined previously. It then displays a description of the table's properties. Note that the Location property is the path you specified."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"spark.sql(\"CREATE DATABASE AdventureWorks\")\n",
+							"spark.sql(\"CREATE TABLE AdventureWorks.ProductsExternal USING DELTA LOCATION '{0}'\".format(delta_table_path))\n",
+							"spark.sql(\"DESCRIBE EXTENDED AdventureWorks.ProductsExternal\").show(truncate=False)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"The following code uses SQL to switch context to the AdventureWorks database (which returns no data) and then query the ProductsExternal table (which returns a resultset containing the products data in the Delta Lake table)."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"USE AdventureWorks;\n",
+							"\n",
+							"SELECT * FROM ProductsExternal LIMIT 5;"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Create a managed table\n",
+							"\n",
+							"The following code creates a managed tabled named ProductsManaged based on the DataFrame you originally loaded from the products.csv file (before you updated the price of product 771). You do not specify a path for the parquet files used by the table - this is managed for you in the Hive metastore, and shown in the Location property in the table description (in the files/synapse/workspaces/synapsexxxxxxx/warehouse path)."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.write.format(\"delta\").saveAsTable(\"AdventureWorks.ProductsManaged\")\n",
+							"spark.sql(\"DESCRIBE EXTENDED AdventureWorks.ProductsManaged\").show(truncate=False)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"The following code uses SQL to query the ProductsManaged table."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"USE AdventureWorks;\n",
+							"\n",
+							"SELECT * FROM ProductsManaged;"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Compare external and managed tables\n",
+							"\n",
+							"This code lists the tables in the AdventureWorks database."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"USE AdventureWorks;\n",
+							"\n",
+							"SHOW TABLES;"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"The following code drops the tables from the metastore."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"USE AdventureWorks;\n",
+							"\n",
+							"DROP TABLE IF EXISTS ProductsExternal;\n",
+							"DROP TABLE IF EXISTS ProductsManaged;"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"- Return to the files tab and view the files/delta/products-delta folder. Note that the data files still exist in this location. Dropping the external table has removed the table from the metastore, but left the data files intact.\n",
+							"\n",
+							"- View the files/synapse/workspaces/synapsexxxxxxx/warehouse folder, and note that there is no folder for the ProductsManaged table data. Dropping a managed table removes the table from the metastore and also deletes the table's data files.\n",
+							"\n",
+							""
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Create a table using SQL\n",
+							""
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"USE AdventureWorks;\n",
+							"\n",
+							"CREATE TABLE Products\n",
+							"USING DELTA\n",
+							"LOCATION '/labs/07/data/delta/products-delta';"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Observe that the new catalog table was created for the existing Delta Lake table folder, which reflects the changes that were made previously."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"USE AdventureWorks;\n",
+							"\n",
+							"SELECT * FROM Products LIMIT 10;"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Use delta tables for streaming data\n",
+							"\n",
+							"Delta lake supports streaming data. Delta tables can be a sink or a source for data streams created using the Spark Structured Streaming API. In this example, you'll use a delta table as a sink for some streaming data in a simulated internet of things (IoT) scenario.\n",
+							"\n",
+							"Ensure the message Source stream created... is printed. The code you just ran has created a streaming data source based on a folder to which some data has been saved, representing readings from hypothetical IoT devices."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from notebookutils import mssparkutils\n",
+							"from pyspark.sql.types import *\n",
+							"from pyspark.sql.functions import *\n",
+							"\n",
+							"# Create a folder\n",
+							"inputPath = '/labs/07/data/streaming/'\n",
+							"mssparkutils.fs.mkdirs(inputPath)\n",
+							"\n",
+							"# Create a stream that reads data from the folder, using a JSON schema\n",
+							"jsonSchema = StructType([\n",
+							"StructField(\"device\", StringType(), False),\n",
+							"StructField(\"status\", StringType(), False)\n",
+							"])\n",
+							"iotstream = spark.readStream.schema(jsonSchema).option(\"maxFilesPerTrigger\", 1).json(inputPath)\n",
+							"\n",
+							"# Write some event data to the folder\n",
+							"device_data = '''{\"device\":\"Dev1\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev2\",\"status\":\"error\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"error\"}\n",
+							"{\"device\":\"Dev2\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev2\",\"status\":\"error\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"ok\"}'''\n",
+							"mssparkutils.fs.put(inputPath + \"data.txt\", device_data, True)\n",
+							"print(\"Source stream created...\")"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Write the stream to a delta table"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"delta_stream_table_path = '/labs/07/data/delta/iotdevicedata'\n",
+							"checkpointpath = '/labs/07/data/delta/checkpoint'\n",
+							"deltastream = iotstream.writeStream.format(\"delta\").option(\"checkpointLocation\", checkpointpath).start(delta_stream_table_path)\n",
+							"print(\"Streaming to delta sink...\")"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Read the data in delta format into a dataframe\n",
+							"\n",
+							"This code reads the streamed data in delta format into a dataframe. Note that the code to load streaming data is no different to that used to load static data from a delta folder."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"# Read the data in delta format into a dataframe\n",
+							"df = spark.read.format(\"delta\").load(delta_stream_table_path)\n",
+							"display(df)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Create a catalog table based on the streaming sink\n",
+							"\n",
+							"The following code creates a catalog table named IotDeviceData (in the default database) based on the delta folder. Again, this code is the same as would be used for non-streaming data."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"spark.sql(\"CREATE TABLE IotDeviceData USING DELTA LOCATION '{0}'\".format(delta_stream_table_path))"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Query the streaming delta DeltaTable\n",
+							"\n",
+							"This code queries the IotDeviceData table, which contains the device data from the streaming source."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"SELECT * FROM IotDeviceData;"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Add some more streaming DataFrame\n",
+							"\n",
+							"This code writes more hypothetical device data to the streaming source."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Add more data to the source stream\n",
+							"more_data = '''{\"device\":\"Dev1\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"ok\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"error\"}\n",
+							"{\"device\":\"Dev2\",\"status\":\"error\"}\n",
+							"{\"device\":\"Dev1\",\"status\":\"ok\"}'''\n",
+							"\n",
+							"mssparkutils.fs.put(inputPath + \"more-data.txt\", more_data, True)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"SELECT * FROM IotDeviceData;"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Stop the stream."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"deltastream.stop()"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Query serverless\n",
+							"\n",
+							""
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Clean up"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"USE AdventureWorks;\n",
+							"\n",
+							"DROP TABLE IF EXISTS ProductsExternal;\n",
+							"DROP TABLE IF EXISTS ProductsManaged;\n",
+							"DROP TABLE IF EXISTS iotdevicedata;"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"spark.sql(\"DROP DATABASE AdventureWorks\")"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%fs rm -r /labs/07/data/delta/\n",
+							"%fs rm -r /labs/07/data/streaming/"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%fs rm -r /labs/07/data/streaming/"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/RetailDB')]",
 			"type": "Microsoft.Synapse/workspaces/databases",
 			"apiVersion": "2019-06-01-preview",
@@ -1858,6 +3131,256 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/LoadProductsData')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-10-Synpase-pipeline"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Products_Csv",
+								"type": "DatasetReference"
+							},
+							"name": "ProductsText",
+							"description": "Products text data"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimProduct",
+								"type": "DatasetReference"
+							},
+							"name": "ProductTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DimProduct",
+								"type": "DatasetReference"
+							},
+							"name": "DimProductTable",
+							"description": "Load DimProduct table"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MatchedProducts",
+							"description": "Matched product data. The lookup returns a set of columns from both sources, essentially forming an outer join that matches the ProductID column in the text file to the ProductAltKey column in the data warehouse table. When a product with the alternate key already exists in the table, the dataset will include the values from both sources. When the product dos not already exist in the data warehouse, the dataset will contain NULL values for the table columns."
+						},
+						{
+							"name": "SetLoadAction",
+							"description": "Insert new, upsert existing"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     suffix as string",
+						"}",
+						"source(output(",
+						"          ProductID as string,",
+						"          ProductName as string,",
+						"          Color as string,",
+						"          Size as string,",
+						"          ListPrice as string,",
+						"          Discontinued as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> ProductsText",
+						"source(output(",
+						"          ProductKey as integer,",
+						"          ProductAltKey as string,",
+						"          ProductName as string,",
+						"          Color as string,",
+						"          Size as string,",
+						"          ListPrice as decimal(19,4),",
+						"          Discontinued as boolean",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table',",
+						"     staged: true) ~> ProductTable",
+						"ProductsText, ProductTable lookup(ProductID == ProductAltKey,",
+						"     multiple: false,",
+						"     pickup: 'last',",
+						"     asc(ProductKey, true),",
+						"     broadcast: 'auto')~> MatchedProducts",
+						"MatchedProducts alterRow(insertIf(isNull(ProductKey)),",
+						"     upsertIf(not(isNull(ProductKey)))) ~> SetLoadAction",
+						"SetLoadAction sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          ProductKey as integer,",
+						"          ProductAltKey as string,",
+						"          ProductName as string,",
+						"          Color as string,",
+						"          Size as string,",
+						"          ListPrice as decimal(19,4),",
+						"          Discontinued as boolean",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['ProductAltKey'],",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ProductAltKey = ProductID,",
+						"          ProductName = ProductsText@ProductName,",
+						"          Color = ProductsText@Color,",
+						"          Size = ProductsText@Size,",
+						"          ListPrice = ProductsText@ListPrice,",
+						"          Discontinued = ProductsText@Discontinued",
+						"     )) ~> DimProductTable"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Products_Csv')]",
+				"[concat(variables('workspaceId'), '/datasets/DimProduct')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Products_Csv')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLake",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"suffix": {
+							"value": "@dataset().suffix",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"suffix": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Product.csv",
+						"folderPath": "labs/10/data",
+						"fileSystem": "files"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "String"
+					},
+					{
+						"name": "ProductName",
+						"type": "String"
+					},
+					{
+						"name": "Color",
+						"type": "String"
+					},
+					{
+						"name": "Size",
+						"type": "String"
+					},
+					{
+						"name": "ListPrice",
+						"type": "String"
+					},
+					{
+						"name": "Discontinued",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/DataLake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DimProduct')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlDwh",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"suffix": {
+							"value": "@dataset().suffix",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"suffix": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "ProductKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductAltKey",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Color",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Size",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ListPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "Discontinued",
+						"type": "bit"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DimProduct"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/SqlDwh')]"
+			]
 		}
 	]
 }
