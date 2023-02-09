@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b988edb7-f869-4a21-b37b-4629f72ec0ae"
+				"spark.autotune.trackingId": "68104756-5123-4fbe-afe4-34243d8c9491"
 			}
 		},
 		"metadata": {
@@ -123,6 +123,8 @@
 					}
 				},
 				"source": [
+					"## Browse the files container\n",
+					"\n",
 					"On the files tab, use the ↑ icon in the toolbar to return to the root of the files container, and note that a new folder named delta has been created. Open this folder and the products-delta table it contains, where you should see the parquet format file(s) containing the data."
 				]
 			},
