@@ -15,6 +15,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "LoadProductsData",
+						"type": "DataFlowReference"
+					},
 					"staging": {
 						"linkedService": {
 							"referenceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
