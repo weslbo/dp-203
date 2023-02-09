@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "6ee8ee0f-8b24-49e9-8fba-e711429eda58"
+				"spark.autotune.trackingId": "bb1e2d03-1a2e-4290-8d3c-ebae7eb20b41"
 			}
 		},
 		"metadata": {
@@ -76,13 +76,13 @@
 				"source": [
 					"df = spark.read\\\n",
 					"    .format(\"cosmos.olap\")\\\n",
-					"    .option(\"spark.synapse.linkedService\", \"AdventureWorks\")\\\n",
+					"    .option(\"spark.synapse.linkedService\", \"CosmosDBLSAdventureWorks\")\\\n",
 					"    .option(\"spark.cosmos.container\", \"Sales\")\\\n",
 					"    .load()\n",
 					"\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 3
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
