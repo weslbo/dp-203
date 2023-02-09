@@ -1,13 +1,35 @@
 {
 	"name": "LoadProductsData",
 	"properties": {
+		"folder": {
+			"name": "dp-203-10-Synpase-pipeline"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Products_Csv",
+						"type": "DatasetReference"
+					},
+					"name": "ProductsText",
+					"description": "Products text data"
+				}
+			],
 			"sinks": [],
 			"transformations": [],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Color as string,",
+				"          Size as string,",
+				"          ListPrice as decimal(10,0),",
+				"          Discontinued as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ProductsText"
 			]
 		}
 	}
