@@ -17,7 +17,48 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "LoadProductsData",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"suffix": {
+								"value": "'@{replace(pipeline().DataFactory, 'synapse-', '')}'",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"ProductsText": {
+								"suffix": {
+									"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+									"type": "Expression"
+								}
+							},
+							"ProductTable": {
+								"suffix": {
+									"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+									"type": "Expression"
+								}
+							},
+							"DimProductTable": {
+								"suffix": "@replace(pipeline().DataFactory, 'synapse-', '')"
+							}
+						},
+						"linkedServiceParameters": {
+							"ProductsText": {
+								"schemaLinkedService": {
+									"suffix": {
+										"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+										"type": "Expression"
+									}
+								}
+							},
+							"ProductTable": {
+								"schemaLinkedService": {
+									"suffix": {
+										"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
 					},
 					"staging": {
 						"linkedService": {
