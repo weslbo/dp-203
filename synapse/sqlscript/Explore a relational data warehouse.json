@@ -1,0 +1,20 @@
+{
+	"name": "Explore a relational data warehouse",
+	"properties": {
+		"folder": {
+			"name": "dp-203-08-Explore-data-warehouse"
+		},
+		"content": {
+			"query": "/* This exercise is shared with the DP-500 (Azure Data Analyst) curriculum and is available at\n   https://microsoftlearning.github.io/DP-500-Azure-Data-Analyst/Instructions/labs/03-Explore-data-warehouse.html\n\nExplore the data warehouse schema\n=================================\n- Make sure the sqldwh has been resumed\n- View the tables in the database\n\nA relational data warehouse is typically based on a schema that consists of fact and dimension tables. \nThe tables are optimized for analytical queries in which numeric metrics in the fact tables are aggregated \nby attributes of the entities represented by the dimension tables - for example, enabling you to aggregate\nInternet sales revenue by product, customer, date, and so on.\n\nExpand the dbo.FactInternetSales table and its Columns folder to see the columns in this table. \nNote that many of the columns are keys that reference rows in the dimension tables. Others are numeric values\n(measures) for analysis. The keys are used to relate a fact table to one or more dimension tables, \noften in a star schema; in which the fact table is directly related to each dimension table (forming a \nmulti-pointed “star” with the fact table at the center).\n\n*/\nselect column_name, data_type from information_schema.columns where table_name = 'FactInternetSales' order by ordinal_position\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqldwh",
+				"poolName": "sqldwh"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
