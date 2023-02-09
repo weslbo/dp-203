@@ -14,10 +14,22 @@
 					},
 					"name": "ProductsText",
 					"description": "Products text data"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimProduct",
+						"type": "DatasetReference"
+					},
+					"name": "ProductTable"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "MatchedProducts",
+					"description": "Matched product data. The lookup returns a set of columns from both sources, essentially forming an outer join that matches the ProductID column in the text file to the ProductAltKey column in the data warehouse table. When a product with the alternate key already exists in the table, the dataset will include the values from both sources. When the product dos not already exist in the data warehouse, the dataset will contain NULL values for the table columns."
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          ProductID as string,",
@@ -29,7 +41,26 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> ProductsText"
+				"     ignoreNoFilesFound: false) ~> ProductsText",
+				"source(output(",
+				"          ProductKey as integer,",
+				"          ProductAltKey as string,",
+				"          ProductName as string,",
+				"          Color as string,",
+				"          Size as string,",
+				"          ListPrice as decimal(19,4),",
+				"          Discontinued as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table',",
+				"     staged: true) ~> ProductTable",
+				"ProductsText, ProductTable lookup(ProductID == ProductAltKey,",
+				"     multiple: false,",
+				"     pickup: 'last',",
+				"     asc(ProductKey, true),",
+				"     broadcast: 'auto')~> MatchedProducts"
 			]
 		}
 	}
