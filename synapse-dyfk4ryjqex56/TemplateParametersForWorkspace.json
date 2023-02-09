@@ -5,6 +5,9 @@
 		"workspaceName": {
 			"value": "synapse-dyfk4ryjqex56"
 		},
+		"CosmosDb_connectionString": {
+			"value": ""
+		},
 		"SqlDwh_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=\"@{concat('synapse-', linkedService().suffix,'.sql.azuresynapse.net')}\";Initial Catalog=sqldwh"
 		},
