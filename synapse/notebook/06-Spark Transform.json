@@ -1,5 +1,5 @@
 {
-	"name": "Spark Transform",
+	"name": "06-Spark Transform",
 	"properties": {
 		"folder": {
 			"name": "dp-203-06-Transform-Data-with-Spark"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "36becb30-8f04-4ecf-a7c7-a4bbe678af14"
+				"spark.autotune.trackingId": "0e8abde3-3030-46f6-93f5-900dac850769"
 			}
 		},
 		"metadata": {
