@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "68104756-5123-4fbe-afe4-34243d8c9491"
+				"spark.autotune.trackingId": "11fe4ab5-bc84-442d-b5ef-2c71cd55c88a"
 			}
 		},
 		"metadata": {
@@ -61,7 +61,7 @@
 					}
 				},
 				"source": [
-					"# 07-Use-delta-lake\n",
+					"# Use Delta Lake with Spark in Azure Synapse Analytics\n",
 					"\n",
 					"Explore a CSV file on the data lake: /07/data/products.csv"
 				]
