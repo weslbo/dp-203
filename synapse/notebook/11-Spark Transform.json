@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "901fad8d-57c3-4886-a2ef-ef14638d5d90"
+				"spark.autotune.trackingId": "a7e069d8-34cb-4d15-8a84-da42257808c3"
 			}
 		},
 		"metadata": {
@@ -72,16 +72,50 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"tags": [
+						"parameters"
+					]
 				},
 				"source": [
 					"import uuid\r\n",
 					"\r\n",
 					"# Variable for unique folder name\r\n",
-					"folderName = 'labs/11/transformeddata/' + str(uuid.uuid4())\r\n",
+					"runId = uuid.uuid4()"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Make sure we store the data in a lab folder (not in the root ;-)"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"folderName = 'labs/11/transformeddata/' + str(runId)\n",
 					"folderName"
 				],
-				"execution_count": 12
+				"execution_count": 18
 			},
 			{
 				"cell_type": "markdown",
@@ -106,7 +140,7 @@
 				"source": [
 					"order_details = spark.read.csv('/labs/11/data/*.csv', header=True, inferSchema=True)"
 				],
-				"execution_count": 7
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -146,7 +180,7 @@
 					"# Remove the CustomerName field\r\n",
 					"transformed_df = transformed_df.drop(\"CustomerName\")"
 				],
-				"execution_count": 8
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -180,7 +214,7 @@
 					"transformed_df.write.mode(\"overwrite\").parquet('/%s' % folderName)\r\n",
 					"print (\"Transformed data saved in %s!\" % folderName)"
 				],
-				"execution_count": 13
+				"execution_count": null
 			}
 		]
 	}
