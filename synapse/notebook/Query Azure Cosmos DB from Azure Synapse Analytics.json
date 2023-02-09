@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "bb1e2d03-1a2e-4290-8d3c-ebae7eb20b41"
+				"spark.autotune.trackingId": "d66d7a49-3c17-4fd1-8c98-3d10c2c3ed59"
 			}
 		},
 		"metadata": {
@@ -73,16 +73,22 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
 				"source": [
 					"df = spark.read\\\n",
 					"    .format(\"cosmos.olap\")\\\n",
-					"    .option(\"spark.synapse.linkedService\", \"CosmosDBLSAdventureWorks\")\\\n",
-					"    .option(\"spark.cosmos.container\", \"Sales\")\\\n",
+					"    .option(\"spark.synapse.linkedService\", \"CosmosDb\")\\\n",
+					"    .option(\"spark.cosmos.container\", \"sales\")\\\n",
 					"    .load()\n",
 					"\n",
-					"display(df.limit(10))"
+					"display(df.limit(10))\n",
+					"\n",
+					"\n",
+					"## Notice that the name of the container is CASE SENSITIVE!"
 				],
-				"execution_count": 4
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -108,13 +114,29 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"customer_df = df.select(\"customerid\", \"customerdetails\")\n",
 					"display(customer_df)"
 				],
-				"execution_count": null
+				"execution_count": 8
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"The following should include the customername and customeremail from the customerdetails value as columns:\n",
+					"\n",
+					"Spark enables you to run complex data manipulation code to restructure and explore the data from Cosmos DB. In this case, the PySpark language enables you to navigate the JSON properties hierarchy to retrieve the child fields of the customerdetails field."
+				]
 			},
 			{
 				"cell_type": "code",
@@ -127,13 +149,154 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"customerdetails_df = df.select(\"customerid\", \"customerdetails.*\")\n",
 					"display(customerdetails_df)"
 				],
-				"execution_count": null
+				"execution_count": 9
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Create a new database containing a table that includes data from the Cosmos DB analytical store."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"-- Create a logical database in the Spark metastore\n",
+					"CREATE DATABASE salesdb;\n",
+					"\n",
+					"USE salesdb;\n",
+					"\n",
+					"-- Create a table from the Cosmos DB container\n",
+					"CREATE TABLE salesorders using cosmos.olap options (\n",
+					"    spark.synapse.linkedService 'CosmosDb',\n",
+					"    spark.cosmos.container 'sales' -- case SENSITIVE\n",
+					");\n",
+					"\n",
+					"-- Query the table\n",
+					"SELECT *\n",
+					"FROM salesorders;"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Observe that when using Spark SQL, you can retrieve named properties of a JSON structure as columns."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"SELECT id, orderdate, customerdetails.customername, product\n",
+					"FROM salesorders\n",
+					"ORDER BY id;"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Clean up"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"DROP TABLE salesorders;\n",
+					"DROP DATABASE salesdb;"
+				],
+				"execution_count": 20
 			}
 		]
 	}
