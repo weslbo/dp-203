@@ -1,13 +1,14 @@
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') DROP TABLE [dbo].[FactInternetSales];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') DROP TABLE [dbo].[DimCustomer];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') DROP TABLE [dbo].[DimDate];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') DROP TABLE [dbo].[DimGeography];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') DROP TABLE [dbo].[DimProductCategory];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') DROP TABLE [dbo].[DimProductSubcategory];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') DROP TABLE [dbo].[DimSalesTerritory];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') DROP TABLE [dbo].[DimPromotion];
-IF EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') DROP TABLE [dbo].[DimCurrency];
+IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'vFactSales') DROP VIEW [dbo].[vFactSales];
+
+while(exists(select 1 from INFORMATION_SCHEMA.TABLES))
+begin
+	declare @sql2 nvarchar(2000)
+	SELECT TOP 1 @sql2=('DROP TABLE ' + TABLE_SCHEMA + '.[' + TABLE_NAME
+	+ ']')
+	FROM INFORMATION_SCHEMA.TABLES
+	exec (@sql2)
+	PRINT @sql2
+end
 
 SET ANSI_NULLS ON
 GO
@@ -183,6 +184,173 @@ WITH
   ); 
 GO
 
+
+CREATE TABLE [dbo].[FactResellerSales](
+	[SalesOrderNumber] [nvarchar](20) NOT NULL,
+	[SalesOrderLineNumber] [tinyint] NOT NULL,
+	[ResellerKey] [int] NOT NULL,
+	[ProductKey] [int] NOT NULL,
+	[OrderDateKey] [int] NOT NULL,
+	[DueDateKey] [int] NOT NULL,
+	[ShipDateKey] [int] NULL,
+	[EmployeeKey] [int] NOT NULL,
+	[PromotionKey] [int] NOT NULL,
+	[CurrencyKey] [int] NOT NULL,
+	[SalesTerritoryKey] [int] NOT NULL,
+	[OrderQuantity] [smallint] NOT NULL,
+	[UnitPrice] [money] NOT NULL,
+	[ExtendedAmount] [money] NOT NULL,
+	[UnitPriceDiscountPct] [decimal](7, 4) NOT NULL,
+	[DiscountAmount] [money] NOT NULL,
+	[ProductStandardCost] [money] NOT NULL,
+	[TotalProductCost] [money] NOT NULL,
+	[SalesAmount] [money] NOT NULL,
+	[TaxAmount] [money] NOT NULL,
+	[FreightAmount] [money] NOT NULL,
+	[CarrierTrackingNumber] [nvarchar](25) NULL,
+	[CustomerPONumber] [nvarchar](25) NULL,
+	[RevisionNumber] [tinyint] NOT NULL)
+GO
+
+CREATE VIEW [dbo].[vFactSales]
+AS
+	SELECT
+		CAST(N'Reseller' AS NVARCHAR(10)) AS [Channel]
+		,CAST(RIGHT([SalesOrderNumber], (LEN([SalesOrderNumber]) - 2)) AS INT) AS [SalesOrderKey]
+		,((CAST(RIGHT([SalesOrderNumber], (LEN([SalesOrderNumber]) - 2)) AS INT) * 1000) + [SalesOrderLineNumber]) AS [SalesOrderLineKey]
+		,[SalesOrderNumber]
+		,[SalesOrderLineNumber]
+		,[ResellerKey]
+		,CAST(-1 AS INT) AS [CustomerKey]
+		,[ProductKey]
+		,[OrderDateKey]
+		,[DueDateKey]
+		,[ShipDateKey]
+		,[PromotionKey]
+		,[CurrencyKey]
+		,[SalesTerritoryKey]
+		,[EmployeeKey]
+		,[OrderQuantity]
+		,[UnitPrice]
+		,[ExtendedAmount]
+		,[UnitPriceDiscountPct]
+		,[DiscountAmount]
+		,[ProductStandardCost]
+		,[TotalProductCost]
+		,[SalesAmount]
+		,[TaxAmount]
+		,[FreightAmount]
+		,[CarrierTrackingNumber]
+		,[CustomerPONumber]
+		,[RevisionNumber]
+	FROM
+		[dbo].[FactResellerSales]
+	UNION ALL
+	SELECT
+		CAST(N'Internet' AS NVARCHAR(10)) AS [Channel]
+		,CAST(RIGHT([SalesOrderNumber], (LEN([SalesOrderNumber]) - 2)) AS INT) AS [SalesOrderKey]
+		,((CAST(RIGHT([SalesOrderNumber], (LEN([SalesOrderNumber]) - 2)) AS INT) * 1000) + [SalesOrderLineNumber]) AS [SalesOrderLineKey]
+		,[SalesOrderNumber]
+		,[SalesOrderLineNumber]
+		,CAST(-1 AS INT) AS [ResellerKey]
+		,[CustomerKey]
+		,[ProductKey]
+		,[OrderDateKey]
+		,[DueDateKey]
+		,[ShipDateKey]
+		,[PromotionKey]
+		,[CurrencyKey]
+		,[SalesTerritoryKey]
+		,CAST(-1 AS INT) AS [EmployeeKey]
+		,[OrderQuantity]
+		,[UnitPrice]
+		,[ExtendedAmount]
+		,[UnitPriceDiscountPct]
+		,[DiscountAmount]
+		,[ProductStandardCost]
+		,[TotalProductCost]
+		,[SalesAmount]
+		,[TaxAmount]
+		,[FreightAmount]
+		,[CarrierTrackingNumber]
+		,[CustomerPONumber]
+		,[RevisionNumber]
+	FROM
+		[dbo].[FactInternetSales];
+GO
+
+
+CREATE TABLE [dbo].[DimAccount](
+	[AccountKey] [int] IDENTITY(1,1) NOT NULL,
+	[ParentAccountKey] [int] NULL,
+	[AccountCodeAlternateKey] [int] NULL,
+	[ParentAccountCodeAlternateKey] [int] NULL,
+	[AccountDescription] [nvarchar](50) NULL,
+	[AccountType] [nvarchar](50) NULL,
+	[Operator] [nvarchar](50) NULL,
+	[CustomMembers] [nvarchar](300) NULL,
+	[ValueType] [nvarchar](50) NULL,
+	[CustomMemberOptions] [nvarchar](200) NULL)
+
+GO
+CREATE TABLE [dbo].[DimCurrency](
+	[CurrencyKey] [int] IDENTITY(1,1) NOT NULL,
+	[CurrencyAlternateKey] [nchar](3) NOT NULL,
+	[CurrencyName] [nvarchar](50) NOT NULL,
+	[FormatString] [nvarchar](20) NULL)
+
+GO
+CREATE TABLE [dbo].[DimDepartmentGroup](
+	[DepartmentGroupKey] [int] IDENTITY(1,1) NOT NULL,
+	[ParentDepartmentGroupKey] [int] NULL,
+	[DepartmentGroupName] [nvarchar](50) NULL)
+
+GO
+CREATE TABLE [dbo].[DimEmployee](
+	[EmployeeKey] [int] IDENTITY(1,1) NOT NULL,
+	[ParentEmployeeKey] [int] NULL,
+	[EmployeeNationalIDAlternateKey] [nvarchar](15) NULL,
+	[ParentEmployeeNationalIDAlternateKey] [nvarchar](15) NULL,
+	[SalesTerritoryKey] [int] NULL,
+	[FirstName] [nvarchar](50) NOT NULL,
+	[LastName] [nvarchar](50) NOT NULL,
+	[MiddleName] [nvarchar](50) NULL,
+	[NameStyle] [bit] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[HireDate] [date] NULL,
+	[BirthDate] [date] NULL,
+	[LoginID] [nvarchar](256) NULL,
+	[EmailAddress] [nvarchar](50) NULL,
+	[Phone] [nvarchar](25) NULL,
+	[MaritalStatus] [nchar](1) NULL,
+	[EmergencyContactName] [nvarchar](50) NULL,
+	[EmergencyContactPhone] [nvarchar](25) NULL,
+	[SalariedFlag] [bit] NULL,
+	[Gender] [nchar](1) NULL,
+	[PayFrequency] [tinyint] NULL,
+	[BaseRate] [money] NULL,
+	[VacationHours] [smallint] NULL,
+	[SickLeaveHours] [smallint] NULL,
+	[CurrentFlag] [bit] NOT NULL,
+	[SalespersonFlag] [bit] NOT NULL,
+	[DepartmentName] [nvarchar](50) NULL,
+	[StartDate] [date] NULL,
+	[EndDate] [date] NULL,
+	[Status] [nvarchar](50) NULL,
+	[EmployeePhoto] [varbinary](max) NULL)
+WITH  
+  (   
+    CLUSTERED INDEX (EmployeeKey)  
+  ); 
+GO
+CREATE TABLE [dbo].[DimOrganization](
+	[OrganizationKey] [int] IDENTITY(1,1) NOT NULL,
+	[ParentOrganizationKey] [int] NULL,
+	[PercentageOfOwnership] [nvarchar](16) NULL,
+	[OrganizationName] [nvarchar](50) NULL,
+	[CurrencyKey] [int] NULL)
+
+GO
 CREATE TABLE [dbo].[DimPromotion](
 	[PromotionKey] [int] IDENTITY(1,1) NOT NULL,
 	[PromotionAlternateKey] [int] NULL,
@@ -201,6 +369,30 @@ CREATE TABLE [dbo].[DimPromotion](
 	[MinQty] [int] NULL,
 	[MaxQty] [int] NULL)
 GO
+
+CREATE TABLE [dbo].[DimReseller](
+	[ResellerKey] [int] IDENTITY(1,1) NOT NULL,
+	[GeographyKey] [int] NULL,
+	[ResellerAlternateKey] [nvarchar](15) NULL,
+	[Phone] [nvarchar](25) NULL,
+	[BusinessType] [varchar](20) NOT NULL,
+	[ResellerName] [nvarchar](50) NOT NULL,
+	[NumberEmployees] [int] NULL,
+	[OrderFrequency] [char](1) NULL,
+	[OrderMonth] [tinyint] NULL,
+	[FirstOrderYear] [int] NULL,
+	[LastOrderYear] [int] NULL,
+	[ProductLine] [nvarchar](50) NULL,
+	[AddressLine1] [nvarchar](60) NULL,
+	[AddressLine2] [nvarchar](60) NULL,
+	[AnnualSales] [money] NULL,
+	[BankName] [nvarchar](50) NULL,
+	[MinPaymentType] [tinyint] NULL,
+	[MinPaymentAmount] [money] NULL,
+	[AnnualRevenue] [money] NULL,
+	[YearOpened] [int] NULL)
+GO
+
 
 CREATE TABLE [dbo].[DimCurrency](
 	[CurrencyKey] [int] IDENTITY(1,1) NOT NULL,

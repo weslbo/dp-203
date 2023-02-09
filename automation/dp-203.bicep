@@ -56,10 +56,6 @@ resource dataLakeAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
     resource filesystem 'containers' = {
       name: 'files'
     }
-
-    resource data 'containers' = {
-      name: 'data'
-    }
   }
 }
 
