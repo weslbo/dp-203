@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "75024004-fc7e-4a99-9e3c-56e70fef23b1"
+				"spark.autotune.trackingId": "b988edb7-f869-4a21-b37b-4629f72ec0ae"
 			}
 		},
 		"metadata": {
@@ -79,7 +79,7 @@
 					"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs/07/data/products.csv', format='csv', header=True)\r\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 26
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -111,7 +111,7 @@
 					"delta_table_path = \"/labs/07/data/delta/products-delta\"\n",
 					"df.write.format(\"delta\").save(delta_table_path)"
 				],
-				"execution_count": 27
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -324,7 +324,7 @@
 					"spark.sql(\"CREATE TABLE AdventureWorks.ProductsExternal USING DELTA LOCATION '{0}'\".format(delta_table_path))\n",
 					"spark.sql(\"DESCRIBE EXTENDED AdventureWorks.ProductsExternal\").show(truncate=False)"
 				],
-				"execution_count": 8
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -361,9 +361,9 @@
 					"\n",
 					"USE AdventureWorks;\n",
 					"\n",
-					"SELECT * FROM ProductsExternal;"
+					"SELECT * FROM ProductsExternal LIMIT 5;"
 				],
-				"execution_count": 9
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -397,7 +397,7 @@
 					"df.write.format(\"delta\").saveAsTable(\"AdventureWorks.ProductsManaged\")\n",
 					"spark.sql(\"DESCRIBE EXTENDED AdventureWorks.ProductsManaged\").show(truncate=False)"
 				],
-				"execution_count": 10
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -436,7 +436,7 @@
 					"\n",
 					"SELECT * FROM ProductsManaged;"
 				],
-				"execution_count": 11
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -477,7 +477,7 @@
 					"\n",
 					"SHOW TABLES;"
 				],
-				"execution_count": 12
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -517,7 +517,7 @@
 					"DROP TABLE IF EXISTS ProductsExternal;\n",
 					"DROP TABLE IF EXISTS ProductsManaged;"
 				],
-				"execution_count": 13
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -576,7 +576,7 @@
 					"USING DELTA\n",
 					"LOCATION '/labs/07/data/delta/products-delta';"
 				],
-				"execution_count": 14
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -615,7 +615,7 @@
 					"\n",
 					"SELECT * FROM Products LIMIT 10;"
 				],
-				"execution_count": 17
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -676,7 +676,7 @@
 					"mssparkutils.fs.put(inputPath + \"data.txt\", device_data, True)\n",
 					"print(\"Source stream created...\")"
 				],
-				"execution_count": 18
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -710,7 +710,7 @@
 					"deltastream = iotstream.writeStream.format(\"delta\").option(\"checkpointLocation\", checkpointpath).start(delta_stream_table_path)\n",
 					"print(\"Streaming to delta sink...\")"
 				],
-				"execution_count": 19
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -746,7 +746,7 @@
 					"df = spark.read.format(\"delta\").load(delta_stream_table_path)\n",
 					"display(df)"
 				],
-				"execution_count": 20
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -779,7 +779,7 @@
 				"source": [
 					"spark.sql(\"CREATE TABLE IotDeviceData USING DELTA LOCATION '{0}'\".format(delta_stream_table_path))"
 				],
-				"execution_count": 21
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -818,7 +818,7 @@
 					"\n",
 					"SELECT * FROM IotDeviceData;"
 				],
-				"execution_count": 22
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -860,7 +860,7 @@
 					"\n",
 					"mssparkutils.fs.put(inputPath + \"more-data.txt\", more_data, True)"
 				],
-				"execution_count": 23
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -884,7 +884,7 @@
 					"\n",
 					"SELECT * FROM IotDeviceData;"
 				],
-				"execution_count": 24
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -915,7 +915,7 @@
 				"source": [
 					"deltastream.stop()"
 				],
-				"execution_count": 25
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -969,9 +969,9 @@
 					"\n",
 					"DROP TABLE IF EXISTS ProductsExternal;\n",
 					"DROP TABLE IF EXISTS ProductsManaged;\n",
-					"DROP TABLE IF EXISTS Products;"
+					"DROP TABLE IF EXISTS iotdevicedata;"
 				],
-				"execution_count": 31
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -989,7 +989,44 @@
 				"source": [
 					"spark.sql(\"DROP DATABASE AdventureWorks\")"
 				],
-				"execution_count": 32
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%fs rm -r /labs/07/data/delta/\n",
+					"%fs rm -r /labs/07/data/streaming/"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%fs rm -r /labs/07/data/streaming/"
+				],
+				"execution_count": null
 			}
 		]
 	}
