@@ -15,10 +15,12 @@ sqlcmd -S "synapse-$uniqueSuffix.sql.azuresynapse.net" -U $sqlUser -P $sqlPasswo
 # The files are then uploaded to the database using the BCP command.
 
 declare -a files=("DimCurrency" "DimCustomer" "DimDate" "DimGeography" "DimProduct" "DimProductCategory" "DimProductSubcategory" "DimPromotion" "DimSalesTerritory" "FactInternetSales")
+
+declare -a files=("DimAccount" "DimCurrency" "DimCustomer" "DimDate" "DimDepartmentGroup" "DimEmployee" "DimGeography" "DimOrganization" "DimProduct" "DimProductCategory" "DimProductSubCategory" "DimPromotion" "DimReseller" "DimSalesTerritory" "FactInternetSales" "FactResellerSales")
 for i in "${files[@]}"
 do
-    wget https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/data/$i.txt -O ./dp-203/$i.txt
-    wget https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/data/$i.fmt -O ./dp-203/$i.fmt
+    wget https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/08/data/$i.txt -O ./dp-203/$i.txt
+    wget https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/08/data/$i.fmt -O ./dp-203/$i.fmt
     bcp dbo.$i in ./dp-203/$i.txt -S "synapse-$uniqueSuffix.sql.azuresynapse.net" -U $sqlUser -P $sqlPassword -d sqldwh -f ./dp-203/$i.fmt -q -k -E -b 5000
 done
 

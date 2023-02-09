@@ -392,12 +392,3 @@ CREATE TABLE [dbo].[DimReseller](
 	[AnnualRevenue] [money] NULL,
 	[YearOpened] [int] NULL)
 GO
-
-
-CREATE TABLE [dbo].[DimCurrency](
-	[CurrencyKey] [int] IDENTITY(1,1) NOT NULL,
-	[CurrencyAlternateKey] [nchar](3) NOT NULL,
-	[CurrencyName] [nvarchar](50) NOT NULL,
-	[FormatString] [nvarchar](20) NULL)
-
-GO
