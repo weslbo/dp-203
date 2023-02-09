@@ -1,5 +1,5 @@
 {
-	"name": "Explore products",
+	"name": "01-Explore products",
 	"properties": {
 		"description": "Used in DP-203 Lab 01",
 		"folder": {
@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "134c8c7b-60b8-4df6-a1d9-fd84fa8c2d6c"
+				"spark.autotune.trackingId": "a4933ffd-7da1-435a-ad61-67a12fe4f20f"
 			}
 		},
 		"metadata": {

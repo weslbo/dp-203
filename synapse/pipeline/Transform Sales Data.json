@@ -1,0 +1,46 @@
+{
+	"name": "Transform Sales Data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Run Spark Transform",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "11-Spark Transform",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"runId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "string"
+						}
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sparkpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"driverSize": "Small"
+				}
+			}
+		],
+		"folder": {
+			"name": "dp-203-11-Spark-notebook-in-Synapse-Pipeline"
+		},
+		"annotations": []
+	}
+}

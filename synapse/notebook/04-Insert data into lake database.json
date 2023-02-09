@@ -1,5 +1,5 @@
 {
-	"name": "Insert data into lake database",
+	"name": "04-Insert data into lake database",
 	"properties": {
 		"folder": {
 			"name": "dp-203-04-Create-a-Lake-Database"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3d79b412-a09c-449a-8ac3-dd0f7befcabb"
+				"spark.autotune.trackingId": "2db486a9-a22c-4be2-9c2f-a5264c668ac2"
 			}
 		},
 		"metadata": {
