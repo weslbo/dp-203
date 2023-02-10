@@ -84,7 +84,13 @@
 							"inputs": [
 								{
 									"referenceName": "GithubDP_500_AllFiles",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
