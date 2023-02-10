@@ -2,7 +2,7 @@
 	"name": "02 - Work with lake database tables",
 	"properties": {
 		"folder": {
-			"name": "dp-203-04-Create-a-Lake-Database"
+			"name": "reorg/dp-203-04-Create-a-Lake-Database"
 		},
 		"content": {
 			"query": "-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",

@@ -2,7 +2,7 @@
 	"name": "03 - Validate Insert after Spark",
 	"properties": {
 		"folder": {
-			"name": "dp-203-04-Create-a-Lake-Database"
+			"name": "reorg/dp-203-04-Create-a-Lake-Database"
 		},
 		"content": {
 			"query": "Use RetailDB\n\n-- This statement should not return any data before the notebook has executed.\n\nSELECT *\nFROM SalesOrder WHERE SalesOrderId = 99999\n\n-- cleanup for next demo\n-- This will not work: DML Operations are not supported with external tables.\nDELETE FROM SalesOrder WHERE SalesOrderId = 99999",

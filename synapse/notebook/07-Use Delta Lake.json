@@ -2,7 +2,7 @@
 	"name": "07-Use Delta Lake",
 	"properties": {
 		"folder": {
-			"name": "dp-203-07-Use-delta-lake"
+			"name": "reorg/dp-203-07-Use-delta-lake"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,

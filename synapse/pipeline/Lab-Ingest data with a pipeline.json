@@ -1,5 +1,5 @@
 {
-	"name": "dp-203-lab-01-copy products",
+	"name": "Lab-Ingest data with a pipeline",
 	"properties": {
 		"description": "Copy products data",
 		"activities": [
@@ -60,7 +60,7 @@
 			}
 		],
 		"folder": {
-			"name": "dp-203-01-Explore-Azure-Synapse"
+			"name": "dp-203/01-Intro to data engineering"
 		},
 		"annotations": []
 	}

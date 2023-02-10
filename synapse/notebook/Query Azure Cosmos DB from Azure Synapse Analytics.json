@@ -2,7 +2,7 @@
 	"name": "Query Azure Cosmos DB from Azure Synapse Analytics",
 	"properties": {
 		"folder": {
-			"name": "dp-203-14-Synapselink-cosmos"
+			"name": "reorg/dp-203-14-Synapselink-cosmos"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -45,8 +45,7 @@
 				"sparkVersion": "3.2",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28,
-				"automaticScaleJobs": false
+				"memory": 28
 			},
 			"sessionKeepAliveTimeout": 30
 		},

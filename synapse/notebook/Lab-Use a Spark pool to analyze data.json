@@ -1,9 +1,9 @@
 {
-	"name": "01-Explore products",
+	"name": "Lab-Use a Spark pool to analyze data",
 	"properties": {
 		"description": "Used in DP-203 Lab 01",
 		"folder": {
-			"name": "dp-203-01-Explore Azure Synapse Analytics"
+			"name": "dp-203/01-Intro to data engineering"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a4933ffd-7da1-435a-ad61-67a12fe4f20f"
+				"spark.autotune.trackingId": "603f9fe4-6a16-4534-9d90-0e956585655e"
 			}
 		},
 		"metadata": {

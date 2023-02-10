@@ -1,10 +1,10 @@
 {
-	"name": "00-setup-pipeline",
+	"name": "dp-203-Copy data",
 	"properties": {
 		"description": "This setup pipeline needs to executed after the DP-203 environment has been deployed. It will copy files and setup data sources",
 		"activities": [
 			{
-				"name": "For each file in Github",
+				"name": "For each file in Github 203",
 				"description": "For each file in the official github account https://github.com/MicrosoftLearning/DP-203-Azure-Data-Engineer, copy the files into the data lake",
 				"type": "ForEach",
 				"dependsOn": [
@@ -18,7 +18,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('filesToCopy')",
+						"value": "@variables('filesToCopyDP203')",
 						"type": "Expression"
 					},
 					"activities": [
@@ -68,7 +68,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DataLake_FileContainer_AllFiles",
+									"referenceName": "DataLake_FileContainer_AllFiles_dp203",
 									"type": "DatasetReference",
 									"parameters": {
 										"fileName": {
@@ -96,7 +96,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DataLake_FileContainer_AllFiles",
+						"referenceName": "DataLake_FileContainer_AllFiles_dp203",
 						"type": "DatasetReference",
 						"parameters": {
 							"fileName": "*"
@@ -105,14 +105,14 @@
 					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
-						"fileListPath": "files/labs",
+						"fileListPath": "files/labs-dp-203",
 						"enablePartitionDiscovery": false
 					}
 				}
 			}
 		],
 		"variables": {
-			"filesToCopy": {
+			"filesToCopyDP203": {
 				"type": "Array",
 				"defaultValue": [
 					"master/Allfiles/labs/01/setup.sql",
@@ -254,14 +254,10 @@
 					"master/Allfiles/labs/27/Process-Data.dbc",
 					"master/Allfiles/labs/27/data/products.csv"
 				]
-			},
-			"setupsqlscript": {
-				"type": "String",
-				"defaultValue": "SET ANSI_NULLS ON GO SET QUOTED_IDENTIFIER ON GO IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'FactInternetSales') CREATE TABLE [dbo].[FactInternetSales]( \t[SalesOrderNumber] [nvarchar](20) NOT NULL, \t[SalesOrderLineNumber] [tinyint] NOT NULL, \t[CustomerKey] [int] NOT NULL, \t[ProductKey] [int] NOT NULL, \t[OrderDateKey] [int] NOT NULL, \t[DueDateKey] [int] NOT NULL, \t[ShipDateKey] [int] NULL, \t[PromotionKey] [int] NOT NULL, \t[CurrencyKey] [int] NOT NULL, \t[SalesTerritoryKey] [int] NOT NULL, \t[OrderQuantity] [smallint] NOT NULL, \t[UnitPrice] [money] NOT NULL, \t[ExtendedAmount] [money] NOT NULL, \t[UnitPriceDiscountPct] [decimal](7, 4) NOT NULL, \t[DiscountAmount] [float] NOT NULL, \t[ProductStandardCost] [money] NOT NULL, \t[TotalProductCost] [money] NOT NULL, \t[SalesAmount] [money] NOT NULL, \t[TaxAmount] [money] NOT NULL, \t[FreightAmount] [money] NOT NULL, \t[CarrierTrackingNumber] [nvarchar](25) NULL, \t[CustomerPONumber] [nvarchar](25) NULL, \t[RevisionNumber] [tinyint] NOT NULL )  GO IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCustomer') CREATE TABLE [dbo].[DimCustomer]( \t[CustomerKey] [int] IDENTITY(1,1) NOT NULL, \t[GeographyKey] [int] NULL, \t[CustomerAlternateKey] [nvarchar](15) NOT NULL, \t[Title] [nvarchar](8) NULL, \t[FirstName] [nvarchar](50) NULL, \t[MiddleName] [nvarchar](50) NULL, \t[LastName] [nvarchar](50) NULL, \t[NameStyle] [bit] NULL, \t[BirthDate] [date] NULL, \t[MaritalStatus] [nchar](1) NULL, \t[Suffix] [nvarchar](10) NULL, \t[Gender] [nvarchar](1) NULL, \t[EmailAddress] [nvarchar](50) NULL, \t[YearlyIncome] [money] NULL, \t[TotalChildren] [tinyint] NULL, \t[NumberChildrenAtHome] [tinyint] NULL, \t[EnglishEducation] [nvarchar](40) NULL, \t[SpanishEducation] [nvarchar](40) NULL, \t[FrenchEducation] [nvarchar](40) NULL, \t[EnglishOccupation] [nvarchar](100) NULL, \t[SpanishOccupation] [nvarchar](100) NULL, \t[FrenchOccupation] [nvarchar](100) NULL, \t[HouseOwnerFlag] [nchar](1) NULL, \t[NumberCarsOwned] [tinyint] NULL, \t[AddressLine1] [nvarchar](120) NULL, \t[AddressLine2] [nvarchar](120) NULL, \t[Phone] [nvarchar](20) NULL, \t[DateFirstPurchase] [date] NULL, \t[CommuteDistance] [nvarchar](15) NULL )  GO IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimDate') CREATE TABLE [dbo].[DimDate]( \t[DateKey] [int] NOT NULL, \t[FullDateAlternateKey] [date] NOT NULL, \t[DayNumberOfWeek] [tinyint] NOT NULL, \t[EnglishDayNameOfWeek] [nvarchar](10) NOT NULL, \t[SpanishDayNameOfWeek] [nvarchar](10) NOT NULL, \t[FrenchDayNameOfWeek] [nvarchar](10) NOT NULL, \t[DayNumberOfMonth] [tinyint] NOT NULL, \t[DayNumberOfYear] [smallint] NOT NULL, \t[WeekNumberOfYear] [tinyint] NOT NULL, \t[EnglishMonthName] [nvarchar](10) NOT NULL, \t[SpanishMonthName] [nvarchar](10) NOT NULL, \t[FrenchMonthName] [nvarchar](10) NOT NULL, \t[MonthNumberOfYear] [tinyint] NOT NULL, \t[CalendarQuarter] [tinyint] NOT NULL, \t[CalendarYear] [smallint] NOT NULL, \t[CalendarSemester] [tinyint] NOT NULL, \t[FiscalQuarter] [tinyint] NOT NULL, \t[FiscalYear] [smallint] NOT NULL, \t[FiscalSemester] [tinyint] NOT NULL )  GO IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimGeography') CREATE TABLE [dbo].[DimGeography]( \t[GeographyKey] [int] IDENTITY(1,1) NOT NULL, \t[City] [nvarchar](30) NULL, \t[StateProvinceCode] [nvarchar](3) NULL, \t[StateProvinceName] [nvarchar](50) NULL, \t[CountryRegionCode] [nvarchar](3) NULL, \t[EnglishCountryRegionName] [nvarchar](50) NULL, \t[SpanishCountryRegionName] [nvarchar](50) NULL, \t[FrenchCountryRegionName] [nvarchar](50) NULL, \t[PostalCode] [nvarchar](15) NULL, \t[SalesTerritoryKey] [int] NULL, \t[IpAddressLocator] [nvarchar](15) NULL)  GO IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') CREATE TABLE [dbo].[DimProduct]( \t[ProductKey] [int] IDENTITY(1,1) NOT NULL, \t[ProductAlternateKey] [nvarchar](25) NULL, \t[ProductSubcategoryKey] [int] NULL, \t[WeightUnitMeasureCode] [nchar](3) NULL, \t[SizeUnitMeasureCode] [nchar](3) NULL, \t[EnglishProductName] [nvarchar](50) NOT NULL, \t[SpanishProductName] [nvarchar](50) NOT NULL, \t[FrenchProductName] [nvarchar](50) NOT NULL, \t[StandardCost] [money] NULL, \t[FinishedGoodsFlag] [bit] NOT NULL, \t[Color] [nvarchar](15) NOT NULL, \t[SafetyStockLevel] [smallint] NULL, \t[ReorderPoint] [smallint] NULL, \t[ListPrice] [money] NULL, \t[Size] [nvarchar](50) NULL, \t[SizeRange] [nvarchar](50) NULL, \t[Weight] [float] NULL, \t[DaysToManufacture] [int] NULL, \t[ProductLine] [nchar](2) NULL, \t[DealerPrice] [money] NULL, \t[Class] [nchar](2) NULL, \t[Style] [nchar](2) NULL, \t[ModelName] [nvarchar](50) NULL, \t[LargePhoto] [varbinary](max) NULL, \t[EnglishDescription] [nvarchar](400) NULL, \t[FrenchDescription] [nvarchar](400) NULL, \t[ChineseDescription] [nvarchar](400) NULL, \t[ArabicDescription] [nvarchar](400) NULL, \t[HebrewDescription] [nvarchar](400) NULL, \t[ThaiDescription] [nvarchar](400) NULL, \t[GermanDescription] [nvarchar](400) NULL, \t[JapaneseDescription] [nvarchar](400) NULL, \t[TurkishDescription] [nvarchar](400) NULL, \t[StartDate] [datetime] NULL, \t[EndDate] [datetime] NULL, \t[Status] [nvarchar](7) NULL) WITH     (        CLUSTERED INDEX (ProductKey)     );  GO  IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductCategory') CREATE TABLE [dbo].[DimProductCategory]( \t[ProductCategoryKey] [int] IDENTITY(1,1) NOT NULL, \t[ProductCategoryAlternateKey] [int] NULL, \t[EnglishProductCategoryName] [nvarchar](50) NOT NULL, \t[SpanishProductCategoryName] [nvarchar](50) NOT NULL, \t[FrenchProductCategoryName] [nvarchar](50) NOT NULL)  GO IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductSubcategory') CREATE TABLE [dbo].[DimProductSubcategory]( \t[ProductSubcategoryKey] [int] IDENTITY(1,1) NOT NULL, \t[ProductSubcategoryAlternateKey] [int] NULL, \t[EnglishProductSubcategoryName] [nvarchar](50) NOT NULL, \t[SpanishProductSubcategoryName] [nvarchar](50) NOT NULL, \t[FrenchProductSubcategoryName] [nvarchar](50) NOT NULL, \t[ProductCategoryKey] [int] NULL) GO  IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimSalesTerritory') CREATE TABLE [dbo].[DimSalesTerritory]( \t[SalesTerritoryKey] [int] IDENTITY(1,1) NOT NULL, \t[SalesTerritoryAlternateKey] [int] NULL, \t[SalesTerritoryRegion] [nvarchar](50) NOT NULL, \t[SalesTerritoryCountry] [nvarchar](50) NOT NULL, \t[SalesTerritoryGroup] [nvarchar](50) NULL, \t[SalesTerritoryImage] [varbinary](max) NULL) WITH     (        CLUSTERED INDEX (SalesTerritoryKey)     );  GO  IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimPromotion') CREATE TABLE [dbo].[DimPromotion]( \t[PromotionKey] [int] IDENTITY(1,1) NOT NULL, \t[PromotionAlternateKey] [int] NULL, \t[EnglishPromotionName] [nvarchar](255) NULL, \t[SpanishPromotionName] [nvarchar](255) NULL, \t[FrenchPromotionName] [nvarchar](255) NULL, \t[DiscountPct] [float] NULL, \t[EnglishPromotionType] [nvarchar](50) NULL, \t[SpanishPromotionType] [nvarchar](50) NULL, \t[FrenchPromotionType] [nvarchar](50) NULL, \t[EnglishPromotionCategory] [nvarchar](50) NULL, \t[SpanishPromotionCategory] [nvarchar](50) NULL, \t[FrenchPromotionCategory] [nvarchar](50) NULL, \t[StartDate] [datetime] NOT NULL, \t[EndDate] [datetime] NULL, \t[MinQty] [int] NULL, \t[MaxQty] [int] NULL) GO  IF NOT EXISTS (SELECT 0 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimCurrency') CREATE TABLE [dbo].[DimCurrency]( \t[CurrencyKey] [int] IDENTITY(1,1) NOT NULL, \t[CurrencyAlternateKey] [nchar](3) NOT NULL, \t[CurrencyName] [nvarchar](50) NOT NULL, \t[FormatString] [nvarchar](20) NULL)  GO"
 			}
 		},
 		"folder": {
-			"name": "dp-203-00-setup"
+			"name": "dp-203/00-Setup"
 		},
 		"annotations": [],
 		"lastPublishTime": "2023-02-03T06:46:19Z"
