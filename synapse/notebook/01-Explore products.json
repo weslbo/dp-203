@@ -1,0 +1,228 @@
+{
+	"name": "01-Explore products",
+	"properties": {
+		"description": "Used in DP-203 Lab 01",
+		"folder": {
+			"name": "dp-203-01-Explore Azure Synapse Analytics"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "a4933ffd-7da1-435a-ad61-67a12fe4f20f"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-dyfk4ryjqex56/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://synapse-dyfk4ryjqex56.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Use a Spark pool to analyze data\n",
+					"\n",
+					"Review the code in the first cell in the notebook, and run it. The first time you run a cell in a notebook, the Spark pool is started - so it may take a minute or so to return any results.\n",
+					"\n",
+					"This cell will retrieve the name of the current Synapse Workspace, and derive the datalake name from it. We will use this datalake variable later when retrieving files"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Import library\n",
+					"from pyspark.context import SparkContext\n",
+					"\n",
+					"# Create context\n",
+					"sc = SparkContext.getOrCreate()\n",
+					"\n",
+					"# Get configuration\n",
+					"tuples = sc.getConf().getAll()\n",
+					"\n",
+					"\n",
+					"# Find spark pool name\n",
+					"for element in tuples:\n",
+					"    if element[0].find('spark.synapse.workspace.name') != -1:\n",
+					"        datalakename = element[1].replace('synapse-', 'datalake')\n",
+					"\n",
+					"print(datalakename)"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Here's the cell that was generated when selecting a file from the datalake. Notice we set the datalake name variable AND we use an f-string (string interpolation)"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\r\n",
+					"## If header exists uncomment line below\r\n",
+					"##, header=True\r\n",
+					")\r\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Set Header=True\n",
+					"(because the products.csv file has the column headers in the first line)"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\n",
+					"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\n",
+					"    , header=True \n",
+					")\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Count by category\n",
+					"\n",
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df_counts = df.groupby(df.Category).count()\n",
+					"display(df_counts)"
+				],
+				"execution_count": 29
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Create a chart\n",
+					"\n",
+					"In the results output for the cell, select the Chart view. "
+				]
+			}
+		]
+	}
+}

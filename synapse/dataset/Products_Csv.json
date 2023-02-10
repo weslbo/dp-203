@@ -1,0 +1,60 @@
+{
+	"name": "Products_Csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLake",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"suffix": {
+					"value": "@dataset().suffix",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"suffix": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Product.csv",
+				"folderPath": "labs/10/data",
+				"fileSystem": "files"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ProductID",
+				"type": "String"
+			},
+			{
+				"name": "ProductName",
+				"type": "String"
+			},
+			{
+				"name": "Color",
+				"type": "String"
+			},
+			{
+				"name": "Size",
+				"type": "String"
+			},
+			{
+				"name": "ListPrice",
+				"type": "String"
+			},
+			{
+				"name": "Discontinued",
+				"type": "String"
+			}
+		]
+	}
+}

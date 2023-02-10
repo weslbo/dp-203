@@ -1,9 +1,8 @@
 {
-	"name": "Explore products",
+	"name": "11-Spark Transform",
 	"properties": {
-		"description": "Used in DP-203 Lab 01",
 		"folder": {
-			"name": "dp-203-01-Explore Azure Synapse Analytics"
+			"name": "dp-203-11-Spark-notebook-in-Synapse-Pipeline"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -21,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "134c8c7b-60b8-4df6-a1d9-fd84fa8c2d6c"
+				"spark.autotune.trackingId": "a7e069d8-34cb-4d15-8a84-da42257808c3"
 			}
 		},
 		"metadata": {
@@ -54,6 +53,40 @@
 		"cells": [
 			{
 				"cell_type": "markdown",
+				"source": [
+					"# Transform data by using Spark\n",
+					"\n",
+					"This notebook transforms sales order data; converting it from CSV to Parquet format and splitting customer name into two separate fields.\n",
+					"\n",
+					"## Set variables"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"import uuid\r\n",
+					"\r\n",
+					"# Variable for unique folder name\r\n",
+					"runId = uuid.uuid4()"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "markdown",
 				"metadata": {
 					"nteract": {
 						"transient": {
@@ -62,11 +95,7 @@
 					}
 				},
 				"source": [
-					"# Use a Spark pool to analyze data\n",
-					"\n",
-					"Review the code in the first cell in the notebook, and run it. The first time you run a cell in a notebook, the Spark pool is started - so it may take a minute or so to return any results.\n",
-					"\n",
-					"This cell will retrieve the name of the current Synapse Workspace, and derive the datalake name from it. We will use this datalake variable later when retrieving files"
+					"Make sure we store the data in a lab folder (not in the root ;-)"
 				]
 			},
 			{
@@ -83,24 +112,10 @@
 					}
 				},
 				"source": [
-					"# Import library\n",
-					"from pyspark.context import SparkContext\n",
-					"\n",
-					"# Create context\n",
-					"sc = SparkContext.getOrCreate()\n",
-					"\n",
-					"# Get configuration\n",
-					"tuples = sc.getConf().getAll()\n",
-					"\n",
-					"\n",
-					"# Find spark pool name\n",
-					"for element in tuples:\n",
-					"    if element[0].find('spark.synapse.workspace.name') != -1:\n",
-					"        datalakename = element[1].replace('synapse-', 'datalake')\n",
-					"\n",
-					"print(datalakename)"
+					"folderName = 'labs/11/transformeddata/' + str(runId)\n",
+					"folderName"
 				],
-				"execution_count": 23
+				"execution_count": 18
 			},
 			{
 				"cell_type": "markdown",
@@ -112,26 +127,20 @@
 					}
 				},
 				"source": [
-					"Here's the cell that was generated when selecting a file from the datalake. Notice we set the datalake name variable AND we use an f-string (string interpolation)"
+					"## Load source data\r\n",
+					"\r\n",
+					"Let's start by loading some historical sales order data into a dataframe."
 				]
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
-					"microsoft": {
-						"language": "python"
-					},
 					"collapsed": false
 				},
 				"source": [
-					"%%pyspark\r\n",
-					"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\r\n",
-					"## If header exists uncomment line below\r\n",
-					"##, header=True\r\n",
-					")\r\n",
-					"display(df.limit(10))"
+					"order_details = spark.read.csv('/labs/11/data/*.csv', header=True, inferSchema=True)"
 				],
-				"execution_count": 27
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -143,49 +152,9 @@
 					}
 				},
 				"source": [
-					"## Set Header=True\n",
-					"(because the products.csv file has the column headers in the first line)"
-				]
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"microsoft": {
-						"language": "python"
-					},
-					"collapsed": false
-				},
-				"source": [
-					"%%pyspark\n",
-					"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\n",
-					"    , header=True \n",
-					")\n",
-					"display(df.limit(10))"
-				],
-				"execution_count": 28
-			},
-			{
-				"cell_type": "markdown",
-				"metadata": {
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"## Count by category\n",
-					"\n",
-					""
+					"## Transform the data structure\r\n",
+					"\r\n",
+					"The source data includes a **CustomerName** field, that contains the customer's first and last name. Modify the dataframe to separate this field into separate **FirstName** and **LastName** fields."
 				]
 			},
 			{
@@ -203,10 +172,15 @@
 					"collapsed": false
 				},
 				"source": [
-					"df_counts = df.groupby(df.Category).count()\n",
-					"display(df_counts)"
+					"from pyspark.sql.functions import split, col\r\n",
+					"\r\n",
+					"# Create the new FirstName and LastName fields\r\n",
+					"transformed_df = order_details.withColumn(\"FirstName\", split(col(\"CustomerName\"), \" \").getItem(0)).withColumn(\"LastName\", split(col(\"CustomerName\"), \" \").getItem(1))\r\n",
+					"\r\n",
+					"# Remove the CustomerName field\r\n",
+					"transformed_df = transformed_df.drop(\"CustomerName\")"
 				],
-				"execution_count": 29
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -218,10 +192,29 @@
 					}
 				},
 				"source": [
-					"## Create a chart\n",
-					"\n",
-					"In the results output for the cell, select the Chart view. "
+					"## Save the transformed data\r\n",
+					"\r\n",
+					"Now save the transformed dataframe in Parquet format in a folder specified in a variable (Overwriting the data if it already exists)."
 				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"transformed_df.write.mode(\"overwrite\").parquet('/%s' % folderName)\r\n",
+					"print (\"Transformed data saved in %s!\" % folderName)"
+				],
+				"execution_count": null
 			}
 		]
 	}
