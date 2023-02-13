@@ -76,7 +76,7 @@
 			}
 		],
 		"folder": {
-			"name": "dp-203-10-Synpase-pipeline"
+			"name": "dp-203/05-Pipelines/10-Lab-Build a data pipelin in Azure Synapse Analytics"
 		},
 		"annotations": []
 	}
