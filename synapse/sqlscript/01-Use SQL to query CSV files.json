@@ -1,8 +1,8 @@
 {
-	"name": "Demo-02-1-Use SQL to query CSV files",
+	"name": "01-Use SQL to query CSV files",
 	"properties": {
 		"folder": {
-			"name": "dp-203/02-Serverless SQL/Query files using a serverless SQL pool"
+			"name": "dp-203/02-Serverless SQL/Demo-02-Query files using a serverless SQL pool"
 		},
 		"content": {
 			"query": "-- Demo: Query files using a serverless SQL pool\n-- Task: Use SQL to query CSV files\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-500/01/data/*.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n\n/*\nNote the results consist of columns named C1, C2, and so on. In this example, the CSV files do not include \nthe column headers. While it’s possible to work with the data using the generic column names that have been \nassigned, or by ordinal position, it will be easier to understand the data if you define a tabular schema. \nTo accomplish this, add a WITH clause to the OPENROWSET function as shown here (replacing datalakexxxxxxx with \nthe name of your data lake storage account), and then rerun the query\n*/\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-500/01/data/*.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0'\n    )\n    WITH (\n        SalesOrderNumber VARCHAR(10) COLLATE Latin1_General_100_BIN2_UTF8,\n        SalesOrderLineNumber INT,\n        OrderDate DATE,\n        CustomerName VARCHAR(25) COLLATE Latin1_General_100_BIN2_UTF8,\n        EmailAddress VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n        Item VARCHAR(30) COLLATE Latin1_General_100_BIN2_UTF8,\n        Quantity INT,\n        UnitPrice DECIMAL(18,2),\n        TaxAmount DECIMAL (18,2)\n    ) AS [result]\n\n\n",
