@@ -20,6 +20,9 @@
 		"GitHubDP203AzureDataEngineer_properties_typeProperties_url": {
 			"value": "https://raw.githubusercontent.com/MicrosoftLearning/DP-203-Azure-Data-Engineer/"
 		},
+		"GitHubDP500AzureDataAnalyst_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/MicrosoftLearning/DP-500-Azure-Data-Analyst/"
+		},
 		"KeyVault_properties_typeProperties_baseUrl": {
 			"value": "@{concat('https://keyvault-', linkedService().suffix, '.vault.azure.net/')}"
 		},
