@@ -2,7 +2,7 @@
 	"name": "Query Azure Cosmos DB from Azure Synapse Analytics",
 	"properties": {
 		"folder": {
-			"name": "reorg/dp-203-14-Synapselink-cosmos"
+			"name": "dp-203/06-HTAP/14-Lab-Synapse Link CosmosDB"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,

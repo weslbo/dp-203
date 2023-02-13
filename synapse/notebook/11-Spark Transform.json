@@ -2,7 +2,7 @@
 	"name": "11-Spark Transform",
 	"properties": {
 		"folder": {
-			"name": "reorg/dp-203-11-Spark-notebook-in-Synapse-Pipeline"
+			"name": "dp-203/05-Pipelines/11-Lab-Apache Spark notebooks in a pipeline"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a7e069d8-34cb-4d15-8a84-da42257808c3"
+				"spark.autotune.trackingId": "df439e4e-ce8d-48ec-a01b-becb52b80ac1"
 			}
 		},
 		"metadata": {
@@ -45,7 +45,8 @@
 				"sparkVersion": "3.2",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
