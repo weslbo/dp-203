@@ -1,5 +1,5 @@
 {
-	"name": "Demo-Use SQL to query parquet files",
+	"name": "Demo-02-3-Use SQL to query parquet files",
 	"properties": {
 		"folder": {
 			"name": "dp-203/02-Serverless SQL"

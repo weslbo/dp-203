@@ -1,5 +1,5 @@
 {
-	"name": "Demo-Use SQL to query JSON files",
+	"name": "Demo-02-2-Use SQL to query JSON files",
 	"properties": {
 		"folder": {
 			"name": "dp-203/02-Serverless SQL"
