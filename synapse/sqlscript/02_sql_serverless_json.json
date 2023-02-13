@@ -1,0 +1,20 @@
+{
+	"name": "02_sql_serverless_json",
+	"properties": {
+		"folder": {
+			"name": "dp-500/03-module"
+		},
+		"content": {
+			"query": "-- REMEMBER to replace the datalake account url\n\n-- EXAMPLE: select from JSON file. Here, we have explicitly defined the JSON_VALUE elements\nSELECT TOP 100\n      JSON_VALUE(jsonContent, '$.ProductID') as ProductId\n    , JSON_VALUE(jsonContent, '$.Name') as Name\n    , JSON_VALUE(jsonContent, '$.ProductNumber') as ProductNumber\n    , JSON_VALUE(jsonContent, '$.Color') as Color\n    , JSON_VALUE(jsonContent, '$.StandardCost') as StandardCost\n    , JSON_VALUE(jsonContent, '$.ListPrice') as ListPrice\n    , JSON_VALUE(jsonContent, '$.Size') as Size\n    , JSON_VALUE(jsonContent, '$.Weight') as Weight\n    , JSON_VALUE(jsonContent, '$.ProductCategoryID') as ProductCategoryID\n    , JSON_VALUE(jsonContent, '$.ProductModelID') as ProductModelID\n    , JSON_VALUE(jsonContent, '$.SellStartDate') as SellStartDate\n    , JSON_VALUE(jsonContent, '$.SellEndDate') as SellEndDate\n    , JSON_VALUE(jsonContent, '$.DiscontinuedDate') as DiscontinuedDate\n    , JSON_VALUE(jsonContent, '$.ThumbNailPhoto') as ThumbNailPhoto\n    , JSON_VALUE(jsonContent, '$.ThumbnailPhotoFileName') as ThumbnailPhotoFileName\n    , JSON_VALUE(jsonContent, '$.rowguid') as rowguid\n    , JSON_VALUE(jsonContent, '$.ModifiedDate') as ModifiedDate\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/landing/adventureworkslt/tables/json/SalesLT.Product.json',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b'\n        --ROWTERMINATOR = '0x0b' -- Doesn't work here as lines are separated by a newline (no comma)\n    )\n    WITH (\n        jsonContent varchar(MAX)\n    ) AS [result]\n\n\n\n-- EXAMPLE: We can specify our own column names and data types\nSELECT TOP 100 *\nFROM \n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/landing/adventureworkslt/tables/json/SalesLT.Product.json',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b'\n    )\n    WITH \n    (\n        jsonContent varchar(MAX)\n    ) AS [result]\n    CROSS APPLY openjson(jsonContent)\n        WITH \n        (\n            ProductID INT,\n            Name NVARCHAR(50),\n            ProductNumber NVARCHAR(25),\n            Color NVARCHAR(15),\n            StandardCost MONEY,\n            ListPrice MONEY,\n            Size NVARCHAR(5),\n            Weight DECIMAL,\n            ProductCategoryID INT,\n            ProductModelID INT,\n            SellStartDate DATETIME2,\n            SellEndDate DATETIME2,\n            DiscontinuedDate DATETIME2,\n            ThumbNailPhoto VARBINARY(max), \n            ThumbnailPhotoFileName NVARCHAR(50),\n            RowGuid UNIQUEIDENTIFIER '$.rowguid',   -- notice that we can override the name of the column\n            ModifiedDate DATETIME2\n        )",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
