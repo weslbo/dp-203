@@ -2,7 +2,7 @@
 	"name": "04-Insert data into lake database",
 	"properties": {
 		"folder": {
-			"name": "reorg/dp-203-04-Create-a-Lake-Database"
+			"name": "dp-203/02-Serverless SQL/04-Demo-Analyze data in a lake database"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2db486a9-a22c-4be2-9c2f-a5264c668ac2"
+				"spark.autotune.trackingId": "afcec866-849b-4d19-8fa7-371629a7fe80"
 			}
 		},
 		"metadata": {
@@ -45,7 +45,8 @@
 				"sparkVersion": "3.2",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},

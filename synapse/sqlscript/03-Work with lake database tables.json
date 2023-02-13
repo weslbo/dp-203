@@ -2,7 +2,7 @@
 	"name": "03-Work with lake database tables",
 	"properties": {
 		"folder": {
-			"name": "dp-203/02-Serverless SQL/Demo-04-Analyze data in a lake database"
+			"name": "dp-203/02-Serverless SQL/04-Demo-Analyze data in a lake database"
 		},
 		"content": {
 			"query": "-- Demo: Analyze data in a lake database\n-- Task: Work with lake database tables\n\n-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",

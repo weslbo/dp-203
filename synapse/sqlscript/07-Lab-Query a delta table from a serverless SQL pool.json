@@ -1,5 +1,5 @@
 {
-	"name": "Lab-07-Query a delta table from a serverless SQL pool",
+	"name": "07-Lab-Query a delta table from a serverless SQL pool",
 	"properties": {
 		"description": "Query a delta table from a serverless SQL pool",
 		"folder": {
