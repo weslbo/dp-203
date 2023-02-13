@@ -1,11 +1,11 @@
 {
-	"name": "02 - Work with lake database tables",
+	"name": "Demo-Work with lake database tables",
 	"properties": {
 		"folder": {
-			"name": "reorg/dp-203-04-Create-a-Lake-Database"
+			"name": "dp-203/04-Analyze data in a lake database"
 		},
 		"content": {
-			"query": "-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
+			"query": "-- Demo: Analyze data in a lake database\n-- Task: Work with lake database tables\n\n-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
 			"metadata": {
 				"language": "sql"
 			},
