@@ -2,7 +2,7 @@
 	"name": "Demo-04-2-Validate Insert after Spark",
 	"properties": {
 		"folder": {
-			"name": "dp-203/02-Serverless SQL"
+			"name": "dp-203/02-Serverless SQL/Analyze data in a lake database"
 		},
 		"content": {
 			"query": "-- Demo: Analyze data in a lake database\n-- Task: Validate Insert after Spark\n\nUse RetailDB\n\n-- This statement should not return any data before the notebook has executed.\n\nSELECT *\nFROM SalesOrder WHERE SalesOrderId = 99999\n\n-- cleanup for next demo\n-- This will not work: DML Operations are not supported with external tables.\nDELETE FROM SalesOrder WHERE SalesOrderId = 99999",

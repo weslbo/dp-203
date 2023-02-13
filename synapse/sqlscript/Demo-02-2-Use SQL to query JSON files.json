@@ -2,7 +2,7 @@
 	"name": "Demo-02-2-Use SQL to query JSON files",
 	"properties": {
 		"folder": {
-			"name": "dp-203/02-Serverless SQL"
+			"name": "dp-203/02-Serverless SQL/Query files using a serverless SQL pool"
 		},
 		"content": {
 			"query": "-- Demo: Query files using a serverless SQL pool\n-- Task: Use SQL to query JSON files\n\n-- The script is designed to query comma-delimited (CSV) data rather then JSON, so you need to make a few modifications before it will work successfully.\nSELECT TOP 100\n    jsonContent\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-500/01/data/*.json',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b',\n        ROWTERMINATOR = '0x0b'\n    )\n    WITH (\n        jsonContent varchar(MAX)\n    ) AS [result]\n\n\n-- Modify the query as follows so that it uses the JSON_VALUE function to extract individual field values from the JSON data.\nSELECT JSON_VALUE(Doc, '$.SalesOrderNumber') AS OrderNumber,\n    JSON_VALUE(Doc, '$.CustomerName') AS Customer,\n    Doc\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-500/01/data/*.json',\n        FORMAT = 'CSV',\n        FIELDTERMINATOR ='0x0b',\n        FIELDQUOTE = '0x0b',\n        ROWTERMINATOR = '0x0b'\n    ) WITH (Doc NVARCHAR(MAX)) as rows",
