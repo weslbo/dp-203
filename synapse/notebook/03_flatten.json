@@ -1,0 +1,281 @@
+{
+	"name": "03_flatten",
+	"properties": {
+		"folder": {
+			"name": "dp-500/03-Synapse"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "758d110e-5e57-423d-ab1e-6869eae1745c"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Analyze complex data types in Azure Synapse Analytics\r\n",
+					"\r\n",
+					"Notebook based on article: https://learn.microsoft.com/en-us/azure/synapse-analytics/how-to-analyze-complex-schema\r\n",
+					"\r\n",
+					"Complex data types are increasingly common and represent a challenge for data engineers. Analyzing nested schema and arrays can involve time-consuming and complex SQL queries. Additionally, it can be difficult to rename or cast the nested columns data type. Also, when you're working with deeply nested objects, you can encounter performance problems.\r\n",
+					"\r\n",
+					"Data engineers need to understand how to efficiently process complex data types and make them easily accessible to everyone. In the following example, you use Spark in Azure Synapse Analytics to read and transform objects into a flat structure through data frames. You use the serverless model of SQL in Azure Synapse Analytics to query such objects directly, and return those results as a regular table.\r\n",
+					"\r\n",
+					"## Create a Spark DataFrame from a JSON string\r\n",
+					"\r\n",
+					"1. Add the JSON content from the variable to a list.\r\n",
+					"2. Create a Spark dataset from the list.\r\n",
+					"3. Use spark.read.json to parse the Spark dataset."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"json = \"\"\"{\r\n",
+					"    \"id\": \"66532691-ab20-11ea-8b1d-936b3ec64e54\",\r\n",
+					"    \"context\": {\r\n",
+					"        \"data\": {\r\n",
+					"            \"eventTime\": \"2020-06-10T13:43:34.553Z\",\r\n",
+					"            \"samplingRate\": \"100.0\",\r\n",
+					"            \"isSynthetic\": \"false\"\r\n",
+					"        },\r\n",
+					"        \"session\": {\r\n",
+					"            \"isFirst\": \"false\",\r\n",
+					"            \"id\": \"38619c14-7a23-4687-8268-95862c5326b1\"\r\n",
+					"        },\r\n",
+					"        \"custom\": {\r\n",
+					"            \"dimensions\": [\r\n",
+					"                {\r\n",
+					"                    \"customerInfo\": {\r\n",
+					"                        \"ProfileType\": \"ExpertUser\",\r\n",
+					"                        \"RoomName\": \"\",\r\n",
+					"                        \"CustomerName\": \"diamond\",\r\n",
+					"                        \"UserName\": \"XXXX@yahoo.com\"\r\n",
+					"                    }\r\n",
+					"                },\r\n",
+					"                {\r\n",
+					"                    \"customerInfo\": {\r\n",
+					"                        \"ProfileType\": \"Novice\",\r\n",
+					"                        \"RoomName\": \"\",\r\n",
+					"                        \"CustomerName\": \"topaz\",\r\n",
+					"                        \"UserName\": \"XXXX@outlook.com\"\r\n",
+					"                    }\r\n",
+					"                }\r\n",
+					"            ]\r\n",
+					"        }\r\n",
+					"    }\r\n",
+					"}\"\"\"\r\n",
+					"json_list = []\r\n",
+					"json_list.append(json)\r\n",
+					"\r\n",
+					"df = spark.read.json(sc.parallelize(json_list))\r\n",
+					"\r\n",
+					"display(df)"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Define a function to flatten the nested schema\r\n",
+					"\r\n",
+					"You can use this generic function without change. "
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql.functions import col\r\n",
+					"\r\n",
+					"def flatten_df(nested_df):\r\n",
+					"    stack = [((), nested_df)]\r\n",
+					"    columns = []\r\n",
+					"\r\n",
+					"    while len(stack) > 0:\r\n",
+					"        parents, df = stack.pop()\r\n",
+					"\r\n",
+					"        flat_cols = [\r\n",
+					"            col(\".\".join(parents + (c[0],))).alias(\"_\".join(parents + (c[0],)))\r\n",
+					"            for c in df.dtypes\r\n",
+					"            if c[1][:6] != \"struct\"\r\n",
+					"        ]\r\n",
+					"\r\n",
+					"        nested_cols = [\r\n",
+					"            c[0]\r\n",
+					"            for c in df.dtypes\r\n",
+					"            if c[1][:6] == \"struct\"\r\n",
+					"        ]\r\n",
+					"\r\n",
+					"        columns.extend(flat_cols)\r\n",
+					"\r\n",
+					"        for nested_col in nested_cols:\r\n",
+					"            projected_df = df.select(nested_col + \".*\")\r\n",
+					"            stack.append((parents + (nested_col,), projected_df))\r\n",
+					"\r\n",
+					"    return nested_df.select(columns)"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Use the function to flatten the nested schema\r\n",
+					"\r\n",
+					"In this step, you flatten the nested schema of the data frame (df) into a new data frame. The display function should return 10 columns and 1 row. The array and its nested elements are still there."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql.types import StringType, StructField, StructType\r\n",
+					"df_flat = flatten_df(df)\r\n",
+					"display(df_flat.limit(10))"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Transform the array\r\n",
+					"\r\n",
+					"Here, you transform the array, context_custom_dimensions, in the data frame df_flat, into a new data frame df_flat_explode. In the following code, you also define which column to select:"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql.functions import explode\r\n",
+					"from pyspark.sql.functions import flatten\r\n",
+					"from pyspark.sql.functions import arrays_zip\r\n",
+					"\r\n",
+					"df_flat_explode = df_flat.select(\"id\", explode(df_flat.context_custom_dimensions), \"context_session_id\",\"context_data_eventTime\",\"context_data_samplingRate\")\r\n",
+					"display(df_flat_explode.limit(10))"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Use the function to flatten the nested schema\r\n",
+					"\r\n",
+					"Finally, you use the function to flatten the nested schema of the data frame df_flat_explode, into a new data frame, df_flat_explode_flat:"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df_flat_explode_flat = flatten_df(df_flat_explode)\r\n",
+					"display(df_flat_explode_flat.limit(10))"
+				],
+				"execution_count": 11
+			}
+		]
+	}
+}

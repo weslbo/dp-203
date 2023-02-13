@@ -1,0 +1,127 @@
+{
+	"name": "04_dedicatedpool",
+	"properties": {
+		"folder": {
+			"name": "dp-500/03-Synapse"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "93d32f89-9b0b-45da-815b-6b667743d436"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Read or Write data from Apache Spark pools to a dedicated SQL pool\r\n",
+					"\r\n",
+					"Article: https://learn.microsoft.com/en-us/training/modules/integrate-sql-apache-spark-pools-azure-synapse-analytics/7-exercise-integrate-sql"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql import types\r\n",
+					"\r\n",
+					"datalake = 'datalakecn32xts6vteh6'\r\n",
+					"\r\n",
+					"customSchema = types.StructType([\r\n",
+					"    types.StructField(\"SalesOrderNumber\", types.StringType(), True),\r\n",
+					"    types.StructField(\"SalesTerritoryKey\", types.IntegerType(), True),\r\n",
+					"    types.StructField(\"OrderDate\", types.DateType(), True),\r\n",
+					"    types.StructField(\"Customer\", types.StringType(), True),\r\n",
+					"    types.StructField(\"Email\", types.StringType(), True),\r\n",
+					"    types.StructField(\"Adress\", types.StringType(), True),\r\n",
+					"    types.StructField(\"Quantity\", types.IntegerType(), True),\r\n",
+					"    types.StructField(\"UnitPrice\", types.DoubleType(), True),\r\n",
+					"    types.StructField(\"ShippingCost\", types.DoubleType(), True),\r\n",
+					"])\r\n",
+					"\r\n",
+					"df = spark.read \\\r\n",
+					"    .csv('abfss://landing@' + datalake + '.dfs.core.windows.net/Allfiles/01/data/*.csv', schema=customSchema)\r\n",
+					"df.createOrReplaceTempView(\"sales\")"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"We must run code that uses the Apache Spark pool to Synapse SQL connector in Scala. To do this, we add the %%spark magic to the cell. Run the following in a new code cell to read from the top_purchases view:"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "scala"
+					}
+				},
+				"source": [
+					"%%spark\r\n",
+					"\r\n",
+					"// Make sure the name of the dedcated SQL pool (SQLPool01 below) matches the name of your SQL pool.\r\n",
+					"val df = spark.sqlContext.sql(\"select * from sales\")\r\n",
+					"df.write.synapsesql(\"DP500DWH.dbo.TopPurchases\", Constants.INTERNAL)\r\n",
+					""
+				],
+				"execution_count": 14
+			}
+		]
+	}
+}
