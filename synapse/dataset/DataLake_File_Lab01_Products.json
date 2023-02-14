@@ -17,7 +17,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "products.csv",
-				"folderPath": "product_data",
+				"folderPath": "labs-dp-203/01/product_data",
 				"fileSystem": "files"
 			},
 			"columnDelimiter": ",",
