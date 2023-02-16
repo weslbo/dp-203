@@ -1,5 +1,5 @@
 {
-	"name": "01-Use a dedicated SQL pool to query a data warehouse",
+	"name": "02-Use a dedicated SQL pool to query a data warehouse",
 	"properties": {
 		"folder": {
 			"name": "dp-203/01-Intro to data engineering/01-Lab-Explore Azure Synapse Analytics"

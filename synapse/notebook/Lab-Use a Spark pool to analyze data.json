@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "603f9fe4-6a16-4534-9d90-0e956585655e"
+				"spark.autotune.trackingId": "78916e14-e553-4de9-a3fd-1c2161e668bf"
 			}
 		},
 		"metadata": {
@@ -100,7 +100,7 @@
 					"\n",
 					"print(datalakename)"
 				],
-				"execution_count": 23
+				"execution_count": 1
 			},
 			{
 				"cell_type": "markdown",
@@ -125,13 +125,13 @@
 				},
 				"source": [
 					"%%pyspark\r\n",
-					"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\r\n",
+					"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/labs-dp-203/01/product_data/products.csv', format='csv'\r\n",
 					"## If header exists uncomment line below\r\n",
 					"##, header=True\r\n",
 					")\r\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 27
+				"execution_count": 2
 			},
 			{
 				"cell_type": "markdown",
@@ -166,12 +166,12 @@
 				},
 				"source": [
 					"%%pyspark\n",
-					"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\n",
+					"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/labs-dp-203/01/product_data/products.csv', format='csv'\n",
 					"    , header=True \n",
 					")\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 28
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
@@ -206,7 +206,7 @@
 					"df_counts = df.groupby(df.Category).count()\n",
 					"display(df_counts)"
 				],
-				"execution_count": 29
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
