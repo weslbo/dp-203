@@ -1,5 +1,5 @@
 {
-	"name": "01-Query data in files",
+	"name": "01-Analyze data in a data lake with Spark",
 	"properties": {
 		"folder": {
 			"name": "dp-203/03-Spark/05-Demo-Analyze data in a data with Spark"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f5e20cb2-e3c4-4cc2-a881-93c0f6824c1f"
+				"spark.autotune.trackingId": "cdcfb1fc-aae7-44dd-b529-6dcc12a368ce"
 			}
 		},
 		"metadata": {
