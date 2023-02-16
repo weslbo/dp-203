@@ -1,5 +1,5 @@
 {
-	"name": "02-Validate Insert after Spark",
+	"name": "03-Validate Insert after Spark",
 	"properties": {
 		"folder": {
 			"name": "dp-203/02-Serverless SQL/04-Demo-Analyze data in a lake database"
