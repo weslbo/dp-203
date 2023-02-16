@@ -919,7 +919,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "products.csv",
-						"folderPath": "product_data",
+						"folderPath": "labs-dp-203/01/product_data",
 						"fileSystem": "files"
 					},
 					"columnDelimiter": ",",
@@ -1627,21 +1627,22 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/01-Use a dedicated SQL pool to query a data warehouse')]",
+			"name": "[concat(parameters('workspaceName'), '/01-Use a serverless SQL pool to analyze data')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"description": "Used in lab 1 - task \"Use a serverless SQL pool to analyze data\"",
 				"folder": {
 					"name": "dp-203/01-Intro to data engineering/01-Lab-Explore Azure Synapse Analytics"
 				},
 				"content": {
-					"query": "-- Lab: Explore Azure Synapse Analytics\n-- Task: Use a dedicated SQL pool to query a data warehouse\n\nSELECT d.CalendarYear, d.MonthNumberOfYear, d.EnglishMonthName,\n    p.EnglishProductName AS Product, SUM(o.OrderQuantity) AS UnitsSold\nFROM dbo.FactInternetSales AS o\nJOIN dbo.DimDate AS d ON o.OrderDateKey = d.DateKey\nJOIN dbo.DimProduct AS p ON o.ProductKey = p.ProductKey\nGROUP BY d.CalendarYear, d.MonthNumberOfYear, d.EnglishMonthName, p.EnglishProductName\nORDER BY d.MonthNumberOfYear",
+					"query": "-- Lab: Explore Azure Synapse Analytics\n-- Task: Use a serverless SQL pool to analyze data\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203/01/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n        --,HEADER_ROW = TRUE -- Note the results consist of four columns named C1, C2, C3, and C4; \n    ) AS [result]           -- and that the first row in the results contains the names of the data fields. To fix this problem, add a HEADER_ROW = TRUE\n\n\nSELECT\n    Category, COUNT(*) AS ProductCount\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203/01/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]\nGROUP BY Category\n\n-- select the Chart view, and then select the following settings for the chart\n-- Chart type: Column\n-- Category colunn: Category\n-- legend Series columns: ProductCount",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "sqldwh",
-						"poolName": "sqldwh"
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -1704,7 +1705,7 @@
 					"name": "dp-203/02-Serverless SQL/03-Lab-Transform files using a serverless SQL pool"
 				},
 				"content": {
-					"query": "-- Lab: Transform files using a serverless SQL pool\n-- Task: Create Sales DB with External table\n\n-- By defining an external data source in a database, you can use it to reference the data lake \n-- location where you want to store files for external tables. An external file format enables \n-- you to define the format for those files - for example, Parquet or CSV. To use these objects \n-- to work with external tables, you need to create them in a database other than the \n-- default master database.\n\nDROP DATABASE Sales\nGO;\n\n-- Database for sales data\nCREATE DATABASE Sales\n  COLLATE Latin1_General_100_BIN2_UTF8;\nGO;\n\nUse Sales;\nGO;\n\n-- External data is in the Files container in the data lake\nCREATE EXTERNAL DATA SOURCE sales_data WITH (\n    LOCATION = 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203'\n);\nGO;\n\n-- Format for table files\nCREATE EXTERNAL FILE FORMAT ParquetFormat\n    WITH (\n            FORMAT_TYPE = PARQUET,\n            DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n        );\nGO;\n\n-- retrieve and aggregate data from the CSV sales files by using the external data source\n-- note that the BULK path is relative to the folder location on which the data source is defined:\nSELECT Item AS Product,\n       SUM(Quantity) AS ItemsSold,\n       ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\nFROM\n    OPENROWSET(\n        BULK '03/data/*.csv', -- originally: sales/csv/*.csv\n        DATA_SOURCE = 'sales_data',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS orders\nGROUP BY Item;\n\n-- save the results of query in an external table, like this:\nCREATE EXTERNAL TABLE ProductSalesTotals\n    WITH (\n        LOCATION = '03/productsales/',\n        DATA_SOURCE = sales_data,\n        FILE_FORMAT = ParquetFormat\n    )\nAS\nSELECT Item AS Product,\n    SUM(Quantity) AS ItemsSold,\n    ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\nFROM\n    OPENROWSET(\n        BULK '03/data/*.csv',\n        DATA_SOURCE = 'sales_data',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS orders\nGROUP BY Item;\n\n-- Make sure to navigate to the files section: \n-- labs/03/data/productsales/\n-- Observe that one or more files with names similar to ABC123DE----.parquet have been created. \n-- These files contain the aggregated product sales data. \n-- To prove this, you can select one of the files and use the New SQL script > Select TOP 100 rows menu to query it directly.\n-- This is auto-generated code:\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203/03/productsales/*.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n-- Make sure to look in the Data hub, (refresh SQL Database)\n-- Notice the Sales database, external table name dbo.ProductSalesTotals\n\n-- Run following query\nSELECT TOP 10 * FROM ProductSalesTotals\n\n\n-- Clean up\nDROP EXTERNAL TABLE ProductSalesTotals\nDROP EXTERNAL FILE FORMAT ParquetFormat\nDROP EXTERNAL DATA SOURCE sales_data\n\n\n\n",
+					"query": "-- Lab: Transform files using a serverless SQL pool\n-- Task: Create Sales DB with External table\n\n-- By defining an external data source in a database, you can use it to reference the data lake \n-- location where you want to store files for external tables. An external file format enables \n-- you to define the format for those files - for example, Parquet or CSV. To use these objects \n-- to work with external tables, you need to create them in a database other than the \n-- default master database.\n\n--DROP DATABASE Sales\n--GO;\n\n-- Database for sales data\nCREATE DATABASE Sales\n  COLLATE Latin1_General_100_BIN2_UTF8;\nGO;\n\nUse Sales;\nGO;\n\n-- External data is in the Files container in the data lake\nCREATE EXTERNAL DATA SOURCE sales_data WITH (\n    LOCATION = 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203'\n);\nGO;\n\n-- Format for table files\nCREATE EXTERNAL FILE FORMAT ParquetFormat\n    WITH (\n            FORMAT_TYPE = PARQUET,\n            DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n        )\nGO;\n\n-- retrieve and aggregate data from the CSV sales files by using the external data source\n-- note that the BULK path is relative to the folder location on which the data source is defined:\nSELECT Item AS Product,\n       SUM(Quantity) AS ItemsSold,\n       ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\nFROM\n    OPENROWSET(\n        BULK '03/data/*.csv', -- originally: sales/csv/*.csv\n        DATA_SOURCE = 'sales_data',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS orders\nGROUP BY Item;\n\n-- save the results of query in an external table, like this:\nCREATE EXTERNAL TABLE ProductSalesTotals\n    WITH (\n        LOCATION = '03/productsales/',\n        DATA_SOURCE = sales_data,\n        FILE_FORMAT = ParquetFormat\n    )\nAS\nSELECT Item AS Product,\n    SUM(Quantity) AS ItemsSold,\n    ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\nFROM\n    OPENROWSET(\n        BULK '03/data/*.csv',\n        DATA_SOURCE = 'sales_data',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS orders\nGROUP BY Item;\n\n-- Make sure to navigate to the files section: \n-- labs/03/data/productsales/\n-- Observe that one or more files with names similar to ABC123DE----.parquet have been created. \n-- These files contain the aggregated product sales data. \n-- To prove this, you can select one of the files and use the New SQL script > Select TOP 100 rows menu to query it directly.\n-- This is auto-generated code:\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203/03/productsales/*.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n-- Make sure to look in the Data hub, (refresh SQL Database)\n-- Notice the Sales database, external table name dbo.ProductSalesTotals\n\n-- Run following query\nSELECT TOP 10 * FROM ProductSalesTotals\n\n\n-- Clean up\nDROP EXTERNAL TABLE ProductSalesTotals\nDROP EXTERNAL FILE FORMAT ParquetFormat\nDROP EXTERNAL DATA SOURCE sales_data\n\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -1742,22 +1743,21 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/02-Use a serverless SQL pool to analyze data')]",
+			"name": "[concat(parameters('workspaceName'), '/02-Use a dedicated SQL pool to query a data warehouse')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"description": "Used in lab 1 - task \"Use a serverless SQL pool to analyze data\"",
 				"folder": {
 					"name": "dp-203/01-Intro to data engineering/01-Lab-Explore Azure Synapse Analytics"
 				},
 				"content": {
-					"query": "-- Lab: Explore Azure Synapse Analytics\n-- Task: Use a serverless SQL pool to analyze data\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n        --,HEADER_ROW = TRUE -- Note the results consist of four columns named C1, C2, C3, and C4; \n    ) AS [result]           -- and that the first row in the results contains the names of the data fields. To fix this problem, add a HEADER_ROW = TRUE\n\n\nSELECT\n    Category, COUNT(*) AS ProductCount\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/product_data/products.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]\nGROUP BY Category;\n\n-- select the Chart view, and then select the following settings for the chart\n-- Chart type: Column\n-- Category colunn: Category\n-- legend Series columns: ProductCount",
+					"query": "-- Lab: Explore Azure Synapse Analytics\n-- Task: Use a dedicated SQL pool to query a data warehouse\n\nSELECT d.CalendarYear, d.MonthNumberOfYear, d.EnglishMonthName,\n    p.EnglishProductName AS Product, SUM(o.OrderQuantity) AS UnitsSold\nFROM dbo.FactInternetSales AS o\nJOIN dbo.DimDate AS d ON o.OrderDateKey = d.DateKey\nJOIN dbo.DimProduct AS p ON o.ProductKey = p.ProductKey\nGROUP BY d.CalendarYear, d.MonthNumberOfYear, d.EnglishMonthName, p.EnglishProductName\nORDER BY d.MonthNumberOfYear",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
+						"databaseName": "sqldwh",
+						"poolName": "sqldwh"
 					},
 					"resultLimit": 5000
 				},
@@ -1820,12 +1820,12 @@
 					"name": "dp-203/02-Serverless SQL/03-Lab-Transform files using a serverless SQL pool"
 				},
 				"content": {
-					"query": "-- Lab: Transform files using a serverless SQL pool\n-- Task: Create Stored Procedure\n\nUSE Sales;\nGO;\n\n-- External data is in the Files container in the data lake\nCREATE EXTERNAL DATA SOURCE sales_data WITH (\n    LOCATION = 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203'\n);\nGO;\n\n-- Format for table files\nCREATE EXTERNAL FILE FORMAT ParquetFormat\n    WITH (\n            FORMAT_TYPE = PARQUET,\n            DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n        );\nGO;\n\n-- If you will need to transform data frequently, you can use a stored procedure to encapsulate a CETAS statement.\n-- create a stored procedure in the Sales database that aggregates sales by \n-- year and saves the results in an external table:\n\nCREATE PROCEDURE sp_GetYearlySales\nAS\nBEGIN\n    IF EXISTS (\n            SELECT * FROM sys.external_tables\n            WHERE name = 'YearlySalesTotals'\n        )\n        DROP EXTERNAL TABLE YearlySalesTotals\n    \n    CREATE EXTERNAL TABLE YearlySalesTotals\n    WITH (\n            LOCATION = '03/yearlysales/',\n            DATA_SOURCE = sales_data,\n            FILE_FORMAT = ParquetFormat\n        )\n    AS\n    SELECT YEAR(OrderDate) AS CalendarYear,\n           SUM(Quantity) AS ItemsSold,\n           ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\n    FROM\n        OPENROWSET(\n            BULK '03/data/*.csv',\n            DATA_SOURCE = 'sales_data',\n            FORMAT = 'CSV',\n            PARSER_VERSION = '2.0',\n            HEADER_ROW = TRUE\n        ) AS orders\n    GROUP BY YEAR(OrderDate)\nEND\n\nGO;\n\n-- Execute the stored procedure:\nEXEC sp_GetYearlySales;\n\n-- On the files tab containing the file system for your data lake, \n-- view the contents of the sales folder (refreshing the view if necessary) \n-- and verify that a new yearlysales folder has been created.\n\nSELECT * FROM YearlySalesTotals\n\n\nDROP PROCEDURE sp_GetYearlySales \nDROP EXTERNAL TABLE YearlySalesTotals\nDROP EXTERNAL FILE FORMAT ParquetFormat\nDROP EXTERNAL DATA SOURCE sales_data\n",
+					"query": "-- Lab: Transform files using a serverless SQL pool\n-- Task: Create Stored Procedure\n\nUSE Sales;\nGO;\n\n-- External data is in the Files container in the data lake\nCREATE EXTERNAL DATA SOURCE sales_data WITH (\n    LOCATION = 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203'\n);\nGO;\n\n-- Format for table files\nCREATE EXTERNAL FILE FORMAT ParquetFormat\n    WITH (\n            FORMAT_TYPE = PARQUET,\n            DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n        );\nGO;\n\n-- If you will need to transform data frequently, you can use a stored procedure to encapsulate a CETAS statement.\n-- create a stored procedure in the Sales database that aggregates sales by \n-- year and saves the results in an external table:\n\nCREATE PROCEDURE sp_GetYearlySales\nAS\nBEGIN\n    IF EXISTS (\n            SELECT * FROM sys.external_tables\n            WHERE name = 'YearlySalesTotals'\n        )\n        DROP EXTERNAL TABLE YearlySalesTotals\n    \n    CREATE EXTERNAL TABLE YearlySalesTotals\n    WITH (\n            LOCATION = '03/yearlysales/',\n            DATA_SOURCE = sales_data,\n            FILE_FORMAT = ParquetFormat\n        )\n    AS\n    SELECT YEAR(OrderDate) AS CalendarYear,\n           SUM(Quantity) AS ItemsSold,\n           ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\n    FROM\n        OPENROWSET(\n            BULK '03/data/*.csv',\n            DATA_SOURCE = 'sales_data',\n            FORMAT = 'CSV',\n            PARSER_VERSION = '2.0',\n            HEADER_ROW = TRUE\n        ) AS orders\n    GROUP BY YEAR(OrderDate)\nEND\n\nGO;\n\n-- Execute the stored procedure:\nEXEC sp_GetYearlySales;\n\n-- On the files tab containing the file system for your data lake, \n-- view the contents of the sales folder (refreshing the view if necessary) \n-- and verify that a new yearlysales folder has been created.\n\nSELECT * FROM YearlySalesTotals\n\n\nDROP PROCEDURE sp_GetYearlySales \nDROP EXTERNAL TABLE YearlySalesTotals\nDROP EXTERNAL FILE FORMAT ParquetFormat\nDROP EXTERNAL DATA SOURCE sales_data\n\nUSE Master\nDROP DATABASE Sales",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "Sales",
+						"databaseName": "master",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -5278,7 +5278,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "603f9fe4-6a16-4534-9d90-0e956585655e"
+						"spark.autotune.trackingId": "78916e14-e553-4de9-a3fd-1c2161e668bf"
 					}
 				},
 				"metadata": {
@@ -5357,7 +5357,7 @@
 							"print(datalakename)"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": 1
 					},
 					{
 						"cell_type": "markdown",
@@ -5382,14 +5382,14 @@
 						},
 						"source": [
 							"%%pyspark\r\n",
-							"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\r\n",
+							"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/labs-dp-203/01/product_data/products.csv', format='csv'\r\n",
 							"## If header exists uncomment line below\r\n",
 							"##, header=True\r\n",
 							")\r\n",
 							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 27
+						"execution_count": 2
 					},
 					{
 						"cell_type": "markdown",
@@ -5424,13 +5424,13 @@
 						},
 						"source": [
 							"%%pyspark\n",
-							"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/product_data/products.csv', format='csv'\n",
+							"df = spark.read.load(f'abfss://files@{datalakename}.dfs.core.windows.net/labs-dp-203/01/product_data/products.csv', format='csv'\n",
 							"    , header=True \n",
 							")\n",
 							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 28
+						"execution_count": 3
 					},
 					{
 						"cell_type": "markdown",
@@ -5466,7 +5466,7 @@
 							"display(df_counts)"
 						],
 						"outputs": [],
-						"execution_count": 29
+						"execution_count": 4
 					},
 					{
 						"cell_type": "markdown",
@@ -5793,6 +5793,169 @@
 						],
 						"outputs": [],
 						"execution_count": 20
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/RetailDB')]",
+			"type": "Microsoft.Synapse/workspaces/databases",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"Ddls": [
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "RetailDB",
+							"EntityType": "DATABASE",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"Properties": {
+								"IsSyMSCDMDatabase": true
+							},
+							"Source": {
+								"Provider": "ADLS",
+								"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/RetailDB",
+								"Properties": {
+									"FormatType": "csv",
+									"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage"
+								}
+							}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "Customer",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "RetailDB"
+							},
+							"Description": "",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "CustomerId",
+										"Description": "Unique customer ID\t",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										}
+									},
+									{
+										"Name": "FirstName",
+										"Description": "Customer first name",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "LastName",
+										"Description": "Customer last name",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "EmailAddress",
+										"Description": "Customer email",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									},
+									{
+										"Name": "Phone",
+										"Description": "Customer phone",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										}
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/RetailDB/Customer",
+										"delimiter": ",",
+										"firstRowAsHeader": "false",
+										"multiLine": "false",
+										"serialization.format": "1",
+										"escape": "\\",
+										"quote": "\"",
+										"FormatTypeSetToDatabaseDefault": true,
+										"header": "false"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/RetailDB/Customer",
+									"Properties": {
+										"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": true
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "CustomerId",
+								"spark.sql.sources.provider": "csv"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
 					}
 				]
 			},
