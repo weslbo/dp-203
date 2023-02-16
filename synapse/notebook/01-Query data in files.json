@@ -6,6 +6,10 @@
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
@@ -16,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2a1cd2fb-f8e1-4917-882a-efd58ad669f6"
+				"spark.autotune.trackingId": "f5e20cb2-e3c4-4cc2-a881-93c0f6824c1f"
 			}
 		},
 		"metadata": {
@@ -24,20 +28,813 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-dyfk4ryjqex56/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://synapse-dyfk4ryjqex56.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
-				"cell_type": "code",
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					""
+					"# Use Spark to explore data\r\n",
+					"\r\n",
+					"- Select any of the files in the orders (labs-dp-500/02/data/) folder, and then in the New notebook list on the toolbar, select Load to DataFrame. A dataframe is a structure in Spark that represents a tabular dataset.\r\n",
+					"\r\n",
+					"- In the new Notebook 1 tab that opens, in the Attach to list, select your Spark pool (sparkxxxxxxx). Then use the ▷ Run all button to run all of the cells in the notebook (there’s currently only one!).\r\n",
+					"\r\n",
+					"- Since this is the first time you’ve run any Spark code in this session, the Spark pool must be started. This means that the first run in the session can take a few minutes. Subsequent runs will be quicker.\r\n",
+					"\r\n",
+					"- When the code has finished running, review the output beneath the cell in the notebook. It shows the first ten rows in the file you selected, with automatic column names in the form _c0, _c1, _c2, and so on."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-500/02/data/2019.csv', format='csv'\r\n",
+					"## If header exists uncomment line below\r\n",
+					"##, header=True\r\n",
+					")\r\n",
+					"display(df.limit(10))"
 				],
-				"execution_count": null
+				"execution_count": 1
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"- Modify the code so that the spark.read.load function reads data from all of the CSV files in the folder, and the display function shows the first 100 rows. Your code should look like this (with datalakexxxxxxx matching the name of your data lake store)\r\n",
+					"\r\n",
+					"- The dataframe now includes data from all of the files, but the column names are not useful. Spark uses a “schema-on-read” approach to try to determine appropriate data types for the columns based on the data they contain, and if a header row is present in a text file it can be used to identify the column names (by specifying a header=True parameter in the load function). Alternatively, you can define an explicit schema for the dataframe."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-500/02/data/*.csv', format='csv')\r\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"- Run the next cell and verify that the dataframe schema matches the orderSchema you defined. The printSchema function can be useful when using a dataframe with an automatically inferred schema."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"from pyspark.sql.types import *\r\n",
+					"from pyspark.sql.functions import *\r\n",
+					"\r\n",
+					"orderSchema = StructType([\r\n",
+					"    StructField(\"SalesOrderNumber\", StringType()),\r\n",
+					"    StructField(\"SalesOrderLineNumber\", IntegerType()),\r\n",
+					"    StructField(\"OrderDate\", DateType()),\r\n",
+					"    StructField(\"CustomerName\", StringType()),\r\n",
+					"    StructField(\"Email\", StringType()),\r\n",
+					"    StructField(\"Item\", StringType()),\r\n",
+					"    StructField(\"Quantity\", IntegerType()),\r\n",
+					"    StructField(\"UnitPrice\", FloatType()),\r\n",
+					"    StructField(\"Tax\", FloatType())\r\n",
+					"    ])\r\n",
+					"\r\n",
+					"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-500/02/data/*.csv', format='csv', schema=orderSchema)\r\n",
+					"display(df.limit(100))"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" df.printSchema()"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Analyze data in a dataframe\r\n",
+					"\r\n",
+					"The dataframe object in Spark is similar to a Pandas dataframe in Python, and includes a wide range of functions that you can use to manipulate, filter, group, and otherwise analyze the data it contains.\r\n",
+					"\r\n",
+					"## Filter a dataframe\r\n",
+					"\r\n",
+					"Run the next code cell, and review the results. Observe the following details:\r\n",
+					"- When you perform an operation on a dataframe, the result is a new dataframe (in this case, a new customers dataframe is created by selecting a specific subset of columns from the df dataframe)\r\n",
+					"- Dataframes provide functions such as count and distinct that can be used to summarize and filter the data they contain.\r\n",
+					"- The dataframe['Field1', 'Field2', ...] syntax is a shorthand way of defining a subset of column. You can also use select method, so the first line of the code above could be written as customers = df.select(\"CustomerName\", \"Email\")"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					" customers = df['CustomerName', 'Email']\r\n",
+					" print(customers.count())\r\n",
+					" print(customers.distinct().count())\r\n",
+					" display(customers.distinct())"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"- Run the next modified code to view the customers who have purchased the Road-250 Red, 52 product. Note that you can “chain” multiple functions together so that the output of one function becomes the input for the next - in this case, the dataframe created by the select method is the source dataframe for the where method that is used to apply filtering criteria."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					" customers = df.select(\"CustomerName\", \"Email\").where(df['Item']=='Road-250 Red, 52')\r\n",
+					" print(customers.count())\r\n",
+					" print(customers.distinct().count())\r\n",
+					" display(customers.distinct())"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Aggregate and group data in a dataframe\r\n",
+					"\r\n",
+					"- Run the next code cell, and note that the results show the sum of order quantities grouped by product. The groupBy method groups the rows by Item, and the subsequent sum aggregate function is applied to all of the remaining numeric columns (in this case, Quantity)"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					" productSales = df.select(\"Item\", \"Quantity\").groupBy(\"Item\").sum()\r\n",
+					" display(productSales)"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"- Run the next code cell, and note that the results show the number of sales orders per year. Note that the select method includes a SQL year function to extract the year component of the OrderDate field, and then an alias method is used to assign a columm name to the extracted year value. The data is then grouped by the derived Year column and the count of rows in each group is calculated before finally the orderBy method is used to sort the res"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					" yearlySales = df.select(year(\"OrderDate\").alias(\"Year\")).groupBy(\"Year\").count().orderBy(\"Year\")\r\n",
+					" display(yearlySales)"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Query data using Spark SQL\r\n",
+					"\r\n",
+					"As you’ve seen, the native methods of the dataframe object enable you to query and analyze data quite effectively. However, many data analysts are more comfortable working with SQL syntax. Spark SQL is a SQL language API in Spark that you can use to run SQL statements, or even persist data in relational tables.\r\n",
+					"\r\n",
+					"## Use Spark SQL in PySpark code\r\n",
+					"\r\n",
+					"The default language in Azure Synapse Studio notebooks is PySpark, which is a Spark-based Python runtime. Within this runtime, you can use the spark.sql library to embed Spark SQL syntax within your Python code, and work with SQL constructs such as tables and views.\r\n",
+					"\r\n",
+					"Run the next cell and review the results. Observe that:\r\n",
+					"\r\n",
+					"- The code persists the data in the df dataframe as a temporary view named salesorders. Spark SQL supports the use of temporary views or persisted tables as sources for SQL queries.\r\n",
+					"- The spark.sql method is then used to run a SQL query against the salesorders view.\r\n",
+					"- The results of the query are stored in a dataframe."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					" df.createOrReplaceTempView(\"salesorders\")\r\n",
+					"\r\n",
+					" spark_df = spark.sql(\"SELECT * FROM salesorders\")\r\n",
+					" display(spark_df)"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Run SQL code in a cell\r\n",
+					"\r\n",
+					"While it’s useful to be able to embed SQL statements into a cell containing PySpark code, data analysts often just want to work directly in SQL.\r\n",
+					"\r\n",
+					"Run the cell and review the results. Observe that:\r\n",
+					"\r\n",
+					"- The %%sql line at the beginning of the cell (called a magic) indicates that the Spark SQL language runtime should be used to run the code in this cell instead of PySpark.\r\n",
+					"- The SQL code references the salesorder view that you created previously using PySpark.\r\n",
+					"- The output from the SQL query is automatically displayed as the result under the cell."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					" %%sql\r\n",
+					" SELECT YEAR(OrderDate) AS OrderYear,\r\n",
+					"        SUM((UnitPrice * Quantity) + Tax) AS GrossRevenue\r\n",
+					" FROM salesorders\r\n",
+					" GROUP BY YEAR(OrderDate)\r\n",
+					" ORDER BY OrderYear;"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Visualize data with Spark\r\n",
+					"\r\n",
+					"A picture is proverbially worth a thousand words, and a chart is often better than a thousand rows of data. While notebooks in Azure Synapse Analytics include a built in chart view for data that is displayed from a dataframe or Spark SQL query, it is not designed for comprehensive charting. However, you can use Python graphics libraries like matplotlib and seaborn to create charts from data in dataframes.\r\n",
+					"\r\n",
+					"## View results as a chart\r\n",
+					"\r\n",
+					"Use the View options button at the top right of the chart to display the options pane for the chart. Then set the options as follows and select Apply:\r\n",
+					"- **Chart type**: Bar chart\r\n",
+					"- **Key**: Item\r\n",
+					"- **Values**: Quantity\r\n",
+					"- **Series Group**: leave blank\r\n",
+					"- **Aggregation**: Sum\r\n",
+					"- **Stacked**: Unselected"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					" %%sql\r\n",
+					" SELECT * FROM salesorders"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Get started with matplotlib\r\n",
+					"\r\n",
+					"To visualize the data as a chart, we’ll start by using the matplotlib Python library. This library is the core plotting library on which many others are based, and provides a great deal of flexibility in creating charts"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" sqlQuery = \"SELECT CAST(YEAR(OrderDate) AS CHAR(4)) AS OrderYear, \\\r\n",
+					"                 SUM((UnitPrice * Quantity) + Tax) AS GrossRevenue \\\r\n",
+					"             FROM salesorders \\\r\n",
+					"             GROUP BY CAST(YEAR(OrderDate) AS CHAR(4)) \\\r\n",
+					"             ORDER BY OrderYear\"\r\n",
+					" df_spark = spark.sql(sqlQuery)\r\n",
+					" df_spark.show()"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Run the next cell and review the results, which consist of a column chart with the total gross revenue for each year. Note the following features of the code used to produce this chart:\r\n",
+					"- The matplotlib library requires a Pandas dataframe, so you need to convert the Spark dataframe returned by the Spark SQL query to this format.\r\n",
+					"- At the core of the matplotlib library is the pyplot object. This is the foundation for most plotting functionality.\r\n",
+					"- The default settings result in a usable chart, but there’s considerable scope to customize it"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" from matplotlib import pyplot as plt\r\n",
+					"\r\n",
+					" # matplotlib requires a Pandas dataframe, not a Spark one\r\n",
+					" df_sales = df_spark.toPandas()\r\n",
+					"\r\n",
+					" # Create a bar plot of revenue by year\r\n",
+					" plt.bar(x=df_sales['OrderYear'], height=df_sales['GrossRevenue'])\r\n",
+					"\r\n",
+					" # Display the plot\r\n",
+					" plt.show()"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Run the next code cell and view the results. The chart now includes a little more information.\r\n",
+					"\r\n",
+					"A plot is technically contained with a Figure. In the previous examples, the figure was created implicitly for you; but you can create it explicitly."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" # Clear the plot area\r\n",
+					" plt.clf()\r\n",
+					"\r\n",
+					" # Create a bar plot of revenue by year\r\n",
+					" plt.bar(x=df_sales['OrderYear'], height=df_sales['GrossRevenue'], color='orange')\r\n",
+					"\r\n",
+					" # Customize the chart\r\n",
+					" plt.title('Revenue by Year')\r\n",
+					" plt.xlabel('Year')\r\n",
+					" plt.ylabel('Revenue')\r\n",
+					" plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.7)\r\n",
+					" plt.xticks(rotation=45)\r\n",
+					"\r\n",
+					" # Show the figure\r\n",
+					" plt.show()"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Run the next code cell and view the results. The figure determines the shape and size of the plot.\r\n",
+					"\r\n",
+					"A figure can contain multiple subplots, each on its own axis."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" # Clear the plot area\r\n",
+					" plt.clf()\r\n",
+					"\r\n",
+					" # Create a Figure\r\n",
+					" fig = plt.figure(figsize=(8,3))\r\n",
+					"\r\n",
+					" # Create a bar plot of revenue by year\r\n",
+					" plt.bar(x=df_sales['OrderYear'], height=df_sales['GrossRevenue'], color='orange')\r\n",
+					"\r\n",
+					" # Customize the chart\r\n",
+					" plt.title('Revenue by Year')\r\n",
+					" plt.xlabel('Year')\r\n",
+					" plt.ylabel('Revenue')\r\n",
+					" plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.7)\r\n",
+					" plt.xticks(rotation=45)\r\n",
+					"\r\n",
+					" # Show the figure\r\n",
+					" plt.show()"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Run the next code cell and view the results. The figure contains the subplots specified in the code."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" # Clear the plot area\r\n",
+					" plt.clf()\r\n",
+					"\r\n",
+					" # Create a figure for 2 subplots (1 row, 2 columns)\r\n",
+					" fig, ax = plt.subplots(1, 2, figsize = (10,4))\r\n",
+					"\r\n",
+					" # Create a bar plot of revenue by year on the first axis\r\n",
+					" ax[0].bar(x=df_sales['OrderYear'], height=df_sales['GrossRevenue'], color='orange')\r\n",
+					" ax[0].set_title('Revenue by Year')\r\n",
+					"\r\n",
+					" # Create a pie chart of yearly order counts on the second axis\r\n",
+					" yearly_counts = df_sales['OrderYear'].value_counts()\r\n",
+					" ax[1].pie(yearly_counts)\r\n",
+					" ax[1].set_title('Orders per Year')\r\n",
+					" ax[1].legend(yearly_counts.keys().tolist())\r\n",
+					"\r\n",
+					" # Add a title to the Figure\r\n",
+					" fig.suptitle('Sales Data')\r\n",
+					"\r\n",
+					" # Show the figure\r\n",
+					" plt.show()"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Use the seaborn library\r\n",
+					"\r\n",
+					"While matplotlib enables you to create complex charts of multiple types, it can require some complex code to achieve the best results. For this reason, over the years, many new libraries have been built on the base of matplotlib to abstract its complexity and enhance its capabilities. One such library is seaborn.\r\n",
+					"\r\n",
+					"Run the code and observe that it displays a bar chart using the seaborn library."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" import seaborn as sns\r\n",
+					"\r\n",
+					" # Clear the plot area\r\n",
+					" plt.clf()\r\n",
+					"\r\n",
+					" # Create a bar chart\r\n",
+					" ax = sns.barplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
+					" plt.show()"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Run the code and note that seaborn enables you to set a consistent color theme for your plots."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" # Clear the plot area\r\n",
+					" plt.clf()\r\n",
+					"\r\n",
+					" # Set the visual theme for seaborn\r\n",
+					" sns.set_theme(style=\"whitegrid\")\r\n",
+					"\r\n",
+					" # Create a bar chart\r\n",
+					" ax = sns.barplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
+					" plt.show()"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Run the code to view the yearly revenue as a line chart."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" # Clear the plot area\r\n",
+					" plt.clf()\r\n",
+					"\r\n",
+					" # Create a bar chart\r\n",
+					" ax = sns.lineplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
+					" plt.show()"
+				],
+				"execution_count": 19
 			}
 		]
 	}
