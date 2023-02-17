@@ -8,6 +8,9 @@
 		"CosmosDb_connectionString": {
 			"value": ""
 		},
+		"SqlAdventureWorksLT_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sqldb-dyfk4ryjqex56.database.windows.net;Initial Catalog=AdventureWorksLT;User ID=azureuser"
+		},
 		"SqlDwh_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=\"@{concat('synapse-', linkedService().suffix,'.sql.azuresynapse.net')}\";Initial Catalog=sqldwh"
 		},

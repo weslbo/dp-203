@@ -11,6 +11,11 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDb'"
 		},
+		"SqlAdventureWorksLT_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlAdventureWorksLT'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sqldb-dyfk4ryjqex56.database.windows.net;Initial Catalog=AdventureWorksLT;User ID=azureuser"
+		},
 		"SqlDwh_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SqlDwh'",
@@ -173,24 +178,6 @@
 									"DimProductTable": {
 										"suffix": "@replace(pipeline().DataFactory, 'synapse-', '')"
 									}
-								},
-								"linkedServiceParameters": {
-									"ProductsText": {
-										"schemaLinkedService": {
-											"suffix": {
-												"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
-												"type": "Expression"
-											}
-										}
-									},
-									"ProductTable": {
-										"schemaLinkedService": {
-											"suffix": {
-												"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
-												"type": "Expression"
-											}
-										}
-									}
 								}
 							},
 							"staging": {
@@ -198,7 +185,7 @@
 									"referenceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
 									"type": "LinkedServiceReference"
 								},
-								"folderPath": "files/labs/stage_products"
+								"folderPath": "files/labs-dp-203/10/stage_products"
 							},
 							"compute": {
 								"coreCount": 8,
@@ -991,7 +978,7 @@
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "DimProduct"
+					"table": "DimProductLab10"
 				}
 			},
 			"dependsOn": [
@@ -1128,7 +1115,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "Product.csv",
-						"folderPath": "labs/10/data",
+						"folderPath": "labs-dp-203/10/data",
 						"fileSystem": "files"
 					},
 					"columnDelimiter": ",",
@@ -1292,6 +1279,38 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SqlAdventureWorksLT')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Connection to AdventureWorksLT database",
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlAdventureWorksLT_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "KeyVault",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"suffix": "dyfk4ryjqex56"
+							}
+						},
+						"secretName": "sqlPassword"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/KeyVault')]"
 			]
 		},
 		{
@@ -1548,7 +1567,7 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
+						"databaseName": "RetailDB",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -1766,7 +1785,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/02-Validate Insert after Spark')]",
+			"name": "[concat(parameters('workspaceName'), '/02-Work with lake database tables')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -1774,12 +1793,12 @@
 					"name": "dp-203/02-Serverless SQL/04-Demo-Analyze data in a lake database"
 				},
 				"content": {
-					"query": "-- Demo: Analyze data in a lake database\n-- Task: Validate Insert after Spark\n\nUse RetailDB\n\n-- This statement should not return any data before the notebook has executed.\n\nSELECT *\nFROM SalesOrder WHERE SalesOrderId = 99999\n\n-- cleanup for next demo\n-- This will not work: DML Operations are not supported with external tables.\nDELETE FROM SalesOrder WHERE SalesOrderId = 99999",
+					"query": "-- Demo: Analyze data in a lake database\n-- Task: Work with lake database tables\n\n-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM RetailDB.dbo.SalesOrder AS o\nJOIN RetailDB.dbo.Customer AS c ON o.CustomerId = c.CustomerId\nJOIN RetailDB.dbo.Product AS p ON o.ProductId = p.ProductId",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
+						"databaseName": "RetailDB",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -1858,7 +1877,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/03-Work with lake database tables')]",
+			"name": "[concat(parameters('workspaceName'), '/03-Validate Insert after Spark')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -1866,12 +1885,12 @@
 					"name": "dp-203/02-Serverless SQL/04-Demo-Analyze data in a lake database"
 				},
 				"content": {
-					"query": "-- Demo: Analyze data in a lake database\n-- Task: Work with lake database tables\n\n-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
+					"query": "-- Demo: Analyze data in a lake database\n-- Task: Validate Insert after Spark\n\nUse RetailDB\n\n-- This statement should not return any data before the notebook has executed.\n\nSELECT *\nFROM SalesOrder WHERE SalesOrderId = 99999\n\n-- cleanup for next demo\n-- This will not work: DML Operations are not supported with external tables.\nDELETE FROM SalesOrder WHERE SalesOrderId = 99999",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
+						"databaseName": "RetailDB",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -2005,7 +2024,7 @@
 					"name": "dp-203/03-Spark"
 				},
 				"content": {
-					"query": "-- This demonstrates how you can use a serverless SQL pool to query delta format files that were created using Spark, \n-- and use the results for reporting or analysis.\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203/07/data/delta/products-delta/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\n\n-- Observe that you can also use the serverless SQL pool to query Delta Lake data in catalog \n-- tables that are defined the Spark metastore.\n\nUSE AdventureWorks;\n\nSELECT * FROM Products;\n\n",
+					"query": "-- This demonstrates how you can use a serverless SQL pool to query delta format files that were created using Spark, \n-- and use the results for reporting or analysis.\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203/07/delta/products-delta/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\n\n-- Observe that you can also use the serverless SQL pool to query Delta Lake data in catalog \n-- tables that are defined the Spark metastore.\n\nUSE AdventureWorks;\n\nSELECT * FROM Products;\n\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -2066,6 +2085,29 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Configure Azure Synapse Link')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203/06-HTAP/15-Synapse-link-sql"
+				},
+				"content": {
+					"query": "/*\nConfigure Azure Synapse Link\n\nMake sure that the dedicated SQL pool has been started\n*/\n\n-- Next, create the target schema\nCREATE SCHEMA SalesLT;\nGO\n\n-- Create a link connection in the Integrate hub (+)\n-- Change Feed is not supported on Free, Basic or Standard tier Single Database (S0,S1,S2) \n-- and Database in Elastic pool with max eDTUs < 100 or max vCore < 1. Please upgrade to a higher Service Objective.\n-- Upscale the database to an S3 (100 DTU)\n-- ESTIMATED COST / MONTH: 147.19 USD\n\n\n\n-- CLEANUP\n\nDROP SCHEMA SalesLT;\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "sqldwh",
+						"poolName": "sqldwh"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Explore a relational data warehouse')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -2097,7 +2139,7 @@
 					"name": "dp-203/04-Dedicated SQL/09-Lab-Load data into a relational data warehouse"
 				},
 				"content": {
-					"query": "/*\n1. Load data from a data lake by using the COPY statement\n---------------------------------------------------------\n\nConfirm that there are 0 rows currently in the StageProduct table.\n*/\n\nSELECT COUNT(1) \nFROM dbo.StageProduct\n\n/*\nRun the following command. 11 rows should have been loaded into the StageProduct table.\n*/\n\nCOPY INTO dbo.StageProduct\n    (ProductID, ProductName, ProductCategory, Color, Size, ListPrice, Discontinued)\nFROM 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs/09/data/Product.csv'\nWITH\n(\n    FILE_TYPE = 'CSV',\n    MAXERRORS = 0,\n    IDENTITY_INSERT = 'OFF',\n    FIRSTROW = 2 --Skip header row\n);\n\n/*\nNow let's use the same technique to load another table, this time logging any errors that might occur.\n\nNotice the messages tab:\nQuery completed. Rows were rejected while reading from external source(s). 1 row rejected from table [StageCustomer] \nin plan step 4 of query execution: Bulk load data conversion error (type mismatch or invalid character for the \nspecified codepage) for row starting at byte offset 2261, column 1 (GeographyKey) in data file /labs/09/data/Customer.csv.\n*/\n\nCOPY INTO dbo.StageCustomer\n    (GeographyKey, CustomerAlternateKey, Title, FirstName, MiddleName, LastName, NameStyle, BirthDate, \n    MaritalStatus, Suffix, Gender, EmailAddress, YearlyIncome, TotalChildren, NumberChildrenAtHome, EnglishEducation, \n    SpanishEducation, FrenchEducation, EnglishOccupation, SpanishOccupation, FrenchOccupation, HouseOwnerFlag, \n    NumberCarsOwned, AddressLine1, AddressLine2, Phone, DateFirstPurchase, CommuteDistance)\nFROM 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs/09/data/Customer.csv'\nWITH\n(\nFILE_TYPE = 'CSV'\n,MAXERRORS = 5\n,FIRSTROW = 2 -- skip header row\n,ERRORFILE = 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs/09/errors/'\n);\n\n/*\nThe source file contains a row with invalid data, so one row is rejected. The code above specifies a maximum of 5 errors, so a single \nerror should not have prevented the valid rows from being loaded. You can view the rows that have been loaded by running the following query.\n*/\n\nSELECT *\nFROM dbo.StageCustomer\n\n/*\nOn the files tab, view the folder of your data lake (files/labs/09) and verify that a new folder named _rejectedrows has been created \n(if you don't see this folder, in the More menu, select Refresh to refresh the view).\n\nOpen the _rejectedrows folder and the date and time specific subfolder it contains, and note that files with names similar to QID123_1_2.Error.Txt \nand QID123_1_2.Row.Txt have been created. You can right-click each of these files and select Preview to see details of the error and the row that was rejected.\n\n- \"Bulk load data conversion error (type mismatch or invalid character for the specified codepage) for row starting at byte offset 2261, column 1 (GeographyKey) in data file /labs/09/data/Customer.csv.\"\n- \"US,AW99,,Billy,L,Jones,FALSE,Dec 12th 2001\"\n\n(notice the value \"US\")\n\nThe use of staging tables enables you to validate or transform data before moving or using it to append to or upsert into any existing dimension tables. \nThe COPY statement provides a simple but high-performance technique that you can use to easily load data from files in a data lake into staging tables, \nand as you've seen, identify and redirect invalid rows.\n*/\n\n/*\n2. Use a CREATE TABLE AS (CTAS) statement\n-----------------------------------------\n\nThe following SQL creates a new table named DimProduct from the staged product data that uses ProductAltKey as its\nhash distribution key and has a clustered columnstore index.\n*/\n\nIF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];\n\nCREATE TABLE dbo.DimProduct\nWITH\n(\n    DISTRIBUTION = HASH(ProductAltKey),\n    CLUSTERED COLUMNSTORE INDEX\n)\nAS\nSELECT ROW_NUMBER() OVER(ORDER BY ProductID) AS ProductKey,\n    ProductID AS ProductAltKey,\n    ProductName,\n    ProductCategory,\n    Color,\n    Size,\n    ListPrice,\n    Discontinued\nFROM dbo.StageProduct;\n\n/*\nUse the following query to view the contents of the new DimProduct table:\n\nThe CREATE TABLE AS SELECT (CTAS) expression has various uses, which include:\n\n- Redistributing the hash key of a table to align with other tables for better query performance.\n- Assigning a surrogate key to a staging table based upon existing values after performing a delta analysis.\n- Creating aggregate tables quickly for report purposes.\n\n*/\n\nSELECT ProductKey,\n    ProductAltKey,\n    ProductName,\n    ProductCategory,\n    Color,\n    Size,\n    ListPrice,\n    Discontinued\nFROM dbo.DimProduct;\n\n/*\n3. Combine INSERT and UPDATE statements to load a slowly changing dimension table\n---------------------------------------------------------------------------------\nThe DimCustomer table supports type 1 and type 2 slowly changing dimensions (SCDs), where type 1 changes result in \nan in-place update to an existing row, and type 2 changes result in a new row to indicate the latest version of a \nparticular dimension entity instance. Loading this table requires a combination of INSERT statements (to load new customers) \nand UPDATE statements (to apply type 1 or type 2 changes).\n*/\n\n\nINSERT INTO dbo.DimCustomer ([GeographyKey],[CustomerAlternateKey],[Title],[FirstName],[MiddleName],[LastName],[NameStyle],[BirthDate],[MaritalStatus],\n[Suffix],[Gender],[EmailAddress],[YearlyIncome],[TotalChildren],[NumberChildrenAtHome],[EnglishEducation],[SpanishEducation],[FrenchEducation],\n[EnglishOccupation],[SpanishOccupation],[FrenchOccupation],[HouseOwnerFlag],[NumberCarsOwned],[AddressLine1],[AddressLine2],[Phone],\n[DateFirstPurchase],[CommuteDistance])\nSELECT *\nFROM dbo.StageCustomer AS stg\nWHERE NOT EXISTS\n    (SELECT * FROM dbo.DimCustomer AS dim\n    WHERE dim.CustomerAlternateKey = stg.CustomerAlternateKey);\n\n-- Type 1 updates (change name, email, or phone in place)\nUPDATE dbo.DimCustomer\nSET LastName = stg.LastName,\n    EmailAddress = stg.EmailAddress,\n    Phone = stg.Phone\nFROM DimCustomer dim inner join StageCustomer stg\nON dim.CustomerAlternateKey = stg.CustomerAlternateKey\nWHERE dim.LastName <> stg.LastName OR dim.EmailAddress <> stg.EmailAddress OR dim.Phone <> stg.Phone\n\n-- Type 2 updates (address changes triggers new entry)\nINSERT INTO dbo.DimCustomer\nSELECT stg.GeographyKey,stg.CustomerAlternateKey,stg.Title,stg.FirstName,stg.MiddleName,stg.LastName,stg.NameStyle,stg.BirthDate,stg.MaritalStatus,\nstg.Suffix,stg.Gender,stg.EmailAddress,stg.YearlyIncome,stg.TotalChildren,stg.NumberChildrenAtHome,stg.EnglishEducation,stg.SpanishEducation,stg.FrenchEducation,\nstg.EnglishOccupation,stg.SpanishOccupation,stg.FrenchOccupation,stg.HouseOwnerFlag,stg.NumberCarsOwned,stg.AddressLine1,stg.AddressLine2,stg.Phone,\nstg.DateFirstPurchase,stg.CommuteDistance\nFROM dbo.StageCustomer AS stg\nJOIN dbo.DimCustomer AS dim\nON stg.CustomerAlternateKey = dim.CustomerAlternateKey\nAND stg.AddressLine1 <> dim.AddressLine1;\n\n/*\n4. Perform post-load optimization\n---------------------------------\n\nAfter loading new data into the data warehouse, it's recommended to rebuild the table indexes and update statistics on commonly queried columns.\n*/\n\nALTER INDEX ALL ON dbo.DimProduct REBUILD;\n\nCREATE STATISTICS customergeo_stats ON dbo.DimCustomer (GeographyKey);\n\n/*\nGet ready for the next demo (10-pipelines)\n*/\n\nDELETE FROM DimProduct\nDROP TABLE DimProduct\n\nSET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n CREATE TABLE [dbo].[DimProduct](\n    [ProductKey] [int] IDENTITY NOT NULL,\n    [ProductAltKey] [nvarchar](30) NULL,\n    [ProductName] [nvarchar](50) NULL,\n    [Color] [nvarchar](30) NULL,\n    [Size] [nvarchar](50) NULL,\n    [ListPrice] [money] NULL,\n    [Discontinued] [bit] NULL)\nWITH\n(\n\tDISTRIBUTION = HASH(ProductAltKey),\n\tCLUSTERED COLUMNSTORE INDEX\n);\nGO\n\nINSERT DimProduct\nVALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO\n\nINSERT DimProduct VALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO",
+					"query": "/*\n1. Load data from a data lake by using the COPY statement\n---------------------------------------------------------\n\nConfirm that there are 0 rows currently in the StageProduct table.\n*/\n\nSELECT COUNT(1) \nFROM dbo.StageProduct\n\n/*\nRun the following command. 11 rows should have been loaded into the StageProduct table.\n*/\n\nCOPY INTO dbo.StageProduct\n    (ProductID, ProductName, ProductCategory, Color, Size, ListPrice, Discontinued)\nFROM 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs-dp-203/09/data/Product.csv'\nWITH\n(\n    FILE_TYPE = 'CSV',\n    MAXERRORS = 0,\n    IDENTITY_INSERT = 'OFF',\n    FIRSTROW = 2 --Skip header row\n);\n\n/*\nNow let's use the same technique to load another table, this time logging any errors that might occur.\n\nNotice the messages tab:\nQuery completed. Rows were rejected while reading from external source(s). 1 row rejected from table [StageCustomer] \nin plan step 4 of query execution: Bulk load data conversion error (type mismatch or invalid character for the \nspecified codepage) for row starting at byte offset 2261, column 1 (GeographyKey) in data file /labs/09/data/Customer.csv.\n*/\n\nCOPY INTO dbo.StageCustomer\n    (GeographyKey, CustomerAlternateKey, Title, FirstName, MiddleName, LastName, NameStyle, BirthDate, \n    MaritalStatus, Suffix, Gender, EmailAddress, YearlyIncome, TotalChildren, NumberChildrenAtHome, EnglishEducation, \n    SpanishEducation, FrenchEducation, EnglishOccupation, SpanishOccupation, FrenchOccupation, HouseOwnerFlag, \n    NumberCarsOwned, AddressLine1, AddressLine2, Phone, DateFirstPurchase, CommuteDistance)\nFROM 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs-dp-203/09/data/Customer.csv'\nWITH\n(\nFILE_TYPE = 'CSV'\n,MAXERRORS = 5\n,FIRSTROW = 2 -- skip header row\n,ERRORFILE = 'https://datalakedyfk4ryjqex56.blob.core.windows.net/files/labs-dp-203/09/errors/'\n);\n\n/*\nThe source file contains a row with invalid data, so one row is rejected. The code above specifies a maximum of 5 errors, so a single \nerror should not have prevented the valid rows from being loaded. You can view the rows that have been loaded by running the following query.\n*/\n\nSELECT *\nFROM dbo.StageCustomer\n\n/*\nOn the files tab, view the folder of your data lake (files/labs/09) and verify that a new folder named _rejectedrows has been created \n(if you don't see this folder, in the More menu, select Refresh to refresh the view).\n\nOpen the _rejectedrows folder and the date and time specific subfolder it contains, and note that files with names similar to QID123_1_2.Error.Txt \nand QID123_1_2.Row.Txt have been created. You can right-click each of these files and select Preview to see details of the error and the row that was rejected.\n\n- \"Bulk load data conversion error (type mismatch or invalid character for the specified codepage) for row starting at byte offset 2261, column 1 (GeographyKey) in data file /labs/09/data/Customer.csv.\"\n- \"US,AW99,,Billy,L,Jones,FALSE,Dec 12th 2001\"\n\n(notice the value \"US\")\n\nThe use of staging tables enables you to validate or transform data before moving or using it to append to or upsert into any existing dimension tables. \nThe COPY statement provides a simple but high-performance technique that you can use to easily load data from files in a data lake into staging tables, \nand as you've seen, identify and redirect invalid rows.\n*/\n\n/*\n2. Use a CREATE TABLE AS (CTAS) statement\n-----------------------------------------\n\nThe following SQL creates a new table named DimProduct from the staged product data that uses ProductAltKey as its\nhash distribution key and has a clustered columnstore index.\n*/\n\nIF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductLab9') DROP TABLE [dbo].[DimProductLab9];\n\nCREATE TABLE dbo.DimProductLab9\nWITH\n(\n    DISTRIBUTION = HASH(ProductAltKey),\n    CLUSTERED COLUMNSTORE INDEX\n)\nAS\nSELECT ROW_NUMBER() OVER(ORDER BY ProductID) AS ProductKey,\n    ProductID AS ProductAltKey,\n    ProductName,\n    ProductCategory,\n    Color,\n    Size,\n    ListPrice,\n    Discontinued\nFROM dbo.StageProduct;\n\n/*\nUse the following query to view the contents of the new DimProduct table:\n\nThe CREATE TABLE AS SELECT (CTAS) expression has various uses, which include:\n\n- Redistributing the hash key of a table to align with other tables for better query performance.\n- Assigning a surrogate key to a staging table based upon existing values after performing a delta analysis.\n- Creating aggregate tables quickly for report purposes.\n\n*/\n\nSELECT ProductKey,\n    ProductAltKey,\n    ProductName,\n    ProductCategory,\n    Color,\n    Size,\n    ListPrice,\n    Discontinued\nFROM dbo.DimProductLab9;\n\n/*\n3. Combine INSERT and UPDATE statements to load a slowly changing dimension table\n---------------------------------------------------------------------------------\nThe DimCustomer table supports type 1 and type 2 slowly changing dimensions (SCDs), where type 1 changes result in \nan in-place update to an existing row, and type 2 changes result in a new row to indicate the latest version of a \nparticular dimension entity instance. Loading this table requires a combination of INSERT statements (to load new customers) \nand UPDATE statements (to apply type 1 or type 2 changes).\n*/\n\n\nINSERT INTO dbo.DimCustomer ([GeographyKey],[CustomerAlternateKey],[Title],[FirstName],[MiddleName],[LastName],[NameStyle],[BirthDate],[MaritalStatus],\n[Suffix],[Gender],[EmailAddress],[YearlyIncome],[TotalChildren],[NumberChildrenAtHome],[EnglishEducation],[SpanishEducation],[FrenchEducation],\n[EnglishOccupation],[SpanishOccupation],[FrenchOccupation],[HouseOwnerFlag],[NumberCarsOwned],[AddressLine1],[AddressLine2],[Phone],\n[DateFirstPurchase],[CommuteDistance])\nSELECT *\nFROM dbo.StageCustomer AS stg\nWHERE NOT EXISTS\n    (SELECT * FROM dbo.DimCustomer AS dim\n    WHERE dim.CustomerAlternateKey = stg.CustomerAlternateKey);\n\n-- Type 1 updates (change name, email, or phone in place)\nUPDATE dbo.DimCustomer\nSET LastName = stg.LastName,\n    EmailAddress = stg.EmailAddress,\n    Phone = stg.Phone\nFROM DimCustomer dim inner join StageCustomer stg\nON dim.CustomerAlternateKey = stg.CustomerAlternateKey\nWHERE dim.LastName <> stg.LastName OR dim.EmailAddress <> stg.EmailAddress OR dim.Phone <> stg.Phone\n\n-- Type 2 updates (address changes triggers new entry)\nINSERT INTO dbo.DimCustomer\nSELECT stg.GeographyKey,stg.CustomerAlternateKey,stg.Title,stg.FirstName,stg.MiddleName,stg.LastName,stg.NameStyle,stg.BirthDate,stg.MaritalStatus,\nstg.Suffix,stg.Gender,stg.EmailAddress,stg.YearlyIncome,stg.TotalChildren,stg.NumberChildrenAtHome,stg.EnglishEducation,stg.SpanishEducation,stg.FrenchEducation,\nstg.EnglishOccupation,stg.SpanishOccupation,stg.FrenchOccupation,stg.HouseOwnerFlag,stg.NumberCarsOwned,stg.AddressLine1,stg.AddressLine2,stg.Phone,\nstg.DateFirstPurchase,stg.CommuteDistance\nFROM dbo.StageCustomer AS stg\nJOIN dbo.DimCustomer AS dim\nON stg.CustomerAlternateKey = dim.CustomerAlternateKey\nAND stg.AddressLine1 <> dim.AddressLine1;\n\n/*\n4. Perform post-load optimization\n---------------------------------\n\nAfter loading new data into the data warehouse, it's recommended to rebuild the table indexes and update statistics on commonly queried columns.\n*/\n\nALTER INDEX ALL ON dbo.DimProductLab9 REBUILD;\n\nCREATE STATISTICS customergeo_stats ON dbo.DimCustomer (GeographyKey);\n\n/*\nGet ready for the next demo (10-pipelines)\n*/\n\nIF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductLab10') DROP TABLE [dbo].[DimProductLab10];\n\nSET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\nCREATE TABLE [dbo].[DimProductLab10](\n    [ProductKey] [int] IDENTITY NOT NULL,\n    [ProductAltKey] [nvarchar](30) NULL,\n    [ProductName] [nvarchar](50) NULL,\n    [Color] [nvarchar](30) NULL,\n    [Size] [nvarchar](50) NULL,\n    [ListPrice] [money] NULL,\n    [Discontinued] [bit] NULL)\nWITH\n(\n\tDISTRIBUTION = HASH(ProductAltKey),\n\tCLUSTERED COLUMNSTORE INDEX\n);\nGO\n\nINSERT DimProductLab10\nVALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO\n\nINSERT DimProductLab10 VALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO\n\nDROP TABLE [dbo].[DimProductLab9];",
 					"metadata": {
 						"language": "sql"
 					},
@@ -2143,7 +2185,7 @@
 					"name": "dp-203/05-Pipelines/10-Lab-Build a data pipeline in Azure Synapse Analytics"
 				},
 				"content": {
-					"query": "/*\nGet ready for the next demo (10-pipelines)\n\nThe following code will drop and recreate the product data table - there should be a single row in it.\n*/\n\nIF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProduct') DROP TABLE [dbo].[DimProduct];\n\nSET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n CREATE TABLE [dbo].[DimProduct](\n    [ProductKey] [int] IDENTITY NOT NULL,\n    [ProductAltKey] [nvarchar](30) NULL,\n    [ProductName] [nvarchar](50) NULL,\n    [Color] [nvarchar](30) NULL,\n    [Size] [nvarchar](50) NULL,\n    [ListPrice] [money] NULL,\n    [Discontinued] [bit] NULL)\nWITH\n(\n\tDISTRIBUTION = HASH(ProductAltKey),\n\tCLUSTERED COLUMNSTORE INDEX\n);\nGO\n\nINSERT DimProduct VALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO\n\n/*\nNow go the pipeline dataflow and after the execution, return there to validate the number of records\n*/\n\nSELECT TOP 100 * from DimProduct",
+					"query": "/*\nGet ready for the next demo (10-pipelines)\n\nThe following code will drop and recreate the product data table - there should be a single row in it.\n*/\n\nIF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'DimProductLab10') DROP TABLE [dbo].[DimProductLab10];\n\nSET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n CREATE TABLE [dbo].[DimProductLab10](\n    [ProductKey] [int] IDENTITY NOT NULL,\n    [ProductAltKey] [nvarchar](30) NULL,\n    [ProductName] [nvarchar](50) NULL,\n    [Color] [nvarchar](30) NULL,\n    [Size] [nvarchar](50) NULL,\n    [ListPrice] [money] NULL,\n    [Discontinued] [bit] NULL)\nWITH\n(\n\tDISTRIBUTION = HASH(ProductAltKey),\n\tCLUSTERED COLUMNSTORE INDEX\n);\nGO\n\nINSERT DimProductLab10 VALUES('AR-5381','Adjustable Race','Red',NULL,1.99,0);\nGO\n\n/*\nNow go the pipeline dataflow and after the execution, return there to validate the number of records\n*/\n\nSELECT TOP 100 * from DimProductLab10",
 					"metadata": {
 						"language": "sql"
 					},
@@ -2203,7 +2245,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/01-Query data in files')]",
+			"name": "[concat(parameters('workspaceName'), '/01-Analyze data in a data lake with Spark')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -2212,6 +2254,10 @@
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
 				"sessionProperties": {
 					"driverMemory": "28g",
 					"driverCores": 4,
@@ -2222,7 +2268,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2a1cd2fb-f8e1-4917-882a-efd58ad669f6"
+						"spark.autotune.trackingId": "cdcfb1fc-aae7-44dd-b529-6dcc12a368ce"
 					}
 				},
 				"metadata": {
@@ -2230,21 +2276,831 @@
 					"enableDebugMode": false,
 					"kernelspec": {
 						"name": "synapse_pyspark",
-						"display_name": "python"
+						"display_name": "Synapse PySpark"
 					},
 					"language_info": {
 						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-dyfk4ryjqex56/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://synapse-dyfk4ryjqex56.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
-						"cell_type": "code",
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
 						"source": [
-							""
+							"# Use Spark to explore data\r\n",
+							"\r\n",
+							"- Select any of the files in the orders (labs-dp-500/02/data/) folder, and then in the New notebook list on the toolbar, select Load to DataFrame. A dataframe is a structure in Spark that represents a tabular dataset.\r\n",
+							"\r\n",
+							"- In the new Notebook 1 tab that opens, in the Attach to list, select your Spark pool (sparkxxxxxxx). Then use the ▷ Run all button to run all of the cells in the notebook (there’s currently only one!).\r\n",
+							"\r\n",
+							"- Since this is the first time you’ve run any Spark code in this session, the Spark pool must be started. This means that the first run in the session can take a few minutes. Subsequent runs will be quicker.\r\n",
+							"\r\n",
+							"- When the code has finished running, review the output beneath the cell in the notebook. It shows the first ten rows in the file you selected, with automatic column names in the form _c0, _c1, _c2, and so on."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-500/02/data/2019.csv', format='csv'\r\n",
+							"## If header exists uncomment line below\r\n",
+							"##, header=True\r\n",
+							")\r\n",
+							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 1
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"- Modify the code so that the spark.read.load function reads data from all of the CSV files in the folder, and the display function shows the first 100 rows. Your code should look like this (with datalakexxxxxxx matching the name of your data lake store)\r\n",
+							"\r\n",
+							"- The dataframe now includes data from all of the files, but the column names are not useful. Spark uses a “schema-on-read” approach to try to determine appropriate data types for the columns based on the data they contain, and if a header row is present in a text file it can be used to identify the column names (by specifying a header=True parameter in the load function). Alternatively, you can define an explicit schema for the dataframe."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-500/02/data/*.csv', format='csv')\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"- Run the next cell and verify that the dataframe schema matches the orderSchema you defined. The printSchema function can be useful when using a dataframe with an automatically inferred schema."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"from pyspark.sql.types import *\r\n",
+							"from pyspark.sql.functions import *\r\n",
+							"\r\n",
+							"orderSchema = StructType([\r\n",
+							"    StructField(\"SalesOrderNumber\", StringType()),\r\n",
+							"    StructField(\"SalesOrderLineNumber\", IntegerType()),\r\n",
+							"    StructField(\"OrderDate\", DateType()),\r\n",
+							"    StructField(\"CustomerName\", StringType()),\r\n",
+							"    StructField(\"Email\", StringType()),\r\n",
+							"    StructField(\"Item\", StringType()),\r\n",
+							"    StructField(\"Quantity\", IntegerType()),\r\n",
+							"    StructField(\"UnitPrice\", FloatType()),\r\n",
+							"    StructField(\"Tax\", FloatType())\r\n",
+							"    ])\r\n",
+							"\r\n",
+							"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-500/02/data/*.csv', format='csv', schema=orderSchema)\r\n",
+							"display(df.limit(100))"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" df.printSchema()"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Analyze data in a dataframe\r\n",
+							"\r\n",
+							"The dataframe object in Spark is similar to a Pandas dataframe in Python, and includes a wide range of functions that you can use to manipulate, filter, group, and otherwise analyze the data it contains.\r\n",
+							"\r\n",
+							"## Filter a dataframe\r\n",
+							"\r\n",
+							"Run the next code cell, and review the results. Observe the following details:\r\n",
+							"- When you perform an operation on a dataframe, the result is a new dataframe (in this case, a new customers dataframe is created by selecting a specific subset of columns from the df dataframe)\r\n",
+							"- Dataframes provide functions such as count and distinct that can be used to summarize and filter the data they contain.\r\n",
+							"- The dataframe['Field1', 'Field2', ...] syntax is a shorthand way of defining a subset of column. You can also use select method, so the first line of the code above could be written as customers = df.select(\"CustomerName\", \"Email\")"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							" customers = df['CustomerName', 'Email']\r\n",
+							" print(customers.count())\r\n",
+							" print(customers.distinct().count())\r\n",
+							" display(customers.distinct())"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"- Run the next modified code to view the customers who have purchased the Road-250 Red, 52 product. Note that you can “chain” multiple functions together so that the output of one function becomes the input for the next - in this case, the dataframe created by the select method is the source dataframe for the where method that is used to apply filtering criteria."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							" customers = df.select(\"CustomerName\", \"Email\").where(df['Item']=='Road-250 Red, 52')\r\n",
+							" print(customers.count())\r\n",
+							" print(customers.distinct().count())\r\n",
+							" display(customers.distinct())"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Aggregate and group data in a dataframe\r\n",
+							"\r\n",
+							"- Run the next code cell, and note that the results show the sum of order quantities grouped by product. The groupBy method groups the rows by Item, and the subsequent sum aggregate function is applied to all of the remaining numeric columns (in this case, Quantity)"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							" productSales = df.select(\"Item\", \"Quantity\").groupBy(\"Item\").sum()\r\n",
+							" display(productSales)"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"- Run the next code cell, and note that the results show the number of sales orders per year. Note that the select method includes a SQL year function to extract the year component of the OrderDate field, and then an alias method is used to assign a columm name to the extracted year value. The data is then grouped by the derived Year column and the count of rows in each group is calculated before finally the orderBy method is used to sort the res"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							" yearlySales = df.select(year(\"OrderDate\").alias(\"Year\")).groupBy(\"Year\").count().orderBy(\"Year\")\r\n",
+							" display(yearlySales)"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Query data using Spark SQL\r\n",
+							"\r\n",
+							"As you’ve seen, the native methods of the dataframe object enable you to query and analyze data quite effectively. However, many data analysts are more comfortable working with SQL syntax. Spark SQL is a SQL language API in Spark that you can use to run SQL statements, or even persist data in relational tables.\r\n",
+							"\r\n",
+							"## Use Spark SQL in PySpark code\r\n",
+							"\r\n",
+							"The default language in Azure Synapse Studio notebooks is PySpark, which is a Spark-based Python runtime. Within this runtime, you can use the spark.sql library to embed Spark SQL syntax within your Python code, and work with SQL constructs such as tables and views.\r\n",
+							"\r\n",
+							"Run the next cell and review the results. Observe that:\r\n",
+							"\r\n",
+							"- The code persists the data in the df dataframe as a temporary view named salesorders. Spark SQL supports the use of temporary views or persisted tables as sources for SQL queries.\r\n",
+							"- The spark.sql method is then used to run a SQL query against the salesorders view.\r\n",
+							"- The results of the query are stored in a dataframe."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							" df.createOrReplaceTempView(\"salesorders\")\r\n",
+							"\r\n",
+							" spark_df = spark.sql(\"SELECT * FROM salesorders\")\r\n",
+							" display(spark_df)"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Run SQL code in a cell\r\n",
+							"\r\n",
+							"While it’s useful to be able to embed SQL statements into a cell containing PySpark code, data analysts often just want to work directly in SQL.\r\n",
+							"\r\n",
+							"Run the cell and review the results. Observe that:\r\n",
+							"\r\n",
+							"- The %%sql line at the beginning of the cell (called a magic) indicates that the Spark SQL language runtime should be used to run the code in this cell instead of PySpark.\r\n",
+							"- The SQL code references the salesorder view that you created previously using PySpark.\r\n",
+							"- The output from the SQL query is automatically displayed as the result under the cell."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							" %%sql\r\n",
+							" SELECT YEAR(OrderDate) AS OrderYear,\r\n",
+							"        SUM((UnitPrice * Quantity) + Tax) AS GrossRevenue\r\n",
+							" FROM salesorders\r\n",
+							" GROUP BY YEAR(OrderDate)\r\n",
+							" ORDER BY OrderYear;"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Visualize data with Spark\r\n",
+							"\r\n",
+							"A picture is proverbially worth a thousand words, and a chart is often better than a thousand rows of data. While notebooks in Azure Synapse Analytics include a built in chart view for data that is displayed from a dataframe or Spark SQL query, it is not designed for comprehensive charting. However, you can use Python graphics libraries like matplotlib and seaborn to create charts from data in dataframes.\r\n",
+							"\r\n",
+							"## View results as a chart\r\n",
+							"\r\n",
+							"Use the View options button at the top right of the chart to display the options pane for the chart. Then set the options as follows and select Apply:\r\n",
+							"- **Chart type**: Bar chart\r\n",
+							"- **Key**: Item\r\n",
+							"- **Values**: Quantity\r\n",
+							"- **Series Group**: leave blank\r\n",
+							"- **Aggregation**: Sum\r\n",
+							"- **Stacked**: Unselected"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							" %%sql\r\n",
+							" SELECT * FROM salesorders"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Get started with matplotlib\r\n",
+							"\r\n",
+							"To visualize the data as a chart, we’ll start by using the matplotlib Python library. This library is the core plotting library on which many others are based, and provides a great deal of flexibility in creating charts"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" sqlQuery = \"SELECT CAST(YEAR(OrderDate) AS CHAR(4)) AS OrderYear, \\\r\n",
+							"                 SUM((UnitPrice * Quantity) + Tax) AS GrossRevenue \\\r\n",
+							"             FROM salesorders \\\r\n",
+							"             GROUP BY CAST(YEAR(OrderDate) AS CHAR(4)) \\\r\n",
+							"             ORDER BY OrderYear\"\r\n",
+							" df_spark = spark.sql(sqlQuery)\r\n",
+							" df_spark.show()"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Run the next cell and review the results, which consist of a column chart with the total gross revenue for each year. Note the following features of the code used to produce this chart:\r\n",
+							"- The matplotlib library requires a Pandas dataframe, so you need to convert the Spark dataframe returned by the Spark SQL query to this format.\r\n",
+							"- At the core of the matplotlib library is the pyplot object. This is the foundation for most plotting functionality.\r\n",
+							"- The default settings result in a usable chart, but there’s considerable scope to customize it"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" from matplotlib import pyplot as plt\r\n",
+							"\r\n",
+							" # matplotlib requires a Pandas dataframe, not a Spark one\r\n",
+							" df_sales = df_spark.toPandas()\r\n",
+							"\r\n",
+							" # Create a bar plot of revenue by year\r\n",
+							" plt.bar(x=df_sales['OrderYear'], height=df_sales['GrossRevenue'])\r\n",
+							"\r\n",
+							" # Display the plot\r\n",
+							" plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Run the next code cell and view the results. The chart now includes a little more information.\r\n",
+							"\r\n",
+							"A plot is technically contained with a Figure. In the previous examples, the figure was created implicitly for you; but you can create it explicitly."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" # Clear the plot area\r\n",
+							" plt.clf()\r\n",
+							"\r\n",
+							" # Create a bar plot of revenue by year\r\n",
+							" plt.bar(x=df_sales['OrderYear'], height=df_sales['GrossRevenue'], color='orange')\r\n",
+							"\r\n",
+							" # Customize the chart\r\n",
+							" plt.title('Revenue by Year')\r\n",
+							" plt.xlabel('Year')\r\n",
+							" plt.ylabel('Revenue')\r\n",
+							" plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.7)\r\n",
+							" plt.xticks(rotation=45)\r\n",
+							"\r\n",
+							" # Show the figure\r\n",
+							" plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Run the next code cell and view the results. The figure determines the shape and size of the plot.\r\n",
+							"\r\n",
+							"A figure can contain multiple subplots, each on its own axis."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" # Clear the plot area\r\n",
+							" plt.clf()\r\n",
+							"\r\n",
+							" # Create a Figure\r\n",
+							" fig = plt.figure(figsize=(8,3))\r\n",
+							"\r\n",
+							" # Create a bar plot of revenue by year\r\n",
+							" plt.bar(x=df_sales['OrderYear'], height=df_sales['GrossRevenue'], color='orange')\r\n",
+							"\r\n",
+							" # Customize the chart\r\n",
+							" plt.title('Revenue by Year')\r\n",
+							" plt.xlabel('Year')\r\n",
+							" plt.ylabel('Revenue')\r\n",
+							" plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.7)\r\n",
+							" plt.xticks(rotation=45)\r\n",
+							"\r\n",
+							" # Show the figure\r\n",
+							" plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Run the next code cell and view the results. The figure contains the subplots specified in the code."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" # Clear the plot area\r\n",
+							" plt.clf()\r\n",
+							"\r\n",
+							" # Create a figure for 2 subplots (1 row, 2 columns)\r\n",
+							" fig, ax = plt.subplots(1, 2, figsize = (10,4))\r\n",
+							"\r\n",
+							" # Create a bar plot of revenue by year on the first axis\r\n",
+							" ax[0].bar(x=df_sales['OrderYear'], height=df_sales['GrossRevenue'], color='orange')\r\n",
+							" ax[0].set_title('Revenue by Year')\r\n",
+							"\r\n",
+							" # Create a pie chart of yearly order counts on the second axis\r\n",
+							" yearly_counts = df_sales['OrderYear'].value_counts()\r\n",
+							" ax[1].pie(yearly_counts)\r\n",
+							" ax[1].set_title('Orders per Year')\r\n",
+							" ax[1].legend(yearly_counts.keys().tolist())\r\n",
+							"\r\n",
+							" # Add a title to the Figure\r\n",
+							" fig.suptitle('Sales Data')\r\n",
+							"\r\n",
+							" # Show the figure\r\n",
+							" plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Use the seaborn library\r\n",
+							"\r\n",
+							"While matplotlib enables you to create complex charts of multiple types, it can require some complex code to achieve the best results. For this reason, over the years, many new libraries have been built on the base of matplotlib to abstract its complexity and enhance its capabilities. One such library is seaborn.\r\n",
+							"\r\n",
+							"Run the code and observe that it displays a bar chart using the seaborn library."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" import seaborn as sns\r\n",
+							"\r\n",
+							" # Clear the plot area\r\n",
+							" plt.clf()\r\n",
+							"\r\n",
+							" # Create a bar chart\r\n",
+							" ax = sns.barplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
+							" plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 17
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Run the code and note that seaborn enables you to set a consistent color theme for your plots."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" # Clear the plot area\r\n",
+							" plt.clf()\r\n",
+							"\r\n",
+							" # Set the visual theme for seaborn\r\n",
+							" sns.set_theme(style=\"whitegrid\")\r\n",
+							"\r\n",
+							" # Create a bar chart\r\n",
+							" ax = sns.barplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
+							" plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Run the code to view the yearly revenue as a line chart."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" # Clear the plot area\r\n",
+							" plt.clf()\r\n",
+							"\r\n",
+							" # Create a bar chart\r\n",
+							" ax = sns.lineplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
+							" plt.show()"
+						],
+						"outputs": [],
+						"execution_count": 19
 					}
 				]
 			},
@@ -2274,7 +3130,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "080c063e-6b3e-4540-9f36-658672de8ab2"
+						"spark.autotune.trackingId": "60355e5b-23b2-43cc-b7e7-f8ff72c4484f"
 					}
 				},
 				"metadata": {
@@ -2327,7 +3183,7 @@
 							"collapsed": false
 						},
 						"source": [
-							"order_details = spark.read.csv('/labs/06/data/*.csv', header=True, inferSchema=True)\n",
+							"order_details = spark.read.csv('/labs-dp-203/06/data/*.csv', header=True, inferSchema=True)\n",
 							"display(order_details.limit(5))"
 						],
 						"outputs": [],
@@ -2413,7 +3269,7 @@
 							}
 						},
 						"source": [
-							"transformed_df.write.mode(\"overwrite\").parquet('/labs/06/transformed_data/orders.parquet')\r\n",
+							"transformed_df.write.mode(\"overwrite\").parquet('/labs-dp-203/06/transformed_data/orders.parquet')\r\n",
 							"print (\"Transformed data saved!\")"
 						],
 						"outputs": [],
@@ -2468,7 +3324,7 @@
 							"\r\n",
 							"dated_df = transformed_df.withColumn(\"Year\", year(col(\"OrderDate\"))).withColumn(\"Month\", month(col(\"OrderDate\")))\r\n",
 							"display(dated_df.limit(5))\r\n",
-							"dated_df.write.partitionBy(\"Year\",\"Month\").mode(\"overwrite\").parquet(\"/labs/06/partitioned_data\")\r\n",
+							"dated_df.write.partitionBy(\"Year\",\"Month\").mode(\"overwrite\").parquet(\"/labs-dp-203/06/partitioned_data\")\r\n",
 							"print (\"Transformed data saved!\")"
 						],
 						"outputs": [],
@@ -2504,7 +3360,7 @@
 							"collapsed": false
 						},
 						"source": [
-							"orders_2020 = spark.read.parquet('/labs/06/partitioned_data/Year=2020/Month=*')\r\n",
+							"orders_2020 = spark.read.parquet('/labs-dp-203/06/partitioned_data/Year=2020/Month=*')\r\n",
 							"display(orders_2020.limit(5))"
 						],
 						"outputs": [],
@@ -2543,10 +3399,10 @@
 							}
 						},
 						"source": [
-							"order_details.write.saveAsTable('sales_orders', format='parquet', mode='overwrite', path='/labs/06/sales_orders_table')"
+							"order_details.write.saveAsTable('sales_orders', format='parquet', mode='overwrite', path='/labs-dp-203/06/sales_orders_table')"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 7
 					},
 					{
 						"cell_type": "markdown",
@@ -2580,10 +3436,10 @@
 						"source": [
 							"sql_transform = spark.sql(\"SELECT *, YEAR(OrderDate) AS Year, MONTH(OrderDate) AS Month FROM sales_orders\")\r\n",
 							"display(sql_transform.limit(5))\r\n",
-							"sql_transform.write.partitionBy(\"Year\",\"Month\").saveAsTable('transformed_orders', format='parquet', mode='overwrite', path='/transformed_orders_table')"
+							"sql_transform.write.partitionBy(\"Year\",\"Month\").saveAsTable('transformed_orders', format='parquet', mode='overwrite', path='/labs-dp-203/06/transformed_orders_table')"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 9
 					},
 					{
 						"cell_type": "markdown",
@@ -2611,7 +3467,7 @@
 							"    AND Month = 1"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 10
 					},
 					{
 						"cell_type": "markdown",
@@ -2650,7 +3506,44 @@
 							"DROP TABLE sales_orders;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 11
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Cleanup"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from notebookutils import mssparkutils\r\n",
+							"\r\n",
+							"mssparkutils.fs.rm('/labs-dp-203/06/sales_orders_table', True)\r\n",
+							"mssparkutils.fs.rm('/labs-dp-203/06/partitioned_data', True)\r\n",
+							"mssparkutils.fs.rm('/labs-dp-203/06/transformed_orders_table', True)\r\n",
+							"mssparkutils.fs.rm('/labs-dp-203/06/transformed_data', True)"
+						],
+						"outputs": [],
+						"execution_count": 14
 					}
 				]
 			},
@@ -2680,7 +3573,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "ca071606-c1bf-4c0b-906a-733ca91441c6"
+						"spark.autotune.trackingId": "6e623822-0eee-40d9-a235-bfc4510702ba"
 					}
 				},
 				"metadata": {
@@ -2735,11 +3628,11 @@
 						},
 						"source": [
 							"%%pyspark\r\n",
-							"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs/07/data/products.csv', format='csv', header=True)\r\n",
+							"df = spark.read.load('abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/07/data/products.csv', format='csv', header=True)\r\n",
 							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 1
 					},
 					{
 						"cell_type": "markdown",
@@ -2768,11 +3661,11 @@
 							}
 						},
 						"source": [
-							"delta_table_path = \"/labs/07/data/delta/products-delta\"\n",
+							"delta_table_path = \"/labs-dp-203/07/delta/products-delta\"\n",
 							"df.write.format(\"delta\").save(delta_table_path)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 3
 					},
 					{
 						"cell_type": "markdown",
@@ -2833,7 +3726,7 @@
 							"deltaTable.toDF().show(10)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 4
 					},
 					{
 						"cell_type": "markdown",
@@ -2868,7 +3761,7 @@
 							"new_df.show(10)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 5
 					},
 					{
 						"cell_type": "markdown",
@@ -2903,7 +3796,7 @@
 							"new_df.show(10)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 6
 					},
 					{
 						"cell_type": "markdown",
@@ -2937,7 +3830,7 @@
 							"deltaTable.history(10).show(20, False, True)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 7
 					},
 					{
 						"cell_type": "markdown",
@@ -2992,7 +3885,7 @@
 							"spark.sql(\"DESCRIBE EXTENDED AdventureWorks.ProductsExternal\").show(truncate=False)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 8
 					},
 					{
 						"cell_type": "markdown",
@@ -3032,7 +3925,7 @@
 							"SELECT * FROM ProductsExternal LIMIT 5;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 9
 					},
 					{
 						"cell_type": "markdown",
@@ -3067,7 +3960,7 @@
 							"spark.sql(\"DESCRIBE EXTENDED AdventureWorks.ProductsManaged\").show(truncate=False)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 10
 					},
 					{
 						"cell_type": "markdown",
@@ -3107,7 +4000,7 @@
 							"SELECT * FROM ProductsManaged;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 11
 					},
 					{
 						"cell_type": "markdown",
@@ -3149,7 +4042,7 @@
 							"SHOW TABLES;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 12
 					},
 					{
 						"cell_type": "markdown",
@@ -3190,7 +4083,7 @@
 							"DROP TABLE IF EXISTS ProductsManaged;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 13
 					},
 					{
 						"cell_type": "markdown",
@@ -3247,10 +4140,10 @@
 							"\n",
 							"CREATE TABLE Products\n",
 							"USING DELTA\n",
-							"LOCATION '/labs/07/data/delta/products-delta';"
+							"LOCATION '/labs-dp-203/07/delta/products-delta';"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 14
 					},
 					{
 						"cell_type": "markdown",
@@ -3290,7 +4183,7 @@
 							"SELECT * FROM Products LIMIT 10;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 15
 					},
 					{
 						"cell_type": "markdown",
@@ -3328,7 +4221,7 @@
 							"from pyspark.sql.functions import *\n",
 							"\n",
 							"# Create a folder\n",
-							"inputPath = '/labs/07/data/streaming/'\n",
+							"inputPath = '/labs-dp-203/07/streaming/'\n",
 							"mssparkutils.fs.mkdirs(inputPath)\n",
 							"\n",
 							"# Create a stream that reads data from the folder, using a JSON schema\n",
@@ -3352,7 +4245,7 @@
 							"print(\"Source stream created...\")"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 16
 					},
 					{
 						"cell_type": "markdown",
@@ -3381,13 +4274,13 @@
 							}
 						},
 						"source": [
-							"delta_stream_table_path = '/labs/07/data/delta/iotdevicedata'\n",
-							"checkpointpath = '/labs/07/data/delta/checkpoint'\n",
+							"delta_stream_table_path = '/labs-dp-203/07/delta/iotdevicedata'\n",
+							"checkpointpath = '/labs-dp-203/07/delta/checkpoint'\n",
 							"deltastream = iotstream.writeStream.format(\"delta\").option(\"checkpointLocation\", checkpointpath).start(delta_stream_table_path)\n",
 							"print(\"Streaming to delta sink...\")"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 17
 					},
 					{
 						"cell_type": "markdown",
@@ -3424,7 +4317,7 @@
 							"display(df)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 18
 					},
 					{
 						"cell_type": "markdown",
@@ -3458,7 +4351,7 @@
 							"spark.sql(\"CREATE TABLE IotDeviceData USING DELTA LOCATION '{0}'\".format(delta_stream_table_path))"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 19
 					},
 					{
 						"cell_type": "markdown",
@@ -3498,7 +4391,7 @@
 							"SELECT * FROM IotDeviceData;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 20
 					},
 					{
 						"cell_type": "markdown",
@@ -3541,7 +4434,7 @@
 							"mssparkutils.fs.put(inputPath + \"more-data.txt\", more_data, True)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -3566,7 +4459,7 @@
 							"SELECT * FROM IotDeviceData;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 22
 					},
 					{
 						"cell_type": "markdown",
@@ -3598,7 +4491,7 @@
 							"deltastream.stop()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 23
 					},
 					{
 						"cell_type": "markdown",
@@ -3650,12 +4543,13 @@
 							"\n",
 							"USE AdventureWorks;\n",
 							"\n",
+							"DROP TABLE IF EXISTS Products;\n",
 							"DROP TABLE IF EXISTS ProductsExternal;\n",
 							"DROP TABLE IF EXISTS ProductsManaged;\n",
 							"DROP TABLE IF EXISTS iotdevicedata;"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 27
 					},
 					{
 						"cell_type": "code",
@@ -3674,7 +4568,7 @@
 							"spark.sql(\"DROP DATABASE AdventureWorks\")"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 28
 					},
 					{
 						"cell_type": "code",
@@ -3690,30 +4584,11 @@
 							}
 						},
 						"source": [
-							"%fs rm -r /labs/07/data/delta/\n",
-							"%fs rm -r /labs/07/data/streaming/"
+							"%fs rm -r /labs-dp-203/07/delta/\n",
+							"%fs rm -r /labs-dp-203/07/streaming/"
 						],
 						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"%fs rm -r /labs/07/data/streaming/"
-						],
-						"outputs": [],
-						"execution_count": null
+						"execution_count": 29
 					}
 				]
 			},
@@ -5049,7 +5924,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "df439e4e-ce8d-48ec-a01b-becb52b80ac1"
+						"spark.autotune.trackingId": "e9d3c0d1-d4bb-40a5-b971-ea4f4b44c914"
 					}
 				},
 				"metadata": {
@@ -5141,7 +6016,7 @@
 							}
 						},
 						"source": [
-							"folderName = 'labs/11/transformeddata/' + str(runId)\n",
+							"folderName = 'labs-dp-203/11/transformeddata/' + str(runId)\n",
 							"folderName"
 						],
 						"outputs": [],
@@ -5168,7 +6043,7 @@
 							"collapsed": false
 						},
 						"source": [
-							"order_details = spark.read.csv('/labs/11/data/*.csv', header=True, inferSchema=True)"
+							"order_details = spark.read.csv('/labs-dp-203/11/data/*.csv', header=True, inferSchema=True)"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -5856,8 +6731,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "FirstName",
@@ -5870,8 +6744,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "LastName",
@@ -5884,8 +6757,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "EmailAddress",
@@ -5898,8 +6770,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "Phone",
@@ -5912,8 +6783,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									}
 								],
 								"Format": {
@@ -5924,8 +6794,8 @@
 									"Properties": {
 										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/RetailDB/Customer",
 										"delimiter": ",",
-										"multiLine": "false",
 										"firstRowAsHeader": "false",
+										"multiLine": "false",
 										"serialization.format": "1",
 										"escape": "\\",
 										"quote": "\"",
@@ -5982,10 +6852,6 @@
 									{
 										"Name": "ProductId",
 										"Description": "The unique identifier of a Product.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ProductId"
-										},
 										"OriginDataTypeName": {
 											"TypeName": "long",
 											"IsComplexType": false,
@@ -5994,15 +6860,14 @@
 												"HIVE_TYPE_STRING": "long"
 											}
 										},
-										"DeltaFormatInvalidMessages": []
+										"BaseAttributeReference": {
+											"Entity": "RetailProduct.cdm.json/RetailProduct",
+											"Name": "ProductId"
+										}
 									},
 									{
 										"Name": "ProductName",
 										"Description": "The name of the Product, which normally corresponds to the 'marketing name' of the Product.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ProductName"
-										},
 										"OriginDataTypeName": {
 											"TypeName": "string",
 											"IsComplexType": false,
@@ -6012,15 +6877,14 @@
 												"HIVE_TYPE_STRING": "string"
 											}
 										},
-										"DeltaFormatInvalidMessages": []
+										"BaseAttributeReference": {
+											"Entity": "RetailProduct.cdm.json/RetailProduct",
+											"Name": "ProductName"
+										}
 									},
 									{
 										"Name": "IntroductionDate",
 										"Description": "The date that the Product was introduced for sale.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "IntroductionDate"
-										},
 										"OriginDataTypeName": {
 											"TypeName": "date",
 											"IsComplexType": false,
@@ -6030,15 +6894,14 @@
 												"HIVE_TYPE_STRING": "date"
 											}
 										},
-										"DeltaFormatInvalidMessages": []
+										"BaseAttributeReference": {
+											"Entity": "RetailProduct.cdm.json/RetailProduct",
+											"Name": "IntroductionDate"
+										}
 									},
 									{
 										"Name": "ActualAbandonmentDate",
 										"Description": "The actual date that the marketing of the product was discontinued. \n\nAbandonment is a component in the decline stage of the product's life cycle characterized by a reduced market demand for the product and an increased number of competing products with similar characteristics.\n\nThere are three (3) strategies for abandoning a product:\n\n(1)  Reduced marketing and expenditures to maintain profits.\n\n(2)  Concentrating on the strongest market segments and eliminating the weaker market segments\n\n(3)  Maintain the marketing level until the product is discontinued.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ActualAbandonmentDate"
-										},
 										"OriginDataTypeName": {
 											"TypeName": "date",
 											"IsComplexType": false,
@@ -6048,15 +6911,14 @@
 												"HIVE_TYPE_STRING": "date"
 											}
 										},
-										"DeltaFormatInvalidMessages": []
+										"BaseAttributeReference": {
+											"Entity": "RetailProduct.cdm.json/RetailProduct",
+											"Name": "ActualAbandonmentDate"
+										}
 									},
 									{
 										"Name": "ProductGrossWeight",
 										"Description": "The gross product weight.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ProductGrossWeight"
-										},
 										"OriginDataTypeName": {
 											"TypeName": "decimal",
 											"IsComplexType": false,
@@ -6067,15 +6929,14 @@
 												"HIVE_TYPE_STRING": "decimal"
 											}
 										},
-										"DeltaFormatInvalidMessages": []
+										"BaseAttributeReference": {
+											"Entity": "RetailProduct.cdm.json/RetailProduct",
+											"Name": "ProductGrossWeight"
+										}
 									},
 									{
 										"Name": "ItemSku",
 										"Description": "The Stock Keeping Unit identifier, which is typically used for inventory-related activities.",
-										"BaseAttributeReference": {
-											"Entity": "RetailProduct.cdm.json/RetailProduct",
-											"Name": "ItemSku"
-										},
 										"OriginDataTypeName": {
 											"TypeName": "string",
 											"IsComplexType": false,
@@ -6085,22 +6946,24 @@
 												"HIVE_TYPE_STRING": "string"
 											}
 										},
-										"DeltaFormatInvalidMessages": []
+										"BaseAttributeReference": {
+											"Entity": "RetailProduct.cdm.json/RetailProduct",
+											"Name": "ItemSku"
+										}
 									},
 									{
 										"Name": "ListPrice",
 										"Description": "The product price.",
 										"OriginDataTypeName": {
 											"TypeName": "decimal",
-											"IsNullable": false,
 											"IsComplexType": false,
+											"IsNullable": false,
 											"Precision": 18,
 											"Scale": 2,
 											"Properties": {
 												"HIVE_TYPE_STRING": "decimal"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									}
 								],
 								"Format": {
@@ -6111,8 +6974,8 @@
 									"Properties": {
 										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/RetailDB/Product",
 										"delimiter": ",",
-										"multiLine": "false",
 										"firstRowAsHeader": "false",
+										"multiLine": "false",
 										"serialization.format": "1",
 										"escape": "\\",
 										"quote": "\"",
@@ -6141,13 +7004,11 @@
 								"Description": "A product is anything that can be offered to a market that might satisfy a want or need by potential customers.    That product is the sum of all physical, psychological, symbolic, and service attributes associated with it.\n\nThere are two basic types of products:\n\n- Tangible (physical)\n- Intangible (non-physical) such as services\n\nA service is a non-material or intangible product - such as professional consultancy, maintenance service, repair service etc.\nEach product has its own benefits, application, brand name, and packaging that gives it its own identity and distinguishing characteristics.\n\nEvery business or organization has business rules that define precisely what a product is.    While we intuitively know what a product is, we must quantify that knowledge and associated business rules with consistent definitions that can be implemented within the organization in strategies and applications.\n\nA product typically goes through five stages of development:\n\n(1) Idea Stage - involving a thorough evaluation of the potential product\n\n(2) Concept Stage - determines customer acceptance by testing and presentation to consumers and distribution channel members.   Specific aspects regarding quality, dependability, reliability, warranty, packaging, service, pricing, terms of sale, sales and distribution channels, advertising and promotions are evaluated.\n\n(3) Product Development Stage - transforms the prototype product into an actual product for mass sale.   This stage requires close interaction between both marketing and manufacturing.\n\n(4) Test Marketing Stage - may or may not be used since it is an expensive and time-consuming process.  Test marketing involves evaluating various product options and alternatives.\n\n(5) Commercialization - It is very expensive to launch a new product so commercialization only applies to those specific products that are actually going to be sold to the market.\n\nProducts tend to be categorized as either:  Industrial goods and consumer goods\n\nIndustrial goods are used to produce other products .\n\nIndustrial goods may be further divided into:\n\n- Raw materials\n- Equipment\n- Pre-built materials \n- Supplies.\n\nConsumer goods are intended for consumption by the general public.\n\nConsumer goods may be further divided into:\n\n- Durable goods\n- Nondurable goods\n- Packaged goods\n\nA product may be a member of a product family or product line.\n\nA product family is a grouping of products or services that are related to each other by common function, functionality, design platform or similar characteristics.\n\nMembers of a product family frequently have many common parts and assemblies.\n\nProduct families are the highest level of grouping for forecasting, capacity planning or related functions.\n\nEx:\nThe Apple Macintosh family of products consists of the product lines:\n- Mac mini\n- MacBook Pro\n- Mac Pro\n\nA product line is a grouping of products that are closely related in usage, functionality or marketing characteristics.\n\nA Product Family typically is created to address one or five functions:\n\n1. To increase profits and not erode the sales of existing products\n\n2. To attract additional Markets or Market Segments\n\n3. To counter competitor's products\n\n4. To fill a gap in an existing Product Family.\n\n5. To promote sales of other products in the family line\n\nLine Depth refers to the number of products in the product line.\n\nLine consistency refers to how closely related the products are that make up the product line.\n\nLine vulnerability refers to the percentage of sales or profits that are derived from only a few products in the product line.\n\nProduct width refers to the number of different product lines sold by a company.\n\nProduct mix refers to the total number of products sold in all product lines.\n\nLine extension refers to the adding of a new product to a line.\n\n\"Trading up or brand leveraging\" refers to adding a product of better quality to a product line than the other products in that line.\n\n\"Trading down\" refers to adding a product of lesser quality to a product line than the other products in that line.\n\nIf a line of products is sold with the same brand name, this is referred to as family branding.\nStrategy and decisions regarding a product line are usually incorporated in a high-level marketing plan addressing product line strategy, sales, channels, distribution channels, pricing and related issues.\nA product-line manager is responsible for a product line and supervises several product managers who are responsible for individual products within the line.\nProduct-line managers typically have the following responsibilities:\n- Expansion and composition of a product line\n- Evaluate the effects of product mixes on the profitability of other items in the line\n- Planning and allocation of resources to individual products in the line\nA product is normally associated with a brand strategy - manufacturer, private or generic.\n\n1. Manufacturer-  or 'national' branding in which the brand is assigned by the manufacturer of the Product.\n\n2. Private - or 'dealer' branding in which the brand is assigned by the retailer or wholesaler of the Product.\n\n3. Generic - in which the Product is not marked with any identification.   Generic brands are a means for manufacturers to increase profits by saving on advertising, packaging or other costs associated with manufacturer or private branding.\n\nA brand is name, term, sign, symbol or design or a combination of these which identify the goods or services and differentiate them from those of competitors'\n\nA Trade mark is a brand or some part of the brand that is given legal protection because it is capable of exclusive appropriation and representation.\n\nManufacturers can use their own brands (known as Manufacturers' brands) or brands of their distributors (Distributors' brands).\n\nManufacturers/ distributors use brand names for a variety of reasons ranging from simple identification purposes to having legal protection for unique features of the products from imitations.\n\nBrands help consumers recognize certain quality parameters. In some cases, brands are just used to endow the product with unique story and character which itself can be a basis for product differentiation.\n\nIndividual brands have their own identity and the corporate or common name is not used to promote its equity.\n\nIndividual branding requires more expensive advertising and brand extensive brand creation investments.  By extension, each new brand does not benefit from the positive perceptions of earlier brands.\n\nBy contrast, family branding has several advantages.\n\nEach new product is quickly associated with the other products and brand in terms of quality and benefits.\n\nReduced or eliminated time for name identification and advertising for name recognition purposes.",
 								"DisplayFolderInfo": "{\"name\":\"Product\",\"colorCode\":\"#BD4B37\"}",
 								"PrimaryKeys": "ProductId",
-								"spark.sql.sources.provider": "csv",
-								"sql:IsAppendOnly": false
+								"spark.sql.sources.provider": "csv"
 							},
 							"Retention": 0,
 							"Temporary": false,
-							"IsRewriteEnabled": false,
-							"Partitioning": {}
+							"IsRewriteEnabled": false
 						},
 						"Source": {
 							"Type": "SPARK"
@@ -6174,79 +7035,73 @@
 										"Description": "The unique identifier of an order.",
 										"OriginDataTypeName": {
 											"TypeName": "long",
-											"IsNullable": false,
 											"IsComplexType": false,
+											"IsNullable": false,
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "OrderDate",
 										"Description": "The date of the order.",
 										"OriginDataTypeName": {
 											"TypeName": "timestamp",
-											"IsNullable": true,
 											"IsComplexType": false,
+											"IsNullable": true,
 											"Properties": {
 												"TimestampFormat": "yyyy-MM-dd",
 												"HIVE_TYPE_STRING": "timestamp"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "LineItemId",
 										"Description": "The ID of an individual line item.",
 										"OriginDataTypeName": {
 											"TypeName": "long",
-											"IsNullable": false,
 											"IsComplexType": false,
+											"IsNullable": false,
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "CustomerId",
 										"Description": "The customer.",
 										"OriginDataTypeName": {
 											"TypeName": "long",
-											"IsNullable": true,
 											"IsComplexType": false,
+											"IsNullable": true,
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ProductId",
 										"Description": "The product.",
 										"OriginDataTypeName": {
 											"TypeName": "long",
-											"IsNullable": true,
 											"IsComplexType": false,
+											"IsNullable": true,
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "Quantity",
 										"Description": "The order quantity.",
 										"OriginDataTypeName": {
 											"TypeName": "long",
-											"IsNullable": true,
 											"IsComplexType": false,
+											"IsNullable": true,
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									}
 								],
 								"Format": {
@@ -6257,8 +7112,8 @@
 									"Properties": {
 										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/RetailDB/SalesOrder/salesorder.csv",
 										"delimiter": ",",
-										"multiLine": "false",
 										"firstRowAsHeader": "false",
+										"multiLine": "false",
 										"serialization.format": "1",
 										"FormatTypeSetToDatabaseDefault": false,
 										"header": "false"
@@ -6274,7 +7129,7 @@
 								},
 								"Properties": {
 									"textinputformat.record.delimiter": ",",
-									"compression": "",
+									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
 									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
 								},
 								"Compressed": false,
@@ -6288,35 +7143,7 @@
 							},
 							"Retention": 0,
 							"Temporary": false,
-							"IsRewriteEnabled": false,
-							"Partitioning": {}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					},
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "relationship-ztmqqdjidn",
-							"EntityType": "RELATIONSHIP",
-							"Namespace": {
-								"DatabaseName": "RetailDB"
-							},
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"FromTableName": "SalesOrder",
-							"ToTableName": "Customer",
-							"ColumnRelationshipInformations": [
-								{
-									"FromColumnName": "CustomerId",
-									"ToColumnName": "CustomerId"
-								}
-							],
-							"RelationshipType": 0,
-							"Properties": {}
+							"IsRewriteEnabled": false
 						},
 						"Source": {
 							"Type": "SPARK"
@@ -6340,6 +7167,33 @@
 								{
 									"FromColumnName": "ProductId",
 									"ToColumnName": "ProductId"
+								}
+							],
+							"RelationshipType": 0,
+							"Properties": {}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "relationship-ztmqqdjidn",
+							"EntityType": "RELATIONSHIP",
+							"Namespace": {
+								"DatabaseName": "RetailDB"
+							},
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"FromTableName": "SalesOrder",
+							"ToTableName": "Customer",
+							"ColumnRelationshipInformations": [
+								{
+									"FromColumnName": "CustomerId",
+									"ToColumnName": "CustomerId"
 								}
 							],
 							"RelationshipType": 0,
