@@ -15,7 +15,8 @@
 						"suffix": "dyfk4ryjqex56"
 					}
 				},
-				"secretName": "sqlPassword"
+				"secretName": "sqlPassword",
+				"secretVersion": "a277c79864ea42e78dc028e30738551a"
 			}
 		},
 		"connectVia": {
