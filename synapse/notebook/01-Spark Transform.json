@@ -1,8 +1,8 @@
 {
-	"name": "06-Spark Transform",
+	"name": "01-Spark Transform",
 	"properties": {
 		"folder": {
-			"name": "dp-203-06-Transform-Data-with-Spark"
+			"name": "dp-203/03-Spark/06-Lab-transform data using Spark in Synapse Analytics"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0e8abde3-3030-46f6-93f5-900dac850769"
+				"spark.autotune.trackingId": "080c063e-6b3e-4540-9f36-658672de8ab2"
 			}
 		},
 		"metadata": {

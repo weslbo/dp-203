@@ -1,5 +1,5 @@
 {
-	"name": "DataLake_File_Lab01_Products",
+	"name": "DataLake_FileContainer_AllFiles_dp203",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "DataLake",
@@ -11,21 +11,23 @@
 				}
 			}
 		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
-		"type": "DelimitedText",
+		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "products.csv",
-				"folderPath": "labs-dp-203/01/product_data",
+				"fileName": {
+					"value": "@replace(dataset().fileName, 'master/Allfiles/labs', 'labs-dp-203')",
+					"type": "Expression"
+				},
 				"fileSystem": "files"
-			},
-			"columnDelimiter": ",",
-			"rowDelimiter": "\n",
-			"escapeChar": "\\",
-			"firstRowAsHeader": true,
-			"quoteChar": "\""
-		},
-		"schema": []
-	}
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
 }

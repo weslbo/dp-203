@@ -1,0 +1,20 @@
+{
+	"name": "02-Work with lake database tables",
+	"properties": {
+		"folder": {
+			"name": "dp-203/02-Serverless SQL/04-Demo-Analyze data in a lake database"
+		},
+		"content": {
+			"query": "-- Demo: Analyze data in a lake database\n-- Task: Work with lake database tables\n\n-- Make sure to select the RetailDB\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM RetailDB.dbo.SalesOrder AS o\nJOIN RetailDB.dbo.Customer AS c ON o.CustomerId = c.CustomerId\nJOIN RetailDB.dbo.Product AS p ON o.ProductId = p.ProductId",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

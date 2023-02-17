@@ -34,12 +34,18 @@
 						"type": "BigDataPoolReference"
 					},
 					"executorSize": "Small",
-					"driverSize": "Small"
+					"conf": {
+						"spark.dynamicAllocation.enabled": null,
+						"spark.dynamicAllocation.minExecutors": null,
+						"spark.dynamicAllocation.maxExecutors": null
+					},
+					"driverSize": "Small",
+					"numExecutors": null
 				}
 			}
 		],
 		"folder": {
-			"name": "dp-203-11-Spark-notebook-in-Synapse-Pipeline"
+			"name": "dp-203/05-Pipelines/11-Lab-Apache Spark notebooks in a pipeline"
 		},
 		"annotations": []
 	}

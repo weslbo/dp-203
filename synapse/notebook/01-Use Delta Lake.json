@@ -1,8 +1,8 @@
 {
-	"name": "07-Use Delta Lake",
+	"name": "01-Use Delta Lake",
 	"properties": {
 		"folder": {
-			"name": "dp-203-07-Use-delta-lake"
+			"name": "dp-203/03-Spark/07-Lab-Use Delta Lake in Azure Synapse Analytics"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "11fe4ab5-bc84-442d-b5ef-2c71cd55c88a"
+				"spark.autotune.trackingId": "ca071606-c1bf-4c0b-906a-733ca91441c6"
 			}
 		},
 		"metadata": {
@@ -45,7 +45,8 @@
 				"sparkVersion": "3.2",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},

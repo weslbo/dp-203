@@ -1,0 +1,254 @@
+{
+	"name": "dp-500-Copy data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Delete DataLake files",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DataLake_FileContainer_AllFiles_dp203",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "*"
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"fileListPath": "files/labs-dp-500",
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "For each file in Github 500",
+				"description": "For each file in the official github account https://github.com/MicrosoftLearning/DP-500-Azure-Data-Analyst, copy the files into the data lake",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Delete DataLake files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('filesToCopyDP500')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy file",
+							"description": "Copy file from github into datalake",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "GithubDP_500_AllFiles",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DataLake_FileContainer_AllFiles_dp500",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"filesToCopyDP500": {
+				"type": "Array",
+				"defaultValue": [
+					"main/Allfiles/00-Setup/DatabaseBackup/AdventureWorksDW2022-DP500.bacpac",
+					"main/Allfiles/00-Setup/DatabaseBackup/AdventureWorksDW2022-DP500.bak",
+					"main/Allfiles/01/data/2019.csv",
+					"main/Allfiles/01/data/2019.snappy.parquet",
+					"main/Allfiles/01/data/2020.csv",
+					"main/Allfiles/01/data/2020.snappy.parquet",
+					"main/Allfiles/01/data/2021.csv",
+					"main/Allfiles/01/data/2021.snappy.parquet",
+					"main/Allfiles/01/data/SO43700.json",
+					"main/Allfiles/01/data/SO43701.json",
+					"main/Allfiles/01/data/SO43703.json",
+					"main/Allfiles/01/data/SO43704.json",
+					"main/Allfiles/01/data/SO43705.json",
+					"main/Allfiles/02/data/2019.csv",
+					"main/Allfiles/02/data/2020.csv",
+					"main/Allfiles/02/data/2021.csv",
+					"main/Allfiles/03/data/DimAccount.fmt",
+					"main/Allfiles/03/data/DimAccount.txt",
+					"main/Allfiles/03/data/DimCurrency.fmt",
+					"main/Allfiles/03/data/DimCurrency.txt",
+					"main/Allfiles/03/data/DimCustomer.fmt",
+					"main/Allfiles/03/data/DimCustomer.txt",
+					"main/Allfiles/03/data/DimDate.fmt",
+					"main/Allfiles/03/data/DimDate.txt",
+					"main/Allfiles/03/data/DimDepartmentGroup.fmt",
+					"main/Allfiles/03/data/DimDepartmentGroup.txt",
+					"main/Allfiles/03/data/DimEmployee.fmt",
+					"main/Allfiles/03/data/DimEmployee.txt",
+					"main/Allfiles/03/data/DimGeography.fmt",
+					"main/Allfiles/03/data/DimGeography.txt",
+					"main/Allfiles/03/data/DimOrganization.fmt",
+					"main/Allfiles/03/data/DimOrganization.txt",
+					"main/Allfiles/03/data/DimProduct.fmt",
+					"main/Allfiles/03/data/DimProduct.txt",
+					"main/Allfiles/03/data/DimProductCategory.fmt",
+					"main/Allfiles/03/data/DimProductCategory.txt",
+					"main/Allfiles/03/data/DimProductSubCategory.fmt",
+					"main/Allfiles/03/data/DimProductSubCategory.txt",
+					"main/Allfiles/03/data/DimPromotion.fmt",
+					"main/Allfiles/03/data/DimPromotion.txt",
+					"main/Allfiles/03/data/DimReseller.fmt",
+					"main/Allfiles/03/data/DimReseller.txt",
+					"main/Allfiles/03/data/DimSalesTerritory.fmt",
+					"main/Allfiles/03/data/DimSalesTerritory.txt",
+					"main/Allfiles/03/data/FactInternetSales.fmt",
+					"main/Allfiles/03/data/FactInternetSales.txt",
+					"main/Allfiles/03/data/FactResellerSales.fmt",
+					"main/Allfiles/03/data/FactResellerSales.txt",
+					"main/Allfiles/04/data/AdventureWorksDWBuildVersion.fmt",
+					"main/Allfiles/04/data/AdventureWorksDWBuildVersion.txt",
+					"main/Allfiles/04/data/DimAccount.fmt",
+					"main/Allfiles/04/data/DimAccount.txt",
+					"main/Allfiles/04/data/DimCurrency.fmt",
+					"main/Allfiles/04/data/DimCurrency.txt",
+					"main/Allfiles/04/data/DimCustomer.fmt",
+					"main/Allfiles/04/data/DimCustomer.txt",
+					"main/Allfiles/04/data/DimDate.fmt",
+					"main/Allfiles/04/data/DimDate.txt",
+					"main/Allfiles/04/data/DimDepartmentGroup.fmt",
+					"main/Allfiles/04/data/DimDepartmentGroup.txt",
+					"main/Allfiles/04/data/DimEmployee.fmt",
+					"main/Allfiles/04/data/DimEmployee.txt",
+					"main/Allfiles/04/data/DimGeography.fmt",
+					"main/Allfiles/04/data/DimGeography.txt",
+					"main/Allfiles/04/data/DimOrganization.fmt",
+					"main/Allfiles/04/data/DimOrganization.txt",
+					"main/Allfiles/04/data/DimProduct.fmt",
+					"main/Allfiles/04/data/DimProduct.txt",
+					"main/Allfiles/04/data/DimProductCategory.fmt",
+					"main/Allfiles/04/data/DimProductCategory.txt",
+					"main/Allfiles/04/data/DimProductSubCategory.fmt",
+					"main/Allfiles/04/data/DimProductSubCategory.txt",
+					"main/Allfiles/04/data/DimPromotion.fmt",
+					"main/Allfiles/04/data/DimPromotion.txt",
+					"main/Allfiles/04/data/DimReseller.fmt",
+					"main/Allfiles/04/data/DimReseller.txt",
+					"main/Allfiles/04/data/DimSalesReason.fmt",
+					"main/Allfiles/04/data/DimSalesReason.txt",
+					"main/Allfiles/04/data/DimSalesTerritory.fmt",
+					"main/Allfiles/04/data/DimSalesTerritory.txt",
+					"main/Allfiles/04/data/DimScenario.fmt",
+					"main/Allfiles/04/data/DimScenario.txt",
+					"main/Allfiles/04/data/FactCallCenter.fmt",
+					"main/Allfiles/04/data/FactCallCenter.txt",
+					"main/Allfiles/04/data/FactCurrencyRate.fmt",
+					"main/Allfiles/04/data/FactCurrencyRate.txt",
+					"main/Allfiles/04/data/FactFinance.fmt",
+					"main/Allfiles/04/data/FactFinance.txt",
+					"main/Allfiles/04/data/FactInternetSales.fmt",
+					"main/Allfiles/04/data/FactInternetSales.txt",
+					"main/Allfiles/04/data/FactInternetSalesReason.fmt",
+					"main/Allfiles/04/data/FactInternetSalesReason.txt",
+					"main/Allfiles/04/data/FactProductInventory.fmt",
+					"main/Allfiles/04/data/FactProductInventory.txt",
+					"main/Allfiles/04/data/FactResellerSales.fmt",
+					"main/Allfiles/04/data/FactResellerSales.txt",
+					"main/Allfiles/04/data/FactSalesQuota.fmt",
+					"main/Allfiles/04/data/FactSalesQuota.txt",
+					"main/Allfiles/04/Solution/Sales Analysis.pbix",
+					"main/Allfiles/05/Solution/Sales Analysis - Create a dataflow.pbix",
+					"main/Allfiles/05/Starter/Sales Analysis - Create a dataflow.pbix",
+					"main/Allfiles/06/Solution/Sales Analysis - Work with model relationships.pbix",
+					"main/Allfiles/06/Starter/Sales Analysis - Work with model relationships.pbix",
+					"main/Allfiles/07/Solution/Sales Analysis - Create calculation groups.pbix",
+					"main/Allfiles/07/Starter/Sales Analysis - Create calculation groups.pbix",
+					"main/Allfiles/08/Assets/SalesTargets.xlsx",
+					"main/Allfiles/08/Solution/Sales Analysis - Create a composite model.pbix",
+					"main/Allfiles/08/Starter/Sales Analysis - Create a composite model.pbit",
+					"main/Allfiles/09/Solution/Sales Analysis - Enforce model security.pbix",
+					"main/Allfiles/09/Starter/Sales Analysis - Enforce model security.pbix",
+					"main/Allfiles/10/Assets/1-InsertOrder.sql",
+					"main/Allfiles/10/Assets/2-Cleanup.sql",
+					"main/Allfiles/10/Solution/Sales Analysis - Improve performance with hybrid tables.pbix",
+					"main/Allfiles/10/Starter/Sales Analysis - Improve performance with hybrid tables.pbix",
+					"main/Allfiles/11/Solution/Sales Analysis - Improve query performance with dual storage mode.pbix",
+					"main/Allfiles/11/Starter/Sales Analysis - Improve query performance with dual storage mode.pbix",
+					"main/Allfiles/12/Solution/Sales Analysis - Improve query performance with aggregations.pbix",
+					"main/Allfiles/12/Starter/Sales Analysis - Improve query performance with aggregations.pbix",
+					"main/Allfiles/13/Assets/Monthly Profit Growth.dax",
+					"main/Allfiles/13/Solution/Sales Analysis - Use tools to optimize Power BI performance.pbix",
+					"main/Allfiles/13/Starter/Sales Analysis - Use tools to optimize Power BI performance.pbix",
+					"main/Allfiles/14/Solution/Internet Sales - Monitor data in real time.pbix",
+					"main/Allfiles/14/Starter/Internet Sales - Monitor data in real time.pbix",
+					"main/Allfiles/15/Assets/AdventureWorksLogo.jpg",
+					"main/Allfiles/15/Assets/SalesOrder.sql",
+					"main/Allfiles/15/Solution/Sales Order Report.rdl",
+					"main/Allfiles/16/Assets/us-resident-population-estimates-2020.html",
+					"main/Allfiles/16/Solution/US Sales Analysis.pbix",
+					"main/Allfiles/16/Starter/Sales Analysis - Create reusable Power BI artifacts.pbix"
+				]
+			}
+		},
+		"folder": {
+			"name": "dp-500/00-Setup"
+		},
+		"annotations": []
+	}
+}

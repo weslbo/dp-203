@@ -1,5 +1,5 @@
 {
-	"name": "DataLake_FileContainer_AllFiles",
+	"name": "DataLake_FileContainer_AllFiles_dp500",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "DataLake",
@@ -22,7 +22,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@replace(dataset().fileName, 'master/Allfiles/labs', 'labs')",
+					"value": "@replace(dataset().fileName, 'main/Allfiles', 'labs-dp-500')",
 					"type": "Expression"
 				},
 				"fileSystem": "files"

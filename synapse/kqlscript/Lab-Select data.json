@@ -1,8 +1,8 @@
 {
-	"name": "select-data",
+	"name": "Lab-Select data",
 	"properties": {
 		"folder": {
-			"name": "dp-203-01-Explore Azure Synapse Analytics"
+			"name": "dp-203/01-Intro to data engineering"
 		},
 		"content": {
 			"query": "sales\n| take 1000\n\nsales\n| where Item == 'Road-250 Black, 48'\n\nsales\n| where Item == 'Road-250 Black, 48'\n| where datetime_part('year', OrderDate) > 2020\n\nsales\n| where OrderDate between (datetime(2020-01-01 00:00:00) .. datetime(2020-12-31 23:59:59))\n| summarize TotalNetRevenue = sum(UnitPrice) by Item\n| sort by Item asc",

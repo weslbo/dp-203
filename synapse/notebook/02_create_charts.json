@@ -1,0 +1,227 @@
+{
+	"name": "02_create_charts",
+	"properties": {
+		"folder": {
+			"name": "dp-500/03-Synapse"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "43779aa4-a8c6-4e2d-a9a8-932813c985dc"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Module 02 - 02 Create charts using Spark\r\n",
+					"\r\n",
+					"Set up variable for later reference. Make sure the name of your datalake is correct"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql import types\r\n",
+					"\r\n",
+					"datalake = 'datalakecn32xts6vteh6'\r\n",
+					"\r\n",
+					"customSchema = types.StructType([\r\n",
+					"    types.StructField(\"SalesOrderNumber\", types.StringType(), True),\r\n",
+					"    types.StructField(\"SalesTerritoryKey\", types.IntegerType(), True),\r\n",
+					"    types.StructField(\"OrderDate\", types.DateType(), True),\r\n",
+					"    types.StructField(\"Customer\", types.StringType(), True),\r\n",
+					"    types.StructField(\"Email\", types.StringType(), True),\r\n",
+					"    types.StructField(\"Adress\", types.StringType(), True),\r\n",
+					"    types.StructField(\"Quantity\", types.IntegerType(), True),\r\n",
+					"    types.StructField(\"UnitPrice\", types.DoubleType(), True),\r\n",
+					"    types.StructField(\"ShippingCost\", types.DoubleType(), True),\r\n",
+					"])\r\n",
+					"\r\n",
+					"df = spark.read \\\r\n",
+					"    .csv('abfss://landing@' + datalake + '.dfs.core.windows.net/Allfiles/01/data/*.csv', schema=customSchema)\r\n",
+					"df.createOrReplaceTempView(\"sales\")"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Execute the following Spark SQL And explore the **Chart** feature"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"SELECT \r\n",
+					"    OrderDate,\r\n",
+					"    SUM( (Quantity * UnitPrice) + ShippingCost ) AS TotalSales\r\n",
+					"FROM Sales\r\n",
+					"GROUP BY OrderDate\r\n",
+					"ORDER BY OrderDate\r\n",
+					"LIMIT 50"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Let's create some chart using MATPLOTLIB"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from matplotlib import pyplot as plt\r\n",
+					"\r\n",
+					"totalOrdersByTerritory = sqlContext.sql(\"SELECT SalesTerritoryKey, COUNT(*) as TotalOrders \\\r\n",
+					"                                         FROM Sales \\\r\n",
+					"                                         GROUP BY SalesTerritoryKey\\\r\n",
+					"                                         ORDER BY SalesTerritoryKey\").toPandas()\r\n",
+					"\r\n",
+					"# clear the plot area\r\n",
+					"plt.clf()\r\n",
+					"\r\n",
+					"# create a figure\r\n",
+					"figure = plt.figure(figsize=(12, 8))\r\n",
+					"\r\n",
+					"# create a bar plot of total sales by datalake\r\n",
+					"plt.bar(x=totalOrdersByTerritory['SalesTerritoryKey'], height=totalOrdersByTerritory['TotalOrders'], color='magenta')\r\n",
+					"\r\n",
+					"# customize the chart\r\n",
+					"plt.title('Order count by sales territory')\r\n",
+					"plt.xlabel('Sales territory')\r\n",
+					"plt.ylabel('Total number of orders')\r\n",
+					"plt.grid(color='#95a5a6', linestyle='--')\r\n",
+					"\r\n",
+					"# show the plot area\r\n",
+					"plt.show()"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from urllib.request import urlopen\r\n",
+					"import json\r\n",
+					"with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:\r\n",
+					"    counties = json.load(response)\r\n",
+					"\r\n",
+					"import pandas as pd\r\n",
+					"df = pd.read_csv(\"https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv\",\r\n",
+					"                   dtype={\"fips\": str})\r\n",
+					"\r\n",
+					"import plotly\r\n",
+					"import plotly.express as px\r\n",
+					"\r\n",
+					"fig = px.choropleth(df, geojson=counties, locations='fips', color='unemp',\r\n",
+					"                           color_continuous_scale=\"Viridis\",\r\n",
+					"                           range_color=(0, 12),\r\n",
+					"                           scope=\"usa\",\r\n",
+					"                           labels={'unemp':'unemployment rate'}\r\n",
+					"                          )\r\n",
+					"fig.update_layout(margin={\"r\":0,\"t\":0,\"l\":0,\"b\":0})\r\n",
+					"\r\n",
+					"# create an html document that embeds the Plotly plot\r\n",
+					"h = plotly.offline.plot(fig, output_type='div')\r\n",
+					"\r\n",
+					"# display this html\r\n",
+					"displayHTML(h)"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
