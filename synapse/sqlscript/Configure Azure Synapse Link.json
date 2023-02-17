@@ -1,0 +1,20 @@
+{
+	"name": "Configure Azure Synapse Link",
+	"properties": {
+		"folder": {
+			"name": "dp-203/06-HTAP/15-Synapse-link-sql"
+		},
+		"content": {
+			"query": "/*\nConfigure Azure Synapse Link\n\nMake sure that the dedicated SQL pool has been started\n*/\n\n-- Next, create the target schema\nCREATE SCHEMA SalesLT;\nGO\n\n-- Create a link connection in the Integrate hub (+)\n-- Change Feed is not supported on Free, Basic or Standard tier Single Database (S0,S1,S2) \n-- and Database in Elastic pool with max eDTUs < 100 or max vCore < 1. Please upgrade to a higher Service Objective.\n-- Upscale the database to an S3 (100 DTU)\n-- ESTIMATED COST / MONTH: 147.19 USD\n\n\n\n-- CLEANUP\n\nDROP SCHEMA SalesLT;\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqldwh",
+				"poolName": "sqldwh"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

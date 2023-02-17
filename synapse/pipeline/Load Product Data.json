@@ -1,0 +1,67 @@
+{
+	"name": "Load Product Data",
+	"properties": {
+		"activities": [
+			{
+				"name": "LoadProducts",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "LoadProductsData",
+						"type": "DataFlowReference",
+						"parameters": {
+							"suffix": {
+								"value": "'@{replace(pipeline().DataFactory, 'synapse-', '')}'",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"ProductsText": {
+								"suffix": {
+									"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+									"type": "Expression"
+								}
+							},
+							"ProductTable": {
+								"suffix": {
+									"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+									"type": "Expression"
+								}
+							},
+							"DimProductTable": {
+								"suffix": "@replace(pipeline().DataFactory, 'synapse-', '')"
+							}
+						}
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "files/labs-dp-203/10/stage_products"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "dp-203/05-Pipelines/10-Lab-Build a data pipeline in Azure Synapse Analytics"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-17T08:32:19Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

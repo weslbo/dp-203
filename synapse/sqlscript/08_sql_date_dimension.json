@@ -1,0 +1,20 @@
+{
+	"name": "08_sql_date_dimension",
+	"properties": {
+		"folder": {
+			"name": "dp-500/03-Synapse"
+		},
+		"content": {
+			"query": "CREATE TABLE dbo.DimDate\n( \n    DateKey INT NOT NULL,\n    DateAltKey DATETIME NOT NULL,\n    DayOfMonth INT NOT NULL,\n    DayOfWeek INT NOT NULL,\n    DayName NVARCHAR(15) NOT NULL,\n    MonthOfYear INT NOT NULL,\n    MonthName NVARCHAR(15) NOT NULL,\n    CalendarQuarter INT  NOT NULL,\n    CalendarYear INT NOT NULL,\n    FiscalQuarter INT NOT NULL,\n    FiscalYear INT NOT NULL\n)\nWITH\n(\n    DISTRIBUTION = REPLICATE,\n    CLUSTERED COLUMNSTORE INDEX\n);\n\n-- Create a temporary table for the dates we need\nCREATE TABLE #TmpStageDate (DateVal DATE NOT NULL)\n\n-- Populate the temp table with a range of dates\nDECLARE @StartDate DATE\nDECLARE @EndDate DATE\nSET @StartDate = '2019-01-01'\nSET @EndDate = '2022-12-31' \nDECLARE @LoopDate DATE\nSET @LoopDate = @StartDate\nWHILE @LoopDate <= @EndDate\nBEGIN\n    INSERT INTO #TmpStageDate VALUES\n    (\n        @LoopDate\n    ) \n    SET @LoopDate = DATEADD(dd, 1, @LoopDate)\nEND\n\n-- Insert the dates and calculated attributes into the dimension table\nINSERT INTO dbo.DimDate \nSELECT  CAST(CONVERT(VARCHAR(8), DateVal, 112) AS int) , -- date key\n        DateVal, -- date alt key\n        Day(DateVal),  -- day number of month\n        datepart(dw, DateVal), -- day number of week\n        datename(dw, DateVal), -- day name of week\n        Month(DateVal), -- month number of year\n        datename(mm, DateVal), -- month name\n        datepart(qq, DateVal), -- calendar quarter\n        Year(DateVal), -- calendar year\n        CASE\n            WHEN Month(DateVal) IN (1, 2, 3) THEN 3\n            WHEN Month(DateVal) IN (4, 5, 6) THEN 4\n            WHEN Month(DateVal) IN (7, 8, 9) THEN 1\n            WHEN Month(DateVal) IN (10, 11, 12) THEN 2\n        END, -- fiscal quarter (fiscal year runs from Jul to June)\n        CASE\n            WHEN Month(DateVal) < 7 THEN Year(DateVal)\n            ELSE Year(DateVal) + 1\n        END -- Fiscal year \nFROM #TmpStageDate\nGO\n\n\nSELECT TOP 10 * FROM dbo.DimDate",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

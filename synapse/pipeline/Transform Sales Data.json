@@ -1,0 +1,54 @@
+{
+	"name": "Transform Sales Data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Run Spark Transform",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "11-Spark Transform",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"runId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "string"
+						}
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sparkpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": null,
+						"spark.dynamicAllocation.minExecutors": null,
+						"spark.dynamicAllocation.maxExecutors": null
+					},
+					"driverSize": "Small",
+					"numExecutors": null
+				}
+			}
+		],
+		"folder": {
+			"name": "dp-203/05-Pipelines/11-Lab-Apache Spark notebooks in a pipeline"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-13T15:53:38Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

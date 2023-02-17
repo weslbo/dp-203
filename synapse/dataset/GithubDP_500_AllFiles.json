@@ -1,0 +1,26 @@
+{
+	"name": "GithubDP_500_AllFiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GitHubDP500AzureDataAnalyst",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

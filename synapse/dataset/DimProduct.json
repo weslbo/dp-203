@@ -1,0 +1,60 @@
+{
+	"name": "DimProduct",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlDwh",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"suffix": {
+					"value": "@dataset().suffix",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"suffix": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "ProductKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ProductAltKey",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ProductName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Color",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Size",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ListPrice",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "Discontinued",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DimProductLab10"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

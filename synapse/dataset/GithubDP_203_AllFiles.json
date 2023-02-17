@@ -1,0 +1,26 @@
+{
+	"name": "GithubDP_203_AllFiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GitHubDP203AzureDataEngineer",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

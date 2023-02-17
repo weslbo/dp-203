@@ -1,0 +1,20 @@
+{
+	"name": "02-Count rows from ALL tables",
+	"properties": {
+		"folder": {
+			"name": "dp-203/00-Setup"
+		},
+		"content": {
+			"query": "-- 02-Count rows from ALL tables\n\nCREATE TABLE #temp_row_count\n\n    (   row_num INT,\n        table_name VARCHAR(100),\n        row_count INT\n    )\n\nINSERT INTO #temp_row_count \n(row_num, table_name)\n(SELECT \n    ROW_NUMBER() OVER(ORDER BY SCHEMA_NAME(tbl.schema_id)+'.'+tbl.name ASC),\n    SCHEMA_NAME(tbl.schema_id)+'.'+tbl.name\nFROM sys.tables AS tbl\nWHERE SCHEMA_NAME(tbl.schema_id) = 'dbo')\n\nDECLARE @Counter INT \nDECLARE @Table VARCHAR(100)\nSET @Counter = 1\n\nWHILE @Counter <= (SELECT COUNT(*) FROM #temp_row_count)\nBEGIN\n    SET @Table = (SELECT table_name FROM #temp_row_count WHERE row_num = @Counter)\n    EXEC('UPDATE #temp_row_count SET row_count = (SELECT COUNT(*) FROM '+ @Table +') WHERE row_num='''+ @Counter +'''')\n    SET @Counter = @Counter + 1\nEND\n\nSELECT * FROM #temp_row_count\nDROP TABLE #temp_row_count",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqldwh",
+				"poolName": "sqldwh"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

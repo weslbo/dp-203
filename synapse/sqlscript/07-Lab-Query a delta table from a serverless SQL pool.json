@@ -1,0 +1,21 @@
+{
+	"name": "07-Lab-Query a delta table from a serverless SQL pool",
+	"properties": {
+		"description": "Query a delta table from a serverless SQL pool",
+		"folder": {
+			"name": "dp-203/03-Spark"
+		},
+		"content": {
+			"query": "-- This demonstrates how you can use a serverless SQL pool to query delta format files that were created using Spark, \n-- and use the results for reporting or analysis.\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakedyfk4ryjqex56.dfs.core.windows.net/files/labs-dp-203/07/delta/products-delta/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\n\n-- Observe that you can also use the serverless SQL pool to query Delta Lake data in catalog \n-- tables that are defined the Spark metastore.\n\nUSE AdventureWorks;\n\nSELECT * FROM Products;\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "adventureworks",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
