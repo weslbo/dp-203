@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "df439e4e-ce8d-48ec-a01b-becb52b80ac1"
+				"spark.autotune.trackingId": "e9d3c0d1-d4bb-40a5-b971-ea4f4b44c914"
 			}
 		},
 		"metadata": {
@@ -112,7 +112,7 @@
 					}
 				},
 				"source": [
-					"folderName = 'labs/11/transformeddata/' + str(runId)\n",
+					"folderName = 'labs-dp-203/11/transformeddata/' + str(runId)\n",
 					"folderName"
 				],
 				"execution_count": 18
@@ -138,7 +138,7 @@
 					"collapsed": false
 				},
 				"source": [
-					"order_details = spark.read.csv('/labs/11/data/*.csv', header=True, inferSchema=True)"
+					"order_details = spark.read.csv('/labs-dp-203/11/data/*.csv', header=True, inferSchema=True)"
 				],
 				"execution_count": null
 			},
