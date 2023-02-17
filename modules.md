@@ -103,6 +103,18 @@ Demo 15: [Use Azure Synapse Link for SQL](https://microsoftlearning.github.io/dp
 
 Demo 17: [Get started with Azure Stream Analytics](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/17-stream-analytics.html), 15 min
 
+```bash
+rm -r dp-203 -f
+git clone https://github.com/MicrosoftLearning/dp-203-azure-data-engineer dp-203
+cd dp-203/Allfiles/labs/17
+code setup.txt
+az eventhubs namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name events-dyfk4ryjqex56 --resource-group rg-dp-203 | jq '.primaryConnectionString'
+(ctrl+s, ctrl+q)
+cp setup.txt orderclient.js
+npm install @azure/event-hubs | Out-Null
+node ~/dp-203/Allfiles/labs/17/orderclient
+```
+
 1. View the streaming data source
 2. Create an Azure Stream Analytics job
 3. Create an input for the event stream
@@ -158,6 +170,6 @@ Demo 26: [Use a SQL Warehouse in Azure Databricks](https://microsoftlearning.git
 
 Demo 27: [Automate an Azure Databricks Notebook with Azure Data Factory](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/27-Azure-Databricks-Data-Factory.html), 40 min
 
-    1. Import a notebook
-    2. Enable Azure Databricks integration with Azure Data Factory
-    3. Use a pipeline to run the Azure Databricks notebook
+1. Import a notebook
+2. Enable Azure Databricks integration with Azure Data Factory
+3. Use a pipeline to run the Azure Databricks notebook
