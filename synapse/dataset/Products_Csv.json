@@ -22,7 +22,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "Product.csv",
-				"folderPath": "labs/10/data",
+				"folderPath": "labs-dp-203/10/data",
 				"fileSystem": "files"
 			},
 			"columnDelimiter": ",",

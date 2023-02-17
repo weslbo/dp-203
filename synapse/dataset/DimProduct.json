@@ -53,7 +53,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "DimProduct"
+			"table": "DimProductLab10"
 		}
 	}
 }
