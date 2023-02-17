@@ -1548,7 +1548,7 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "RetailDB",
+						"databaseName": "master",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -1779,7 +1779,7 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "RetailDB",
+						"databaseName": "master",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -1871,7 +1871,7 @@
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "RetailDB",
+						"databaseName": "master",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
