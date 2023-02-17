@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "080c063e-6b3e-4540-9f36-658672de8ab2"
+				"spark.autotune.trackingId": "60355e5b-23b2-43cc-b7e7-f8ff72c4484f"
 			}
 		},
 		"metadata": {
@@ -74,7 +74,7 @@
 					"collapsed": false
 				},
 				"source": [
-					"order_details = spark.read.csv('/labs/06/data/*.csv', header=True, inferSchema=True)\n",
+					"order_details = spark.read.csv('/labs-dp-203/06/data/*.csv', header=True, inferSchema=True)\n",
 					"display(order_details.limit(5))"
 				],
 				"execution_count": 2
@@ -158,7 +158,7 @@
 					}
 				},
 				"source": [
-					"transformed_df.write.mode(\"overwrite\").parquet('/labs/06/transformed_data/orders.parquet')\r\n",
+					"transformed_df.write.mode(\"overwrite\").parquet('/labs-dp-203/06/transformed_data/orders.parquet')\r\n",
 					"print (\"Transformed data saved!\")"
 				],
 				"execution_count": 4
@@ -212,7 +212,7 @@
 					"\r\n",
 					"dated_df = transformed_df.withColumn(\"Year\", year(col(\"OrderDate\"))).withColumn(\"Month\", month(col(\"OrderDate\")))\r\n",
 					"display(dated_df.limit(5))\r\n",
-					"dated_df.write.partitionBy(\"Year\",\"Month\").mode(\"overwrite\").parquet(\"/labs/06/partitioned_data\")\r\n",
+					"dated_df.write.partitionBy(\"Year\",\"Month\").mode(\"overwrite\").parquet(\"/labs-dp-203/06/partitioned_data\")\r\n",
 					"print (\"Transformed data saved!\")"
 				],
 				"execution_count": 5
@@ -247,7 +247,7 @@
 					"collapsed": false
 				},
 				"source": [
-					"orders_2020 = spark.read.parquet('/labs/06/partitioned_data/Year=2020/Month=*')\r\n",
+					"orders_2020 = spark.read.parquet('/labs-dp-203/06/partitioned_data/Year=2020/Month=*')\r\n",
 					"display(orders_2020.limit(5))"
 				],
 				"execution_count": 6
@@ -285,9 +285,9 @@
 					}
 				},
 				"source": [
-					"order_details.write.saveAsTable('sales_orders', format='parquet', mode='overwrite', path='/labs/06/sales_orders_table')"
+					"order_details.write.saveAsTable('sales_orders', format='parquet', mode='overwrite', path='/labs-dp-203/06/sales_orders_table')"
 				],
-				"execution_count": null
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -321,9 +321,9 @@
 				"source": [
 					"sql_transform = spark.sql(\"SELECT *, YEAR(OrderDate) AS Year, MONTH(OrderDate) AS Month FROM sales_orders\")\r\n",
 					"display(sql_transform.limit(5))\r\n",
-					"sql_transform.write.partitionBy(\"Year\",\"Month\").saveAsTable('transformed_orders', format='parquet', mode='overwrite', path='/transformed_orders_table')"
+					"sql_transform.write.partitionBy(\"Year\",\"Month\").saveAsTable('transformed_orders', format='parquet', mode='overwrite', path='/labs-dp-203/06/transformed_orders_table')"
 				],
-				"execution_count": null
+				"execution_count": 9
 			},
 			{
 				"cell_type": "markdown",
@@ -350,7 +350,7 @@
 					"WHERE Year = 2021\r\n",
 					"    AND Month = 1"
 				],
-				"execution_count": null
+				"execution_count": 10
 			},
 			{
 				"cell_type": "markdown",
@@ -388,7 +388,43 @@
 					"DROP TABLE transformed_orders;\r\n",
 					"DROP TABLE sales_orders;"
 				],
-				"execution_count": null
+				"execution_count": 11
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Cleanup"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from notebookutils import mssparkutils\r\n",
+					"\r\n",
+					"mssparkutils.fs.rm('/labs-dp-203/06/sales_orders_table', True)\r\n",
+					"mssparkutils.fs.rm('/labs-dp-203/06/partitioned_data', True)\r\n",
+					"mssparkutils.fs.rm('/labs-dp-203/06/transformed_orders_table', True)\r\n",
+					"mssparkutils.fs.rm('/labs-dp-203/06/transformed_data', True)"
+				],
+				"execution_count": 14
 			}
 		]
 	}
