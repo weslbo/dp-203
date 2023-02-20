@@ -1,0 +1,23 @@
+{
+	"name": "relationship-ugqsjfuuoa",
+	"properties": {
+		"Name": "relationship-ugqsjfuuoa",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "CustomerDB"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "SalesOrders",
+		"ToTableName": "Customer",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "CustomerId",
+				"ToColumnName": "CustomerId"
+			}
+		],
+		"RelationshipType": 0
+	},
+	"type": "RELATIONSHIP"
+}
