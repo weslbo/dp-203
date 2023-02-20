@@ -6674,6 +6674,174 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/CustomerDB')]",
+			"type": "Microsoft.Synapse/workspaces/databases",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"Ddls": [
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "CustomerDB",
+							"EntityType": "DATABASE",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"Properties": {
+								"IsSyMSCDMDatabase": true
+							},
+							"Source": {
+								"Provider": "ADLS",
+								"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB",
+								"Properties": {
+									"FormatType": "csv",
+									"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage"
+								}
+							}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "Customer",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "CustomerDB"
+							},
+							"Description": "This is customer information",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "CustomerId",
+										"Description": "Unique customer id",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "FirstName",
+										"Description": "Customer first name",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "LastName",
+										"Description": "Customer last name",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "EmailAddress",
+										"Description": "Customer email",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "Phone",
+										"Description": "Customer Phone",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB/Customer",
+										"delimiter": ",",
+										"multiLine": "false",
+										"firstRowAsHeader": "false",
+										"serialization.format": "1",
+										"escape": "\\",
+										"quote": "\"",
+										"FormatTypeSetToDatabaseDefault": true,
+										"header": "false"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB/Customer",
+									"Properties": {
+										"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": true
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "{\"type\":\"Snappy\",\"level\":\"optimal\"}",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "This is customer information",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "CustomerId",
+								"spark.sql.sources.provider": "csv"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/RetailDB')]",
 			"type": "Microsoft.Synapse/workspaces/databases",
 			"apiVersion": "2019-06-01-preview",
@@ -7208,6 +7376,18 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
 			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
@@ -7231,181 +7411,6 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "westeurope"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/CustomerDB')]",
-			"type": "Microsoft.Synapse/workspaces/databases",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"Ddls": [
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "CustomerDB",
-							"EntityType": "DATABASE",
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"Properties": {
-								"IsSyMSCDMDatabase": true
-							},
-							"Source": {
-								"Provider": "ADLS",
-								"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB",
-								"Properties": {
-									"FormatType": "parquet",
-									"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage"
-								}
-							}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					},
-					{
-						"ActionType": "CREATE",
-						"OldEntity": null,
-						"NewEntity": {
-							"Name": "Customer",
-							"EntityType": "TABLE",
-							"Namespace": {
-								"DatabaseName": "CustomerDB"
-							},
-							"Description": "This is customer information",
-							"TableType": "EXTERNAL",
-							"Origin": {
-								"Type": "SPARK"
-							},
-							"StorageDescriptor": {
-								"Columns": [
-									{
-										"Name": "CustomerId",
-										"Description": "Unique customer id",
-										"OriginDataTypeName": {
-											"TypeName": "long",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Properties": {
-												"HIVE_TYPE_STRING": "long"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "FirstName",
-										"Description": "Customer first name",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Length": 256,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "LastName",
-										"Description": "Customer last name",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Length": 256,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "EmailAddress",
-										"Description": "Customer email",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Length": 256,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									},
-									{
-										"Name": "Phone",
-										"Description": "Customer Phone",
-										"OriginDataTypeName": {
-											"TypeName": "string",
-											"IsNullable": false,
-											"IsComplexType": false,
-											"Length": 256,
-											"Properties": {
-												"HIVE_TYPE_STRING": "string"
-											}
-										},
-										"DeltaFormatInvalidMessages": []
-									}
-								],
-								"Format": {
-									"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
-									"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
-									"FormatType": "parquet",
-									"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
-									"Properties": {
-										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB/Customer",
-										"FormatTypeSetToDatabaseDefault": true
-									}
-								},
-								"Source": {
-									"Provider": "ADLS",
-									"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB/Customer",
-									"Properties": {
-										"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
-										"LocationSetToDatabaseDefault": true
-									}
-								},
-								"Properties": {
-									"textinputformat.record.delimiter": ",",
-									"compression": "{\"type\":\"Snappy\",\"level\":\"optimal\"}",
-									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
-								},
-								"Compressed": false,
-								"IsStoredAsSubdirectories": false
-							},
-							"Properties": {
-								"Description": "This is customer information",
-								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
-								"PrimaryKeys": "CustomerId",
-								"spark.sql.sources.provider": "parquet",
-								"sql:IsAppendOnly": false
-							},
-							"Retention": 0,
-							"Temporary": false,
-							"IsRewriteEnabled": false,
-							"Partitioning": {}
-						},
-						"Source": {
-							"Type": "SPARK"
-						}
-					}
-				]
-			},
-			"dependsOn": []
 		}
 	]
 }
