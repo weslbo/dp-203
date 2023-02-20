@@ -1,0 +1,22 @@
+{
+	"name": "CustomerDB",
+	"properties": {
+		"Name": "CustomerDB",
+		"EntityType": "DATABASE",
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"Properties": {
+			"IsSyMSCDMDatabase": true
+		},
+		"Source": {
+			"Provider": "ADLS",
+			"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB",
+			"Properties": {
+				"FormatType": "parquet",
+				"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage"
+			}
+		}
+	},
+	"type": "DATABASE"
+}
