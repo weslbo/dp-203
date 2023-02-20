@@ -2177,6 +2177,26 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT TOP (100) [CustomerId]\n,[FirstName]\n,[LastName]\n,[EmailAddress]\n,[Phone]\n FROM [CustomerDB].[dbo].[Customer]",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "CustomerDB",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Setup and validation')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -6689,7 +6709,8 @@
 								"Type": "SPARK"
 							},
 							"Properties": {
-								"IsSyMSCDMDatabase": true
+								"IsSyMSCDMDatabase": true,
+								"DerivedModelDBInfo": "{\"ModelDirectives\":{\"BaseModel\":{\"Name\":\"Retail\",\"Version\":\"0.1.0\"}}}"
 							},
 							"Source": {
 								"Provider": "ADLS",
