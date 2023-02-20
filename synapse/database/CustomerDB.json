@@ -13,7 +13,7 @@
 			"Provider": "ADLS",
 			"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB",
 			"Properties": {
-				"FormatType": "parquet",
+				"FormatType": "csv",
 				"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage"
 			}
 		}
