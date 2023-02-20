@@ -2093,7 +2093,7 @@
 					"name": "dp-203/06-HTAP/15-Synapse-link-sql"
 				},
 				"content": {
-					"query": "/*\nConfigure Azure Synapse Link\n\nMake sure that the dedicated SQL pool has been started\n*/\n\n-- Next, create the target schema\nCREATE SCHEMA SalesLT;\nGO\n\n-- Create a link connection in the Integrate hub (+)\n-- Change Feed is not supported on Free, Basic or Standard tier Single Database (S0,S1,S2) \n-- and Database in Elastic pool with max eDTUs < 100 or max vCore < 1. Please upgrade to a higher Service Objective.\n-- Upscale the database to an S3 (100 DTU)\n-- ESTIMATED COST / MONTH: 147.19 USD\n\n\n\n-- CLEANUP\n\nDROP SCHEMA SalesLT;\nGO",
+					"query": "/*\nConfigure Azure Synapse Link\n\nMake sure that the dedicated SQL pool has been started\n*/\n\n-- Next, create the target schema\nCREATE SCHEMA SalesLT;\nGO\n\n-- Create a link connection in the Integrate hub (+)\n-- Change Feed is not supported on Free, Basic or Standard tier Single Database (S0,S1,S2) \n-- and Database in Elastic pool with max eDTUs < 100 or max vCore < 1. Please upgrade to a higher Service Objective.\n-- Upscale the database to an S3 (100 DTU)\n-- ESTIMATED COST / MONTH: 147.19 USD\n\nSELECT  oh.SalesOrderID, oh.OrderDate,\n        p.ProductNumber, p.Color, p.Size,\n        c.EmailAddress AS CustomerEmail,\n        od.OrderQty, od.UnitPrice\nFROM SalesLT.SalesOrderHeader AS oh\nJOIN SalesLT.SalesOrderDetail AS od \n    ON oh.SalesOrderID = od.SalesOrderID\nJOIN  SalesLT.Product AS p \n    ON od.ProductID = p.ProductID\nJOIN SalesLT.Customer as c\n    ON oh.CustomerID = c.CustomerID\nORDER BY oh.SalesOrderID;\n\n-- CLEANUP\n\nDROP SCHEMA SalesLT;\nGO",
 					"metadata": {
 						"language": "sql"
 					},
@@ -7243,6 +7243,169 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/CustomerDB')]",
+			"type": "Microsoft.Synapse/workspaces/databases",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"Ddls": [
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "CustomerDB",
+							"EntityType": "DATABASE",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"Properties": {
+								"IsSyMSCDMDatabase": true
+							},
+							"Source": {
+								"Provider": "ADLS",
+								"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB",
+								"Properties": {
+									"FormatType": "parquet",
+									"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage"
+								}
+							}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "Customer",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "CustomerDB"
+							},
+							"Description": "This is customer information",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "CustomerId",
+										"Description": "Unique customer id",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsNullable": false,
+											"IsComplexType": false,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "FirstName",
+										"Description": "Customer first name",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsNullable": false,
+											"IsComplexType": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "LastName",
+										"Description": "Customer last name",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsNullable": false,
+											"IsComplexType": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "EmailAddress",
+										"Description": "Customer email",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsNullable": false,
+											"IsComplexType": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "Phone",
+										"Description": "Customer Phone",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsNullable": false,
+											"IsComplexType": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+									"FormatType": "parquet",
+									"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
+									"Properties": {
+										"path": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB/Customer",
+										"FormatTypeSetToDatabaseDefault": true
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://files@datalakedyfk4ryjqex56.dfs.core.windows.net/labs-dp-203/04/CustomerDB/Customer",
+									"Properties": {
+										"LinkedServiceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": true
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "{\"type\":\"Snappy\",\"level\":\"optimal\"}",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "This is customer information",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "CustomerId",
+								"spark.sql.sources.provider": "parquet",
+								"sql:IsAppendOnly": false
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false,
+							"Partitioning": {}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					}
+				]
+			},
+			"dependsOn": []
 		}
 	]
 }
