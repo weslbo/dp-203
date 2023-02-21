@@ -3,7 +3,10 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SqlDwh",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"suffix": "dyfk4ryjqex56"
+			}
 		},
 		"annotations": [],
 		"type": "AzureSqlDWTable",
