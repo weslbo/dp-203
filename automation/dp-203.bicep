@@ -14,6 +14,9 @@ param sqlPassword string
 @description('Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using (az ad signed-in-user show --query userPrincipalName)')
 param userobjectid string
 
+@description('Please specify the Power BI capacity administrator')
+param powerBIAdminEmailAddress string
+
 var rdPrefix = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions'
 var role = {
   Owner: '${rdPrefix}/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
@@ -21,6 +24,7 @@ var role = {
   StorageBlobDataReader: '${rdPrefix}/2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
   StorageBlobDataContributor: '${rdPrefix}/ba92f5b4-2d11-453d-a403-e96b0029c9fe'
   StorageBlobDataOwner: '${rdPrefix}/b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
+  Reader: '${rdPrefix}/acdd72a7-3385-48ef-bd42-f606fba81ae7'
 }
 var tenantId = subscription().tenantId
 
@@ -282,6 +286,12 @@ resource logicapp_pause_resources 'Microsoft.Logic/workflows@2017-07-01' = {
         '$getdetailsadxuri': {
           type: 'String'
         }
+        '$suspendpowerbiembeddeduri': {
+          type: 'String'
+        }
+        '$getdetailspowerbiembeddeduri': {
+          type: 'String'
+        }
       }
       triggers: {
         Every2Hours: {
@@ -375,6 +385,39 @@ resource logicapp_pause_resources 'Microsoft.Logic/workflows@2017-07-01' = {
           }
           type: 'If'
         }
+        Condition_PBI: {
+          actions: {
+            Suspend: {
+              runAfter: {}
+              type: 'Http'
+              inputs: {
+                authentication: {
+                  type: 'ManagedServiceIdentity'
+                }
+                method: 'POST'
+                uri: '@parameters(\'$suspendpowerbiembeddeduri\')'
+              }
+            }
+          }
+          runAfter: {
+            Parse_JSON_PBI: [
+              'Succeeded'
+            ]
+          }
+          expression: {
+            and: [
+              {
+                not: {
+                  equals: [
+                    '@body(\'Parse_JSON_PBI\')?[\'properties\']?[\'state\']'
+                    'Paused'
+                  ]
+                }
+              }
+            ]
+          }
+          type: 'If'
+        }
         Get_SynapseDedicatedPoolState: {
           runAfter: {}
           type: 'Http'
@@ -395,6 +438,17 @@ resource logicapp_pause_resources 'Microsoft.Logic/workflows@2017-07-01' = {
             }
             method: 'GET'
             uri: '@parameters(\'$getdetailsadxuri\')'
+          }
+        }
+        Get_Power_BI_Embedded_Capacity: {
+          runAfter: {}
+          type: 'Http'
+          inputs: {
+            authentication: {
+              type: 'ManagedServiceIdentity'
+            }
+            method: 'GET'
+            uri: '@parameters(\'$getdetailspowerbiembeddeduri\')'
           }
         }
         Parse_JSON_ADX: {
@@ -540,6 +594,77 @@ resource logicapp_pause_resources 'Microsoft.Logic/workflows@2017-07-01' = {
             }
           }
         }
+        Parse_JSON_PBI: {
+          runAfter: {
+            Get_Power_BI_Embedded_Capacity: [
+              'Succeeded'
+            ]
+          }
+          type: 'ParseJson'
+          inputs: {
+            content: '@body(\'Get_Power_BI_Embedded_Capacity\')'
+            schema: {
+              properties: {
+                id: {
+                  type: 'string'
+                }
+                location: {
+                  type: 'string'
+                }
+                name: {
+                  type: 'string'
+                }
+                properties: {
+                  properties: {
+                    administration: {
+                      properties: {
+                        members: {
+                          items: {
+                            type: 'string'
+                          }
+                          type: 'array'
+                        }
+                      }
+                      type: 'object'
+                    }
+                    mode: {
+                      type: 'string'
+                    }
+                    provisioningState: {
+                      type: 'string'
+                    }
+                    state: {
+                      type: 'string'
+                    }
+                  }
+                  type: 'object'
+                }
+                sku: {
+                  properties: {
+                    capacity: {
+                      type: 'integer'
+                    }
+                    name: {
+                      type: 'string'
+                    }
+                    tier: {
+                      type: 'string'
+                    }
+                  }
+                  type: 'object'
+                }
+                tags: {
+                  properties: {}
+                  type: 'object'
+                }
+                type: {
+                  type: 'string'
+                }
+              }
+              type: 'object'
+            }
+          }
+        }
       }
       outputs: {
       }
@@ -560,6 +685,14 @@ resource logicapp_pause_resources 'Microsoft.Logic/workflows@2017-07-01' = {
       '$getdetailsadxuri': {
         type: 'String'
         value: 'https://management.azure.com/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Synapse/workspaces/synapse-${uniqueSuffix}/kustoPools/adx${uniqueSuffix}?api-version=2021-06-01-preview'
+      }
+      '$suspendpowerbiembeddeduri': {
+        type: 'String'
+        value: 'https://management.azure.com/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.PowerBIDedicated/capacities/powerbiembedded${uniqueSuffix}/suspend?api-version=2021-01-01'
+      }
+      '$getdetailspowerbiembeddeduri': {
+        type: 'String'
+        value: 'https://management.azure.com/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.PowerBIDedicated/capacities/powerbiembedded${uniqueSuffix}?api-version=2021-01-01'
       }
     }
   }
@@ -610,7 +743,7 @@ resource databricks 'Microsoft.Databricks/workspaces@2022-04-01-preview' = {
 }
 
 resource keyvault 'Microsoft.KeyVault/vaults@2021-04-01-preview' = {
-  name: 'keyvault-${uniqueString(resourceGroup().id)}'
+  name: 'keyvault-${uniqueSuffix}'
   location: location
   properties: {
     sku: {
@@ -662,6 +795,21 @@ resource keyvault 'Microsoft.KeyVault/vaults@2021-04-01-preview' = {
   }
 }
 
+resource powerbi_embedded 'Microsoft.PowerBIDedicated/capacities@2021-01-01' = {
+  name: 'powerbiembedded${uniqueSuffix}'
+  location: location
+  sku: {
+    name: 'A4' // this A4 capacity corresponds to P1 (Premium P1). Check out https://learn.microsoft.com/en-us/power-bi/enterprise/service-admin-premium-testing
+  }
+  properties: {
+    administration: {
+      members: [
+        powerBIAdminEmailAddress
+      ]
+    }
+    mode: 'Gen2'
+  }
+}
 
 resource roleassignment_synapse_to_datalake 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid('synapse_to_datalake_{resourceGroup().name}')
@@ -689,6 +837,16 @@ resource rolesassignments_logical_to_resourcegroup 'Microsoft.Authorization/role
   properties: {
     roleDefinitionId: role['Contributor']
     principalId: logicapp_pause_resources.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource rolesassignments_purview_to_synapse 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name:  guid('purview_to_synapse${resourceGroup().name}')
+  scope: workspace
+  properties: {
+    roleDefinitionId: role['Reader']
+    principalId: purviewAccount.identity.principalId
     principalType: 'ServicePrincipal'
   }
 }
