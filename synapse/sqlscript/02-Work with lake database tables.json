@@ -10,7 +10,7 @@
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "RetailDB",
+				"databaseName": "default",
 				"poolName": "Built-in"
 			},
 			"resultLimit": 5000
