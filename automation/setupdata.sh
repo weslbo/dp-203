@@ -1,5 +1,5 @@
 # Set ssome variabls
-uniqueSuffix=dyfk4ryjqex56
+uniqueSuffix=weslbo
 sqlUser=azureuser
 read -p "Password for SQL Admin: " sqlPassword
 

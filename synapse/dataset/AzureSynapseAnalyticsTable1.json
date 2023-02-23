@@ -5,7 +5,7 @@
 			"referenceName": "SqlDwh",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"suffix": "dyfk4ryjqex56"
+				"suffix": "weslbo"
 			}
 		},
 		"annotations": [],

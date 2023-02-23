@@ -5,14 +5,14 @@
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sqldb-dyfk4ryjqex56.database.windows.net;Initial Catalog=AdventureWorksLT;User ID=azureuser",
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sqldb-weslbo.database.windows.net;Initial Catalog=AdventureWorksLT;User ID=azureuser",
 			"password": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
 					"referenceName": "KeyVault",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"suffix": "dyfk4ryjqex56"
+						"suffix": "weslbo"
 					}
 				},
 				"secretName": "sqlPassword"

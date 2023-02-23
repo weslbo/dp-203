@@ -5,7 +5,7 @@
 			"name": "dp-203/08-Govern data/22-Purview"
 		},
 		"content": {
-			"query": "CREATE USER [purview-dyfk4ryjqex56] FROM EXTERNAL PROVIDER\n\n\nEXEC sp_addrolemember 'db_datareader',  [purview-dyfk4ryjqex56]\n\n",
+			"query": "CREATE USER [purview-weslbo] FROM EXTERNAL PROVIDER\n\n\nEXEC sp_addrolemember 'db_datareader',  [purview-weslbo]\n\n",
 			"metadata": {
 				"language": "sql"
 			},

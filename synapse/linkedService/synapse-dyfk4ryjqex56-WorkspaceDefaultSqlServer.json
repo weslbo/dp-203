@@ -1,9 +1,9 @@
 {
-	"name": "synapse-dyfk4ryjqex56-WorkspaceDefaultSqlServer",
+	"name": "synapse-weslbo-WorkspaceDefaultSqlServer",
 	"type": "Microsoft.Synapse/workspaces/linkedservices",
 	"properties": {
 		"typeProperties": {
-			"connectionString": "Data Source=tcp:synapse-dyfk4ryjqex56.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+			"connectionString": "Data Source=tcp:synapse-weslbo.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
 		"parameters": {
 			"DBName": {

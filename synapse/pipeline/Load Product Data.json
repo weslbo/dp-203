@@ -44,7 +44,7 @@
 					},
 					"staging": {
 						"linkedService": {
-							"referenceName": "synapse-dyfk4ryjqex56-WorkspaceDefaultStorage",
+							"referenceName": "synapse-weslbo-WorkspaceDefaultStorage",
 							"type": "LinkedServiceReference"
 						},
 						"folderPath": "files/labs-dp-203/10/stage_products"

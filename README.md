@@ -23,6 +23,7 @@ To deploy this environment:
 1. Execute the following command
 
     ```azurecli
+    rm -r dp-203 -f
     git clone https://github.com/weslbo/dp-203.git
     cd dp-203
     userobjectid=$(az ad signed-in-user show --query id --output tsv)

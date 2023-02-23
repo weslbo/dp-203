@@ -108,7 +108,7 @@ rm -r dp-203 -f
 git clone https://github.com/MicrosoftLearning/dp-203-azure-data-engineer dp-203
 cd dp-203/Allfiles/labs/17
 code setup.txt
-az eventhubs namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name events-dyfk4ryjqex56 --resource-group rg-dp-203 | jq '.primaryConnectionString'
+az eventhubs namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name events-weslbo --resource-group rg-dp-203 | jq '.primaryConnectionString'
 (ctrl+s, ctrl+q)
 cp setup.txt orderclient.js
 npm install @azure/event-hubs | Out-Null
