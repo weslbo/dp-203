@@ -1,0 +1,19 @@
+{
+	"name": "AzureSynapseAnalyticsTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlDwh",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"suffix": "dyfk4ryjqex56"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ProductSample"
+		}
+	}
+}
