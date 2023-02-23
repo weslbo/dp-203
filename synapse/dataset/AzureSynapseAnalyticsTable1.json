@@ -5,7 +5,10 @@
 			"referenceName": "SqlDwh",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"suffix": "weslbo"
+				"suffix": {
+					"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+					"type": "Expression"
+				}
 			}
 		},
 		"annotations": [],
