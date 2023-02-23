@@ -1,0 +1,17 @@
+{
+	"name": "PurviewPermissionsDedicated",
+	"properties": {
+		"content": {
+			"query": "CREATE USER [purview-dyfk4ryjqex56] FROM EXTERNAL PROVIDER\n\n\nEXEC sp_addrolemember 'db_datareader',  [purview-dyfk4ryjqex56]\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "sqldwh",
+				"poolName": "sqldwh"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
