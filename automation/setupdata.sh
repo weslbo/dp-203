@@ -14,8 +14,6 @@ sqlcmd -S "synapse-$uniqueSuffix.sql.azuresynapse.net" -U $sqlUser -P $sqlPasswo
 # It then iterates through each file name in the array and downloads two files with the same name from a given URL. 
 # The files are then uploaded to the database using the BCP command.
 
-declare -a files=("DimCurrency" "DimCustomer" "DimDate" "DimGeography" "DimProduct" "DimProductCategory" "DimProductSubcategory" "DimPromotion" "DimSalesTerritory" "FactInternetSales")
-
 declare -a files=("DimAccount" "DimCurrency" "DimCustomer" "DimDate" "DimDepartmentGroup" "DimEmployee" "DimGeography" "DimOrganization" "DimProduct" "DimProductCategory" "DimProductSubCategory" "DimPromotion" "DimReseller" "DimSalesTerritory" "FactInternetSales" "FactResellerSales")
 for i in "${files[@]}"
 do
