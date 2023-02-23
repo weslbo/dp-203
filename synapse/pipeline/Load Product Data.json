@@ -44,7 +44,7 @@
 					},
 					"staging": {
 						"linkedService": {
-							"referenceName": "synapse-weslbo-WorkspaceDefaultStorage",
+							"referenceName": "DataLake",
 							"type": "LinkedServiceReference"
 						},
 						"folderPath": "files/labs-dp-203/10/stage_products"
