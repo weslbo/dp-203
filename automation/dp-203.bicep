@@ -17,15 +17,6 @@ param userobjectid string
 @description('Please specify the Power BI capacity administrator')
 param powerBIAdminEmailAddress string
 
-var rdPrefix = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions'
-var role = {
-  Owner: '${rdPrefix}/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-  Contributor: '${rdPrefix}/b24988ac-6180-42a0-ab88-20f7382dd24c'
-  StorageBlobDataReader: '${rdPrefix}/2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
-  StorageBlobDataContributor: '${rdPrefix}/ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-  StorageBlobDataOwner: '${rdPrefix}/b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
-  Reader: '${rdPrefix}/acdd72a7-3385-48ef-bd42-f606fba81ae7'
-}
 var tenantId = subscription().tenantId
 
 resource deploymentId 'Microsoft.Resources/tags@2019-10-01' = {
@@ -815,7 +806,7 @@ resource roleassignment_synapse_to_datalake 'Microsoft.Authorization/roleAssignm
   name: guid('synapse_to_datalake_{resourceGroup().name}')
   scope: dataLakeAccount
   properties: {
-    roleDefinitionId: role['StorageBlobDataOwner']
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b') // StorageBlobDataOwner
     principalId: workspace.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -826,7 +817,7 @@ resource rolesassignments_purview_to_datalake 'Microsoft.Authorization/roleAssig
   scope: dataLakeAccount
   properties: {
     principalId: purviewAccount.identity.principalId
-    roleDefinitionId: role['StorageBlobDataContributor']
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe') // StorageBlobDataContributor
     principalType: 'ServicePrincipal'
   }
 }
@@ -835,7 +826,7 @@ resource rolesassignments_logical_to_resourcegroup 'Microsoft.Authorization/role
   name:  guid('logicapp_to_resourcegroup_${resourceGroup().name}')
   scope: resourceGroup()
   properties: {
-    roleDefinitionId: role['Contributor']
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
     principalId: logicapp_pause_resources.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -845,7 +836,7 @@ resource rolesassignments_purview_to_synapse 'Microsoft.Authorization/roleAssign
   name:  guid('purview_to_synapse${resourceGroup().name}')
   scope: workspace
   properties: {
-    roleDefinitionId: role['Reader']
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7') // Reader
     principalId: purviewAccount.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -857,7 +848,7 @@ resource rolesassignments_currentuser_to_datalake 'Microsoft.Authorization/roleA
   scope: dataLakeAccount
   properties: {
     principalId: userobjectid
-    roleDefinitionId: role['StorageBlobDataContributor']
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe') // StorageBlobDataContributor
     principalType: 'User'
   }
 }
