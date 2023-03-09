@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a8220461-1669-4955-9488-232b1f71c670"
+				"spark.autotune.trackingId": "7c8d6b71-fac9-40ff-8340-dc59f31f3270"
 			}
 		},
 		"metadata": {
@@ -63,6 +63,17 @@
 				"source": [
 					"# Sentiment review (fake) restaurant reviews using Synapse and ChatGPT\r\n",
 					"\r\n",
+					"This notebook is based on an article and video from Thomas Costers and Stijn Wynants\r\n",
+					"\r\n",
+					"- https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/using-openai-gpt-in-synapse-analytics/ba-p/3751815\r\n",
+					"- https://www.youtube.com/watch?v=CY4dAWvh60M\r\n",
+					"\r\n",
+					"One of the SynapseML’s capabilities is providing simple APIs for pre-built intelligent services, such as Azure cognitive services. Azure OpenAI is part of the cognitive services stack, making it accessible from within Synapse Spark pools. In order to use the Azure OpenAI in Synapse Spark, we’ll be using three components. The setup of these components is out of scope for this article.\r\n",
+					"\r\n",
+					"- A Synapse Analytics workspace with a Spark Pool\r\n",
+					"- An Azure OpenAI cognitive service with text-davinci-003 model deployed\r\n",
+					"- Azure Key vault to store the OpenAI API key\r\n",
+					"\r\n",
 					"Use the [Azure OpenAI Studio playground](https://oai.azure.com/portal/playground) to test the following prompt\r\n",
 					"\r\n",
 					"```json\r\n",
@@ -72,6 +83,19 @@
 					"    \"review\": \"\"\r\n",
 					"}\r\n",
 					"````"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"The following code is applicable For Spark3.2 pool. SynapseML can be conveniently installed on Synapse using this piece of configuration"
 				]
 			},
 			{
@@ -113,7 +137,9 @@
 					}
 				},
 				"source": [
-					"## Generate fake reviews, using ChatGPT"
+					"## Generate fake reviews, using ChatGPT\r\n",
+					"\r\n",
+					"Now we will genrate 5 reviews. We first create a set of prompts for the number of reviews we want to generate"
 				]
 			},
 			{
@@ -158,8 +184,38 @@
 					"    .withColumnRenamed(\"restaurant\", \"review\") \\\r\n",
 					"    .withColumn(\"prompt\", generateRestaurantPrompt_udf())\r\n",
 					"\r\n",
-					"display(df_prompts)\r\n",
-					"\r\n",
+					"display(df_prompts)"
+				],
+				"execution_count": 39
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Then, we will call the OpenAI service and get the actual (fake) reviews"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
 					"df_reviews_json = completion.transform(df_reviews).cache() \\\r\n",
 					"    .select(\r\n",
 					"        col(\"id\"),\r\n",
@@ -168,20 +224,50 @@
 					"        col(\"response.choices.text\").getItem(0).alias(\"json\")\r\n",
 					"    )\r\n",
 					"\r\n",
-					"display(df_reviews_json)\r\n",
-					"\r\n",
+					"display(df_reviews_json)"
+				],
+				"execution_count": 40
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Since we get json data back, we have to apply some schema to it and retrieve the actual Restaurant Name and Review text."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
 					"schema = StructType([ \\\r\n",
 					"    StructField(\"restaurant\", StringType(), False), \\\r\n",
 					"    StructField(\"review\", StringType(), False) \\\r\n",
 					"])\r\n",
 					"\r\n",
 					"df_reviews_table = df_reviews_json.withColumn(\"json\", from_json(col(\"json\"), schema)) \\\r\n",
-					"    .select(col(\"id\"), col(\"json.*\"))\r\n",
+					"    .select(col(\"id\"), col(\"json.*\"), col(\"error\"))\r\n",
 					"\r\n",
 					"display(df_reviews_table)\r\n",
 					""
 				],
-				"execution_count": 32
+				"execution_count": 41
 			},
 			{
 				"cell_type": "markdown",
@@ -195,12 +281,16 @@
 				"source": [
 					"## Detect sentiment\r\n",
 					"\r\n",
+					"Now that we have are restaurants and reviews, it's time to detect the sentiment. Again, we can use the OpenAI playground to test our prompt \r\n",
+					"\r\n",
 					"```text\r\n",
 					"Classify the sentiment of following restaurant review.\r\n",
 					"Classifications: [Positive, Negative, Neutral]\r\n",
 					"Review: \"\"\"The food here is so delicious. The crepes are made to perfection and the servers are so friendly and helpful. I highly recommend it!\"\"\"\r\n",
 					"Classification:\r\n",
-					"``` "
+					"``` \r\n",
+					"\r\n",
+					"When we are ready we the prompt, it's time to generate the prompt within our dataset."
 				]
 			},
 			{
@@ -223,20 +313,22 @@
 					"generateSentimentPrompt_udf = udf(lambda s: generateSentimentPrompt(s), StringType())\r\n",
 					"\r\n",
 					"df_sentiment_prompt = df_reviews_table.withColumn(\"prompt\", generateSentimentPrompt_udf(col(\"review\")))\r\n",
-					"display(df_sentiment_prompt)\r\n",
-					"\r\n",
-					"df_sentiment_json = completion.transform(df_sentiment_prompt).cache() \\\r\n",
-					"    .select(\r\n",
-					"        col(\"id\"),\r\n",
-					"        col(\"restaurant\"),\r\n",
-					"        col(\"review\"),\r\n",
-					"        col(\"response.choices.text\").getItem(0).alias(\"sentiment\")\r\n",
-					"    )\r\n",
-					"\r\n",
-					"display(df_sentiment_json)\r\n",
-					""
+					"display(df_sentiment_prompt)"
 				],
-				"execution_count": 31
+				"execution_count": 42
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Now, we apply the transformation. This is where the actual call happens towards OpenAI api"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -249,12 +341,39 @@
 						"transient": {
 							"deleting": false
 						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df_sentiment_json = completion.transform(df_sentiment_prompt).cache() \\\r\n",
+					"    .select(\r\n",
+					"        col(\"id\"),\r\n",
+					"        col(\"restaurant\"),\r\n",
+					"        col(\"review\"),\r\n",
+					"        col(\"response.choices.text\").getItem(0).alias(\"sentiment\")\r\n",
+					"    )\r\n",
+					"\r\n",
+					"display(df_sentiment_json)\r\n",
+					""
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
 					}
 				},
 				"source": [
-					""
-				],
-				"execution_count": null
+					"Review the output above!\r\n",
+					"\r\n",
+					"Todo:\r\n",
+					"1. Make sure quotes are properly handled (otherwise you get 'undefined')\r\n",
+					"2. I only get positive sentiment... Probably need to tweak the openai deployment model...."
+				]
 			}
 		]
 	}
