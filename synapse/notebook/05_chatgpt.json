@@ -1,0 +1,261 @@
+{
+	"name": "05_chatgpt",
+	"properties": {
+		"folder": {
+			"name": "dp-500/03-Synapse"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "a8220461-1669-4955-9488-232b1f71c670"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-weslbo/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://synapse-weslbo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Sentiment review (fake) restaurant reviews using Synapse and ChatGPT\r\n",
+					"\r\n",
+					"Use the [Azure OpenAI Studio playground](https://oai.azure.com/portal/playground) to test the following prompt\r\n",
+					"\r\n",
+					"```json\r\n",
+					"Generate a json containing a restaurant review. Use the following json structure: \r\n",
+					"{\r\n",
+					"    \"restaurant\": \"\",\r\n",
+					"    \"review\": \"\"\r\n",
+					"}\r\n",
+					"````"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%%configure -f\r\n",
+					"{\r\n",
+					"  \"name\": \"synapseml\",\r\n",
+					"  \"conf\": {\r\n",
+					"      \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.11.0,org.apache.spark:spark-avro_2.12:3.3.1\",\r\n",
+					"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\",\r\n",
+					"      \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12,com.fasterxml.jackson.core:jackson-databind\",\r\n",
+					"      \"spark.yarn.user.classpath.first\": \"true\",\r\n",
+					"      \"spark.sql.parquet.enableVectorizedReader\": \"false\",\r\n",
+					"      \"spark.sql.legacy.replaceDatabricksSparkAvro.enabled\": \"true\"\r\n",
+					"  }\r\n",
+					"}"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Generate fake reviews, using ChatGPT"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from synapse.ml.core.platform import running_on_synapse, find_secret\r\n",
+					"from pyspark.sql.types import *\r\n",
+					"from pyspark.sql.functions import *\r\n",
+					"from synapse.ml.cognitive import OpenAICompletion\r\n",
+					"\r\n",
+					"key = find_secret(\"openaikey\", \"keyvault-weslbo\")  # replace this with your secret and keyvault\r\n",
+					"nrOfReviews = 5\r\n",
+					"\r\n",
+					"completion = (\r\n",
+					"    OpenAICompletion()\r\n",
+					"    .setSubscriptionKey(key)\r\n",
+					"    .setDeploymentName(\"text-davinci-003\")\r\n",
+					"    .setUrl(\"https://openai-wedebols-3.openai.azure.com/\")\r\n",
+					"    .setMaxTokens(2048)\r\n",
+					"    .setPromptCol(\"prompt\")\r\n",
+					"    .setErrorCol(\"error\")\r\n",
+					"    .setOutputCol(\"response\")\r\n",
+					")\r\n",
+					"\r\n",
+					"def generateRestaurantPrompt() -> str:\r\n",
+					"    return \"Generate a json containing a restaurant review. Use the following json structure: {'restaurant': '','review': ''}\"\r\n",
+					"generateRestaurantPrompt_udf = udf(lambda: generateRestaurantPrompt(), StringType())\r\n",
+					"\r\n",
+					"df_prompts = spark.range(1, nrOfReviews+1) \\\r\n",
+					"    .withColumnRenamed(\"restaurant\", \"review\") \\\r\n",
+					"    .withColumn(\"prompt\", generateRestaurantPrompt_udf())\r\n",
+					"\r\n",
+					"display(df_prompts)\r\n",
+					"\r\n",
+					"df_reviews_json = completion.transform(df_reviews).cache() \\\r\n",
+					"    .select(\r\n",
+					"        col(\"id\"),\r\n",
+					"        col(\"prompt\"),\r\n",
+					"        col(\"error\"),\r\n",
+					"        col(\"response.choices.text\").getItem(0).alias(\"json\")\r\n",
+					"    )\r\n",
+					"\r\n",
+					"display(df_reviews_json)\r\n",
+					"\r\n",
+					"schema = StructType([ \\\r\n",
+					"    StructField(\"restaurant\", StringType(), False), \\\r\n",
+					"    StructField(\"review\", StringType(), False) \\\r\n",
+					"])\r\n",
+					"\r\n",
+					"df_reviews_table = df_reviews_json.withColumn(\"json\", from_json(col(\"json\"), schema)) \\\r\n",
+					"    .select(col(\"id\"), col(\"json.*\"))\r\n",
+					"\r\n",
+					"display(df_reviews_table)\r\n",
+					""
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Detect sentiment\r\n",
+					"\r\n",
+					"```text\r\n",
+					"Classify the sentiment of following restaurant review.\r\n",
+					"Classifications: [Positive, Negative, Neutral]\r\n",
+					"Review: \"\"\"The food here is so delicious. The crepes are made to perfection and the servers are so friendly and helpful. I highly recommend it!\"\"\"\r\n",
+					"Classification:\r\n",
+					"``` "
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"def generateSentimentPrompt(s: str) -> str:\r\n",
+					"    return \"Classify the sentiment of following restaurant review.\\nClassifications: [Positive, Negative, Neutral]\\nReview: \" + s +\"\\nClassification:\"\r\n",
+					"generateSentimentPrompt_udf = udf(lambda s: generateSentimentPrompt(s), StringType())\r\n",
+					"\r\n",
+					"df_sentiment_prompt = df_reviews_table.withColumn(\"prompt\", generateSentimentPrompt_udf(col(\"review\")))\r\n",
+					"display(df_sentiment_prompt)\r\n",
+					"\r\n",
+					"df_sentiment_json = completion.transform(df_sentiment_prompt).cache() \\\r\n",
+					"    .select(\r\n",
+					"        col(\"id\"),\r\n",
+					"        col(\"restaurant\"),\r\n",
+					"        col(\"review\"),\r\n",
+					"        col(\"response.choices.text\").getItem(0).alias(\"sentiment\")\r\n",
+					"    )\r\n",
+					"\r\n",
+					"display(df_sentiment_json)\r\n",
+					""
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
