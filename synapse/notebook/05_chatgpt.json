@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "399a1e0c-27af-4a51-8578-281dbabbcc64"
+				"spark.autotune.trackingId": "a812a941-ab78-4ca2-bd2d-bd1caa6dad14"
 			}
 		},
 		"metadata": {
@@ -125,7 +125,7 @@
 					"  }\r\n",
 					"}"
 				],
-				"execution_count": 1
+				"execution_count": 22
 			},
 			{
 				"cell_type": "markdown",
@@ -177,7 +177,7 @@
 					")\r\n",
 					"\r\n",
 					"def generateRestaurantPrompt() -> str:\r\n",
-					"    return \"Generate a json containing a restaurant review. Use the following json structure: {'restaurant': '','review': ''}\"\r\n",
+					"    return \"Generate a json containing a restaurant review. Use the following json structure: {\\\"restaurant\\\": \\\"\\\",\\\"review\\\": \\\"\\\"}\"\r\n",
 					"generateRestaurantPrompt_udf = udf(lambda: generateRestaurantPrompt(), StringType())\r\n",
 					"\r\n",
 					"df_prompts = spark.range(1, nrOfReviews+1) \\\r\n",
@@ -186,7 +186,7 @@
 					"\r\n",
 					"display(df_prompts)"
 				],
-				"execution_count": 8
+				"execution_count": 29
 			},
 			{
 				"cell_type": "markdown",
@@ -226,7 +226,7 @@
 					"\r\n",
 					"display(df_reviews_json)"
 				],
-				"execution_count": 16
+				"execution_count": 30
 			},
 			{
 				"cell_type": "markdown",
@@ -267,7 +267,7 @@
 					"display(df_reviews_table)\r\n",
 					""
 				],
-				"execution_count": 17
+				"execution_count": 31
 			},
 			{
 				"cell_type": "markdown",
@@ -315,7 +315,7 @@
 					"df_sentiment_prompt = df_reviews_table.withColumn(\"prompt\", generateSentimentPrompt_udf(col(\"review\")))\r\n",
 					"display(df_sentiment_prompt)"
 				],
-				"execution_count": 18
+				"execution_count": 32
 			},
 			{
 				"cell_type": "markdown",
@@ -356,7 +356,7 @@
 					"display(df_sentiment_json)\r\n",
 					""
 				],
-				"execution_count": 19
+				"execution_count": 33
 			},
 			{
 				"cell_type": "markdown",
