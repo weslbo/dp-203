@@ -22,7 +22,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().filename",
+					"value": "@concat(dataset().filename, '.csv')",
 					"type": "Expression"
 				},
 				"folderPath": "adventureworkslt/tables/csv",
