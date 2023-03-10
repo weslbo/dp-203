@@ -68,7 +68,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
-											"value": "@item()",
+											"value": "@replace(replace(item(), '[', ''), ']', '')",
 											"type": "Expression"
 										}
 									}
@@ -132,7 +132,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
-											"value": "@item()",
+											"value": "@replace(replace(item(), '[', ''), ']', '')",
 											"type": "Expression"
 										}
 									}
@@ -186,7 +186,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
-											"value": "@item()",
+											"value": "@replace(replace(item(), '[', ''), ']', '')",
 											"type": "Expression"
 										}
 									}
