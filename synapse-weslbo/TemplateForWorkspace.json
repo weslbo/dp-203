@@ -1109,7 +1109,13 @@
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "DataLake",
-					"type": "LinkedServiceReference"
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"suffix": {
+							"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+							"type": "Expression"
+						}
+					}
 				},
 				"parameters": {
 					"filename": {
@@ -1122,7 +1128,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@dataset().filename",
+							"value": "@concat(dataset().filename, '.csv')",
 							"type": "Expression"
 						},
 						"folderPath": "adventureworkslt/tables/csv",
@@ -1145,7 +1151,13 @@
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "DataLake",
-					"type": "LinkedServiceReference"
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"suffix": {
+							"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+							"type": "Expression"
+						}
+					}
 				},
 				"parameters": {
 					"filename": {
@@ -1158,7 +1170,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@dataset().filename",
+							"value": "@concat(dataset().filename, '.json')",
 							"type": "Expression"
 						},
 						"folderPath": "adventureworkslt/tables/json",
@@ -1178,7 +1190,13 @@
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "DataLake",
-					"type": "LinkedServiceReference"
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"suffix": {
+							"value": "@replace(pipeline().DataFactory, 'synapse-', '')",
+							"type": "Expression"
+						}
+					}
 				},
 				"parameters": {
 					"filename": {
@@ -1191,7 +1209,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@dataset().filename",
+							"value": "@concat(dataset().filename, '.parquet')",
 							"type": "Expression"
 						},
 						"folderPath": "adventureworkslt/tables/parquet",
