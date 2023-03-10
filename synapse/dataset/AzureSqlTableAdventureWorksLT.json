@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable",
+	"name": "AzureSqlTableAdventureWorksLT",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SqlAdventureWorksLT",

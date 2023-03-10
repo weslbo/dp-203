@@ -52,7 +52,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "AzureSqlTable",
+									"referenceName": "AzureSqlTableAdventureWorksLT",
 									"type": "DatasetReference",
 									"parameters": {
 										"tableName": {
@@ -116,7 +116,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "AzureSqlTable",
+									"referenceName": "AzureSqlTableAdventureWorksLT",
 									"type": "DatasetReference",
 									"parameters": {
 										"tableName": {
@@ -170,7 +170,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "AzureSqlTable",
+									"referenceName": "AzureSqlTableAdventureWorksLT",
 									"type": "DatasetReference",
 									"parameters": {
 										"tableName": {
