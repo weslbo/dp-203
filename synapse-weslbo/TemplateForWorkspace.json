@@ -814,6 +814,268 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/dp-500-adventureworks')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEachSqlTableName",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('sqlTableNames')",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data from SQL to Parquet",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureSqlTableAdventureWorksLT",
+											"type": "DatasetReference",
+											"parameters": {
+												"tableName": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DP500LandingParquet",
+											"type": "DatasetReference",
+											"parameters": {
+												"filename": {
+													"value": "@replace(replace(item(), '[', ''), ']', '')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Copy data from SQL to CSV",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureSqlTableAdventureWorksLT",
+											"type": "DatasetReference",
+											"parameters": {
+												"tableName": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DP500LandingCSV",
+											"type": "DatasetReference",
+											"parameters": {
+												"filename": {
+													"value": "@replace(replace(item(), '[', ''), ']', '')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Copy data from SQL to JSON",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureSqlTableAdventureWorksLT",
+											"type": "DatasetReference",
+											"parameters": {
+												"tableName": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DP500LandingJson",
+											"type": "DatasetReference",
+											"parameters": {
+												"filename": {
+													"value": "@replace(replace(item(), '[', ''), ']', '')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"sqlTableNames": {
+						"type": "Array",
+						"defaultValue": [
+							"[SalesLT].[Customer]",
+							"[SalesLT].[ProductModel]",
+							"[SalesLT].[ProductDescription]",
+							"[SalesLT].[Product]",
+							"[SalesLT].[ProductModelProductDescription]",
+							"[SalesLT].[ProductCategory]",
+							"[SalesLT].[Address]",
+							"[SalesLT].[CustomerAddress]",
+							"[SalesLT].[SalesOrderDetail]",
+							"[SalesLT].[SalesOrderHeader]"
+						]
+					}
+				},
+				"folder": {
+					"name": "dp-500/00-Setup"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/AzureSqlTableAdventureWorksLT')]",
+				"[concat(variables('workspaceId'), '/datasets/DP500LandingParquet')]",
+				"[concat(variables('workspaceId'), '/datasets/DP500LandingCSV')]",
+				"[concat(variables('workspaceId'), '/datasets/DP500LandingJson')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureSqlTableAdventureWorksLT')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlAdventureWorksLT",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"tableName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": {
+						"value": "@dataset().tableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/SqlAdventureWorksLT')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/AzureSynapseAnalyticsTable1')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -838,6 +1100,109 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/SqlDwh')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DP500LandingCSV')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLake",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": "adventureworkslt/tables/csv",
+						"fileSystem": "landing"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/DataLake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DP500LandingJson')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLake",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": "adventureworkslt/tables/json",
+						"fileSystem": "landing"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/DataLake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DP500LandingParquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLake",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": "adventureworkslt/tables/parquet",
+						"fileSystem": "landing"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/DataLake')]"
 			]
 		},
 		{
@@ -5957,6 +6322,394 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/05_chatgpt')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-500/03-Synapse"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "a812a941-ab78-4ca2-bd2d-bd1caa6dad14"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-weslbo/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://synapse-weslbo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Sentiment review (fake) restaurant reviews using Synapse and ChatGPT\r\n",
+							"\r\n",
+							"This notebook is based on an article and video from Thomas Costers and Stijn Wynants\r\n",
+							"\r\n",
+							"- https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/using-openai-gpt-in-synapse-analytics/ba-p/3751815\r\n",
+							"- https://www.youtube.com/watch?v=CY4dAWvh60M\r\n",
+							"\r\n",
+							"One of the SynapseML’s capabilities is providing simple APIs for pre-built intelligent services, such as Azure cognitive services. Azure OpenAI is part of the cognitive services stack, making it accessible from within Synapse Spark pools. In order to use the Azure OpenAI in Synapse Spark, we’ll be using three components. The setup of these components is out of scope for this article.\r\n",
+							"\r\n",
+							"- A Synapse Analytics workspace with a Spark Pool\r\n",
+							"- An Azure OpenAI cognitive service with text-davinci-003 model deployed\r\n",
+							"- Azure Key vault to store the OpenAI API key\r\n",
+							"\r\n",
+							"Use the [Azure OpenAI Studio playground](https://oai.azure.com/portal/playground) to test the following prompt\r\n",
+							"\r\n",
+							"```json\r\n",
+							"Generate a json containing a restaurant review. Use the following json structure: \r\n",
+							"{\r\n",
+							"    \"restaurant\": \"\",\r\n",
+							"    \"review\": \"\"\r\n",
+							"}\r\n",
+							"````"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"The following code is applicable For Spark3.2 pool. SynapseML can be conveniently installed on Synapse using this piece of configuration"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%%configure -f\r\n",
+							"{\r\n",
+							"  \"name\": \"synapseml\",\r\n",
+							"  \"conf\": {\r\n",
+							"      \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.11.0,org.apache.spark:spark-avro_2.12:3.3.1\",\r\n",
+							"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\",\r\n",
+							"      \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12,com.fasterxml.jackson.core:jackson-databind\",\r\n",
+							"      \"spark.yarn.user.classpath.first\": \"true\",\r\n",
+							"      \"spark.sql.parquet.enableVectorizedReader\": \"false\",\r\n",
+							"      \"spark.sql.legacy.replaceDatabricksSparkAvro.enabled\": \"true\"\r\n",
+							"  }\r\n",
+							"}"
+						],
+						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Generate fake reviews, using ChatGPT\r\n",
+							"\r\n",
+							"Now we will genrate 5 reviews. We first create a set of prompts for the number of reviews we want to generate"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from synapse.ml.core.platform import running_on_synapse, find_secret\r\n",
+							"from pyspark.sql.types import *\r\n",
+							"from pyspark.sql.functions import *\r\n",
+							"from synapse.ml.cognitive import OpenAICompletion\r\n",
+							"\r\n",
+							"key = find_secret(\"openaikey\", \"keyvault-weslbo\")  # replace this with your secret and keyvault\r\n",
+							"nrOfReviews = 5\r\n",
+							"\r\n",
+							"completion = (\r\n",
+							"    OpenAICompletion()\r\n",
+							"    .setSubscriptionKey(key)\r\n",
+							"    .setDeploymentName(\"text-davinci-003\")\r\n",
+							"    .setUrl(\"https://openai-wedebols-3.openai.azure.com/\")\r\n",
+							"    .setMaxTokens(2048)\r\n",
+							"    .setPromptCol(\"prompt\")\r\n",
+							"    .setErrorCol(\"error\")\r\n",
+							"    .setOutputCol(\"response\")\r\n",
+							")\r\n",
+							"\r\n",
+							"def generateRestaurantPrompt() -> str:\r\n",
+							"    return \"Generate a json containing a restaurant review. Use the following json structure: {\\\"restaurant\\\": \\\"\\\",\\\"review\\\": \\\"\\\"}\"\r\n",
+							"generateRestaurantPrompt_udf = udf(lambda: generateRestaurantPrompt(), StringType())\r\n",
+							"\r\n",
+							"df_prompts = spark.range(1, nrOfReviews+1) \\\r\n",
+							"    .withColumnRenamed(\"restaurant\", \"review\") \\\r\n",
+							"    .withColumn(\"prompt\", generateRestaurantPrompt_udf())\r\n",
+							"\r\n",
+							"display(df_prompts)"
+						],
+						"outputs": [],
+						"execution_count": 29
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Then, we will call the OpenAI service and get the actual (fake) reviews"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df_reviews_json = completion.transform(df_prompts).cache() \\\r\n",
+							"    .select(\r\n",
+							"        col(\"id\"),\r\n",
+							"        col(\"prompt\"),\r\n",
+							"        col(\"error\"),\r\n",
+							"        col(\"response.choices.text\").getItem(0).alias(\"json\")\r\n",
+							"    )\r\n",
+							"\r\n",
+							"display(df_reviews_json)"
+						],
+						"outputs": [],
+						"execution_count": 30
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Since we get json data back, we have to apply some schema to it and retrieve the actual Restaurant Name and Review text."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"schema = StructType([ \\\r\n",
+							"    StructField(\"restaurant\", StringType(), False), \\\r\n",
+							"    StructField(\"review\", StringType(), False) \\\r\n",
+							"])\r\n",
+							"\r\n",
+							"df_reviews_table = df_reviews_json.withColumn(\"json\", from_json(col(\"json\"), schema)) \\\r\n",
+							"    .select(col(\"id\"), col(\"json.*\"), col(\"error\"))\r\n",
+							"\r\n",
+							"display(df_reviews_table)\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 31
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Detect sentiment\r\n",
+							"\r\n",
+							"Now that we have are restaurants and reviews, it's time to detect the sentiment. Again, we can use the OpenAI playground to test our prompt \r\n",
+							"\r\n",
+							"```text\r\n",
+							"Classify the sentiment of following restaurant review.\r\n",
+							"Classifications: [Positive, Negative, Neutral]\r\n",
+							"Review: \"\"\"The food here is so delicious. The crepes are made to perfection and the servers are so friendly and helpful. I highly recommend it!\"\"\"\r\n",
+							"Classification:\r\n",
+							"``` \r\n",
+							"\r\n",
+							"When we are ready we the prompt, it's time to generate the prompt within our dataset."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"def generateSentimentPrompt(s: str) -> str:\r\n",
+							"    return \"Classify the sentiment of following restaurant review.\\nClassifications: [Positive, Negative, Neutral]\\nReview: \" + s +\"\\nClassification:\"\r\n",
+							"generateSentimentPrompt_udf = udf(lambda s: generateSentimentPrompt(s), StringType())\r\n",
+							"\r\n",
+							"df_sentiment_prompt = df_reviews_table.withColumn(\"prompt\", generateSentimentPrompt_udf(col(\"review\")))\r\n",
+							"display(df_sentiment_prompt)"
+						],
+						"outputs": [],
+						"execution_count": 32
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Now, we apply the transformation. This is where the actual call happens towards OpenAI api"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df_sentiment_json = completion.transform(df_sentiment_prompt).cache() \\\r\n",
+							"    .select(\r\n",
+							"        col(\"id\"),\r\n",
+							"        col(\"restaurant\"),\r\n",
+							"        col(\"review\"),\r\n",
+							"        col(\"response.choices.text\").getItem(0).alias(\"sentiment\")\r\n",
+							"    )\r\n",
+							"\r\n",
+							"display(df_sentiment_json)\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 33
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Review the output above!\r\n",
+							"\r\n",
+							"Todo:\r\n",
+							"1. Make sure quotes are properly handled (otherwise you get 'undefined')\r\n",
+							"2. I only get positive sentiment... Probably need to tweak the openai deployment model...."
+						]
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/11-Spark Transform')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -6730,6 +7483,18 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
 			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
@@ -6749,18 +7514,6 @@
 				"sparkVersion": "3.2",
 				"isComputeIsolationEnabled": false,
 				"sessionLevelPackagesEnabled": false,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "westeurope"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
 				"annotations": []
 			},
 			"dependsOn": [],
