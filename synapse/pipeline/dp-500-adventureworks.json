@@ -32,12 +32,23 @@
 									"partitionOption": "None"
 								},
 								"sink": {
-									"type": "BinarySink",
+									"type": "ParquetSink",
 									"storeSettings": {
 										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
@@ -53,8 +64,14 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DataLake_FileContainer_AllFiles_dp500",
-									"type": "DatasetReference"
+									"referenceName": "DP500LandingParquet",
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -77,12 +94,25 @@
 									"partitionOption": "None"
 								},
 								"sink": {
-									"type": "BinarySink",
+									"type": "DelimitedTextSink",
 									"storeSettings": {
 										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
@@ -98,8 +128,14 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DataLake_FileContainer_AllFiles_dp500",
-									"type": "DatasetReference"
+									"referenceName": "DP500LandingCSV",
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -122,9 +158,12 @@
 									"partitionOption": "None"
 								},
 								"sink": {
-									"type": "BinarySink",
+									"type": "JsonSink",
 									"storeSettings": {
 										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
 									}
 								},
 								"enableStaging": false
@@ -143,8 +182,14 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DataLake_FileContainer_AllFiles_dp500",
-									"type": "DatasetReference"
+									"referenceName": "DP500LandingJson",
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}

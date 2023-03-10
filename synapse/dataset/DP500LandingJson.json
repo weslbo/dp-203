@@ -1,0 +1,28 @@
+{
+	"name": "DP500LandingJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": "adventureworkslt/tables/json",
+				"fileSystem": "landing"
+			}
+		},
+		"schema": {}
+	}
+}
