@@ -1,0 +1,79 @@
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/introduction-to-azure-data-lake-storage Module]]: Introduction to Azure Data Lake Storage Gen2
++ Azure Data Lake Storage Gen2
+-- Understand Azure Data Lake Storage Gen2 <<topic1>>
+--- What is it (file system, storage platform for analytics workloads) <<topic1>>
+--- Benefits <<topic1>>
+----_ Hadoop compatible access (Databricks, HDInsight, Synapse Analytics)
+----_ Security (ACLs)
+----_ Performance (folders, subfolders)
+----_ Data redundancy (LRS, GRS)
+--- Governance required <<topic1>>
+----_ Types of data to be stored
+----_ How the data will be transformed
+----_ Who should access the data
+----_ What are the typical access patterns
+-- Enable Azure Data Lake Storage Gen2 in Azure Storage <<topic2>>
+--- Enable hierarchical namespace <<topic2>>
+--- Data Lake Gen2 upgrade <<topic2>>
+-- Compare Azure Data Lake Store to Azure Blob storage <<topic3>>
+--- Flat namespace versus Hierarchical namespace <<topic3>>
+--- Pricing differences? <<topic3>>
+++ Understand the stages for processing big data <<topic4>>
++++ Ingest <<topic4>>
+++++_ Synapse Pipelines, Azure Data Factory, Kafka, Stream Analytics
++++ Store <<topic4>>
+++++_ Data Lake Storage Gen2
++++ Prep and train <<topic4>>
+++++_ Synapse Analytics, Databricks, HDInsight, Azure Machine Learning
++++ Model and serve <<topic4>>
+++++_ Power BI, Synapse Analytics
+++ Use Azure Data Lake Storage Gen2 in data analytics workloads <<topic5>>
++++ Big data processing and analytics <<topic5>>
++++ Data warehousing <<topic5>>
++++ Real-time data analytics <<topic5>>
++++ Data science and machine learning <<topic5>>
+@endmindmap

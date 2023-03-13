@@ -1,0 +1,89 @@
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/configure-azure-synapse-link-with-azure-cosmos-db/ Module]]: Implement Azure Synapse Link with Azure Cosmos DB
++ Synapse Link with Azure Cosmos DB
+-- Enable Cosmos DB account to use Azure Synapse Link <<topic1>>
+--- Enabling Azure Synapse Link in Azure Cosmos DB <<topic1>>
+----_ Use the Azure portal or Azure CLI, PowerShell
+----_ Azure Cosmos DB for NoSQL
+----_ Azure Cosmos DB for MongoDB
+----_ Azure Cosmos DB for Apache Gremlin (preview)
+--- Considerations <<topic1>>
+----_ You can't disable it
+----_ Create or update a container with support for an analytical store
+----_ Schema Type: WellDefined (default) or FullFidelity
+----_ After a schema type has been assigned, you can't change it.
+-- Create an analytical store enabled container <<topic2>>
+--- Analytical store schema types <<topic2>>
+---- Well-defined <<topic2>>
+-----_ The default schema type for an Azure Cosmos DB for NoSQL account.
+---- Full fidelity <<topic2>>
+-----_ The default (and only supported) schema type for an Azure Cosmos DB for MongoDB account.
+--- Enabling analytical store support in a container <<topic2>>
+--- Considerations <<topic2>>
+----_ Analytical store support can't be disabled without deleting the container
+----_ Setting the analytical store TTL value to 0 or null effectively disables the analytical store
+-----_ By no longer synchronizing new items
+-----_ Deleting items already synchronized
+----_ After setting this value to 0, you can't re-enable analytical store support in the container
+++ Create a linked service for Cosmos DB <<topic3>>
++++ Authentication options: <<topic3>>
+++++_ Account key: Specify an authentication key for your Cosmos DB account.
+++++_ Service Principal: Use the identity of the Azure Synapse Analytics service.
+++++_ System Assigned Managed Identity: Use system-assigned managed identity.
+++++_ User Managed Identity: Use a user-defined managed identity.
+++ Query Cosmos DB data with Spark <<topic4>>
++++_ Loading Azure Cosmos DB analytical data into a dataframe (spark.read.format("cosmos.olap"))
++++_ Writing a dataframe to a Cosmos DB container (mydf.write.format("cosmos.oltp"))
++++_ Using Spark SQL to query Azure Cosmos DB analytical data
+++ Query Cosmos DB with Synapse SQL <<topic5>>
++++_ Using OPENROWSET with an authentication key
++++_ Using OPENROWSET with a credential
++++_ Specifying a schema
++++_ Creating a view in a database
++++ Considerations for Serverless SQL pools <<topic5>>
+++++_ Provision your Azure Cosmos DB analytical storage and any client applications (for example Microsoft Power BI) in the same region as serverless SQL pool.
+++++_ When working with string columns, use the OPENROWSET function with the explicit WITH clause and specify an appropriate data length for the string data.
+@endmindmap

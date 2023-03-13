@@ -1,0 +1,85 @@
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/intro-to-microsoft-purview/ Module]]: Introduction to Microsoft Purview
++ Microsoft Purview
+++ What is Microsoft Purview? <<topic1>>
++++ Unified data-governance service <<topic1>>
++++ Data Map <<topic1>>
++++ Data Catalog <<topic1>>
++++ Data Estate Insights <<topic1>>
+++++_ Asset insights
+++++_ Scan insights
+++++_ Glossary insights
+++++_ Classification insights
+++++_ Sensitivity insights
+++++_ File extensions insights
+++ How Microsoft Purview works <<topic2>>
++++ Loading data in the Data Map <<topic2>>
+++++_ Mapping data
+++++_ Scanning data
+++++_ Classification
++++ Browse and search information <<topic2>>
+++++_ Semantic search and browse
+++++_ Business glossary and workflows
+++++_ Data lineage with sources, owners, transformations, and lifecycle
++++ Data Lineage <<topic2>>
+++ When to use Microsoft Purview <<topic3>>
++++ Decision criteria <<topic3>>
+++++_ No central data source registration
+++++_ Catalog makes data sources discoverable
+++++_ Connection string/path required
+++++_ Data use hidden without documentation
+++++_ Consumed through different experiences
++++ Governance <<topic3>>
+++++_ Task of discovering, protecting, and governing data difficult
+++++_ Data stored in different locations
+++++_ Compliance with security policies, government regulations, and customer needs critical
+++++_ Sensitive information in data
+++++_ Knowing where protections needed
++++ Roles in Purview <<topic3>>
+++++_ Purview Data Reader Role
+++++_ Purvider Data Curator Role
+++++_ Purview Data Source Administrator Role
+@endmindmap

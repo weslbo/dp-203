@@ -1,0 +1,57 @@
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/visualize-real-time-data-azure-stream-analytics-power-bi/ Module]]: Visualize real-time data with Azure Stream Analytics and Power BI
++ Visualize real-time data
+++ Use a Power BI output in Azure Stream Analytics <<topic1>>
++++ Power BI outputs <<topic1>>
+++++_ Output alias
+++++_ Group workspace
+++++_ Dataset name
+++++_ Table name
+++++_ Authorize connection
+++ Create a query for real-time visualization <<topic2>>
+++ Create real-time data visualizations in Power BI <<topic3>>
++++_ Dashboard
+@endmindmap

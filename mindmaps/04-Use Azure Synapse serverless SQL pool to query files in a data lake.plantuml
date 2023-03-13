@@ -1,0 +1,81 @@
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/query-data-lake-using-azure-synapse-serverless-sql-pools/ Module]]: Use Azure Synapse serverless SQL pool to query files in a data lake
++ Serverless SQL pools
+-- Understand Azure Synapse serverless SQL pool capabilities and use cases <<topic1>>
+--- Benefits <<topic1>>
+----_ familiar Transact-SQL
+----_ Integrated connectivity (driver)
+----_ Distributed query processing
+----_ Fault-tolerance
+----_ No infrastructure to manage
+----_ No charge for resources reserved, pay for data processed by queries you run
+--- When to use serverless? <<topic1>>
+----_ Data exploration
+----_ Data transformation
+----_ Logical datawarehouse
+++ Query files using a serverless SQL pool <<topic2>>
++++ File types supported in OPENROWSET() <<topic2>>
+++++ Delimited text (CSV) files <<topic2>>
++++++_ With and without a header row
++++++_ Comma and tab-delimited values
++++++_ Windows and Unix style line endings
++++++_ Non-quoted and quoted values, and escaping characters
++++++_ FIELDTERMINATOR, ROWTERMINATOR, FIELDQUOTE
++++++_ Specifying the rowset schema
+++++ JSON files <<topic2>>
++++++_ JSON_VALUE
++++++_ Flattening
+++++ Parquet files <<topic2>>
+++++ Query partitioned data <<topic2>>
++++++_ Wildcard
++++++_ filepath() function
+++ Create external database objects <<topic3>>
++++_ CREATE DATABASE
++++_ CREATE EXTERNAL DATA SOURCE
++++_ CREATE DATABASE SCOPED CREDENTIAL
++++_ CREATE EXTERNAL FILE FORMAT
++++_ CREATE EXTERNAL TABLE
+@endmindmap

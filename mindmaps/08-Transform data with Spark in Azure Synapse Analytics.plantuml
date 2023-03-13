@@ -1,0 +1,64 @@
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/transform-data-spark-azure-synapse-analytics/ Module]]: Transform data with Spark in Azure Synapse Analytics
++ Transform data with Spark
+-- Modify and save dataframes <<topic1>>
+--- Typical operations on a dataframe <<topic1>>
+----_ Filtering rows and columns
+----_ Renaming columns
+----_ Creating new columns, often derived from existing ones
+----_ Replacing null or other values
+--- Save the transformed data (Parquet format) <<topic1>>
+++ Partition data files <<topic2>>
++++_ Partitioning is an optimization technique that enables spark to maximize performance across the worker nodes.
++++_ Partition the output file (partitionBy method)
++++_ Filter parquet files in a query
+++ Transform data with SQL <<topic3>>
++++_ Define tables and views
++++_ External tables are "loosely bound" to the underlying files and deleting the table does not delete the files
++++_ Use SQL to query and transform the data
++++_ Query the metastore
++++_ Drop tables
+@endmindmap

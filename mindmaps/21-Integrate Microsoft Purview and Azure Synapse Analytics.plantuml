@@ -1,0 +1,67 @@
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/integrate-microsoft-purview-azure-synapse-analytics/ Module]]: Integrate Microsoft Purview and Azure Synapse Analytics
++ Microsoft Purview
+++ Catalog Azure Synapse Analytics data assets in Microsoft Purview <<topic1>>
++++_ Configure data access for Microsoft Purview
++++_ Register and scan data sources
++++_ View and manage cataloged data assets
+++ Connect Azure purview to an Azure Synapse Analytics workspace <<topic2>>
++++ Why? <<topic2>>
+++++_ Search the Purview catalog in the Synapse Studio user interface.
+++++_ Push details of data pipeline activities to Purview in order to track data lineage information.
++++ Security considerations <<topic2>>
+++++_ Requires Collection Administrator access to the Purview account's root collection
+++++_ Managed identity will become a data curator
+++ Search a Purview catalog in Synapse Studio <<topic3>>
+++ Track data lineage in pipelines <<topic4>>
++++ From <<topic4>>
+++++_ The Copy Data activity
+++++_ The Data Flow activity
++++ The assets recorded include <<topic4>>
+++++_ The source from which the data is extracted
+++++_ The activity used to transfer the data
+++++_ The destination where the data is stored
+@endmindmap

@@ -1,0 +1,58 @@
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/design-hybrid-transactional-analytical-processing-using-azure-synapse-analytics/ Module]]: Plan hybrid transactional and analytical processing using Azure Synapse Analytics
++ Plan HTAP
+++ Understand hybrid transactional and analytical processing patterns <<topic1>>
++++_ OLTP versus OLAP
++++_ Hybrid Transactional / Analytical Processing (HTAP)
+++ Describe Azure Synapse Link <<topic2>>
++++ Azure Synapse Link for Cosmos DB <<topic2>>
+++++_ Cosmos DB Container autosync
+++++_ Synapse SQL and Apache Spark runtimes
++++ Azure Synapse Link for SQL <<topic2>>
+++++_ Replicates the table data to a dedicated SQL pool
++++ Azure Synapse Link for Dataverse <<topic2>>
+++++_ Replicates the data to a Azure Data Lake storage Gen2 account
+@endmindmap
