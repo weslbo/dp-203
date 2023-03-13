@@ -4,7 +4,7 @@
 
 ### [Introduction to data engineering on Azure](https://learn.microsoft.com/training/modules/introduction-to-data-engineering-azure/)
 
-<img src="https://raw.githubusercontent.com/weslbo/dp-203/main/mindmaps/01-Introduction%20to%20data%20engineering%20on%20Azure.svg">
+![mindmap](https://raw.githubusercontent.com/weslbo/dp-203/main/mindmaps/01-Introduction%20to%20data%20engineering%20on%20Azure.svg)
 
 ### [Introduction to Azure Data Lake Storage Gen2](https://learn.microsoft.com/training/modules/introduction-to-azure-data-lake-storage/)
 
