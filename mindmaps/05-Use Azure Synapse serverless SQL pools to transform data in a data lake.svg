@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="509px" preserveAspectRatio="none" style="width:1801px;height:509px;background:#FFFFFF;" version="1.1" viewBox="0 0 1801 509" width="1801px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="47.7344" id="_title" style="stroke:none;stroke-width:1.0;" width="1175" x="311.5" y="15"/><a href="https://learn.microsoft.com/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake" target="_top" title="https://learn.microsoft.com/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake" xlink:actuate="onRequest" xlink:href="https://learn.microsoft.com/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake" xlink:show="new" xlink:title="https://learn.microsoft.com/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" text-decoration="underline" textLength="104" x="316.5" y="51.1426">Module</text></a><text fill="#000000" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" textLength="1061" x="420.5" y="51.1426">: Use Azure Synapse serverless SQL pools to transform data in a data lake</text><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="157" x="10" y="264.1094"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="137" x="20" y="288.6426">Serverless SQL pools</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="531" x="217" y="167.2813"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="507" x="227" y="191.8145">Transform data files with the CREATE EXTERNAL TABLE AS SELECT statement</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="127" x="798" y="98.9531"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="808" y="123.4863">Transformations</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="227" x="978" y="84.2676">Filter rows and columns in a dataset</text><path d="M925,117.7578 L935,117.7578 C950,117.7578 950,78.5391 965,78.5391 L975,78.5391 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="328" x="978" y="103.877">Rename data fields and convert between data types</text><path d="M925,117.7578 L935,117.7578 C950,117.7578 950,98.1484 965,98.1484 L975,98.1484 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="179" x="978" y="123.4863">Calculate derived data fields</text><path d="M925,117.7578 L935,117.7578 C950,117.7578 950,117.7578 965,117.7578 L975,117.7578 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="153" x="978" y="143.0957">Manipulate string values</text><path d="M925,117.7578 L935,117.7578 C950,117.7578 950,137.3672 965,137.3672 L975,137.3672 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="169" x="978" y="162.7051">Group and aggregate data</text><path d="M925,117.7578 L935,117.7578 C950,117.7578 950,156.9766 965,156.9766 L975,156.9766 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M748,186.0859 L758,186.0859 C773,186.0859 773,117.7578 788,117.7578 L798,117.7578 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="343" x="798" y="197"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="319" x="808" y="221.5332">CREATE EXTERNAL TABLE AS SELECT (CETAS)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="595" x="1194" y="182.3145">Persist the results of a query in an external table, which stores its data in a file in the data lake.</text><path d="M1141,215.8047 L1151,215.8047 C1166,215.8047 1166,176.5859 1181,176.5859 L1191,176.5859 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="234" x="1194" y="201.9238">CREATE EXTERNAL DATA SOURCE</text><path d="M1141,215.8047 L1151,215.8047 C1166,215.8047 1166,196.1953 1181,196.1953 L1191,196.1953 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="285" x="1194" y="221.5332">CREATE DATABASE SCOPED CREDENTIAL</text><path d="M1141,215.8047 L1151,215.8047 C1166,215.8047 1166,215.8047 1181,215.8047 L1191,215.8047 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="227" x="1194" y="241.1426">CREATE EXTERNAL FILE FORMAT</text><path d="M1141,215.8047 L1151,215.8047 C1166,215.8047 1166,235.4141 1181,235.4141 L1191,235.4141 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="275" x="1194" y="260.752">CREATE EXTERNAL TABLE ... AS SELECT</text><path d="M1141,215.8047 L1151,215.8047 C1166,215.8047 1166,255.0234 1181,255.0234 L1191,255.0234 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M748,186.0859 L758,186.0859 C773,186.0859 773,215.8047 788,215.8047 L798,215.8047 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="178" x="798" y="255.8281"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="154" x="808" y="280.3613">Dropping external tables</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="221" x="1029" y="280.3613">does not delete the underlying files</text><path d="M976,274.6328 L986,274.6328 C1001,274.6328 1001,274.6328 1016,274.6328 L1026,274.6328 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M748,186.0859 L758,186.0859 C773,186.0859 773,274.6328 788,274.6328 L798,274.6328 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M167,282.9141 L177,282.9141 C192,282.9141 192,186.0859 207,186.0859 L217,186.0859 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="376" x="217" y="352.6563"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="352" x="227" y="377.1895">Encapsulate data transformations in a stored procedure</text><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="171" x="643" y="313.4375"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="147" x="653" y="337.9707">CREATE PROCEDURE</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="441" x="867" y="337.9707">Delete the target folder if it exists before running the stored procedure</text><path d="M814,332.2422 L824,332.2422 C839,332.2422 839,332.2422 854,332.2422 L864,332.2422 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M593,371.4609 L603,371.4609 C618,371.4609 618,332.2422 633,332.2422 L643,332.2422 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="75" x="643" y="381.4609"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="51" x="653" y="405.9941">Benefits</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="245" x="771" y="376.5801">Reduces client to server network traffic</text><path d="M718,400.2656 L728,400.2656 C743,400.2656 743,370.8516 758,370.8516 L768,370.8516 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184" x="771" y="396.1895">Provides a security boundary</text><path d="M718,400.2656 L728,400.2656 C743,400.2656 743,390.4609 758,390.4609 L768,390.4609 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="124" x="771" y="415.7988">Eases maintenance</text><path d="M718,400.2656 L728,400.2656 C743,400.2656 743,410.0703 758,410.0703 L768,410.0703 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="142" x="771" y="435.4082">Improved performance</text><path d="M718,400.2656 L728,400.2656 C743,400.2656 743,429.6797 758,429.6797 L768,429.6797 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M593,371.4609 L603,371.4609 C618,371.4609 618,400.2656 633,400.2656 L643,400.2656 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M167,282.9141 L177,282.9141 C192,282.9141 192,371.4609 207,371.4609 L217,371.4609 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="401" x="217" y="449.4844"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="377" x="227" y="474.0176">Include a data transformation stored procedure in a pipeline</text><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="233" x="668" y="449.4844"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="209" x="678" y="474.0176">Azure Synapse Analytics Pipeline</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="252" x="954" y="464.2129">Delete activity to delete the target folder</text><path d="M901,468.2891 L911,468.2891 C926,468.2891 926,458.4844 941,458.4844 L951,458.4844 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="479" x="954" y="483.8223">Stored procedure activity to run the stored procedure containing the CETAS</text><path d="M901,468.2891 L911,468.2891 C926,468.2891 926,478.0938 941,478.0938 L951,478.0938 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M618,468.2891 L628,468.2891 C643,468.2891 643,468.2891 658,468.2891 L668,468.2891 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M167,282.9141 L177,282.9141 C192,282.9141 192,468.2891 207,468.2891 L217,468.2891 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[a1652791b4b532cffcd92825dfacfb56]
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake Module]]: Use Azure Synapse serverless SQL pools to transform data in a data lake
++ Serverless SQL pools
+++ Transform data files with the CREATE EXTERNAL TABLE AS SELECT statement <<topic1>>
++++ Transformations <<topic1>>
+++++_ Filter rows and columns in a dataset
+++++_ Rename data fields and convert between data types
+++++_ Calculate derived data fields
+++++_ Manipulate string values
+++++_ Group and aggregate data
++++ CREATE EXTERNAL TABLE AS SELECT (CETAS) <<topic1>>
+++++_ Persist the results of a query in an external table, which stores its data in a file in the data lake.
+++++_ CREATE EXTERNAL DATA SOURCE
+++++_ CREATE DATABASE SCOPED CREDENTIAL
+++++_ CREATE EXTERNAL FILE FORMAT
+++++_ CREATE EXTERNAL TABLE ... AS SELECT
++++ Dropping external tables <<topic1>>
+++++_ does not delete the underlying files
+++ Encapsulate data transformations in a stored procedure <<topic2>>
++++ CREATE PROCEDURE <<topic2>>
+++++_ Delete the target folder if it exists before running the stored procedure
++++ Benefits <<topic2>>
+++++_ Reduces client to server network traffic
+++++_ Provides a security boundary
+++++_ Eases maintenance
+++++_ Improved performance
+++ Include a data transformation stored procedure in a pipeline <<topic3>>
++++ Azure Synapse Analytics Pipeline <<topic3>>
+++++_ Delete activity to delete the target folder
+++++_ Stored procedure activity to run the stored procedure containing the CETAS
+@endmindmap
+
+PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: en
+Country: US
+--></g></svg>

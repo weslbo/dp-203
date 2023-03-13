@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="508px" preserveAspectRatio="none" style="width:1493px;height:508px;background:#FFFFFF;" version="1.1" viewBox="0 0 1493 508" width="1493px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="47.7344" id="_title" style="stroke:none;stroke-width:1.0;" width="743" x="373.5" y="15"/><a href="https://learn.microsoft.com/training/modules/use-delta-lake-azure-synapse-analytics/" target="_top" title="https://learn.microsoft.com/training/modules/use-delta-lake-azure-synapse-analytics/" xlink:actuate="onRequest" xlink:href="https://learn.microsoft.com/training/modules/use-delta-lake-azure-synapse-analytics/" xlink:show="new" xlink:title="https://learn.microsoft.com/training/modules/use-delta-lake-azure-synapse-analytics/" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" text-decoration="underline" textLength="104" x="378.5" y="51.1426">Module</text></a><text fill="#000000" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" textLength="629" x="482.5" y="51.1426">: Use Delta Lake in Azure Synapse Analytics</text><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="88" x="10" y="263.8047"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="68" x="20" y="288.3379">Delta Lake</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="169" x="148" y="127.7578"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="145" x="158" y="152.291">Understand Delta Lake</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="90" x="367" y="78.7344"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="66" x="377" y="103.2676">What is it?</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="482" x="510" y="93.4629">Open-source storage layer that adds relational database semantics to Spark</text><path d="M457,97.5391 L467,97.5391 C482,97.5391 482,87.7344 497,87.7344 L507,87.7344 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="120" x="510" y="113.0723">Serialization format</text><path d="M457,97.5391 L467,97.5391 C482,97.5391 482,107.3438 497,107.3438 L507,107.3438 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M317,146.5625 L327,146.5625 C342,146.5625 342,97.5391 357,97.5391 L367,97.5391 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="75" x="367" y="156.5625"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="51" x="377" y="181.0957">Benefits</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="39" x="495" y="141.877">CRUD</text><path d="M442,175.3672 L452,175.3672 C467,175.3672 467,136.1484 482,136.1484 L492,136.1484 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="470" x="495" y="161.4863">Support for ACID transactions (Atomicity, Consistency, Isolation, Durability)</text><path d="M442,175.3672 L452,175.3672 C467,175.3672 467,155.7578 482,155.7578 L492,155.7578 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="196" x="495" y="181.0957">Data versioning and time travel</text><path d="M442,175.3672 L452,175.3672 C467,175.3672 467,175.3672 482,175.3672 L492,175.3672 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="271" x="495" y="200.7051">Support for batch and streaming workloads</text><path d="M442,175.3672 L452,175.3672 C467,175.3672 467,194.9766 482,194.9766 L492,194.9766 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="234" x="495" y="220.3145">Standard formats and interoperability</text><path d="M442,175.3672 L452,175.3672 C467,175.3672 467,214.5859 482,214.5859 L492,214.5859 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M317,146.5625 L327,146.5625 C342,146.5625 342,175.3672 357,175.3672 L367,175.3672 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M98,282.6094 L108,282.6094 C123,282.6094 123,146.5625 138,146.5625 L148,146.5625 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="181" x="148" y="235"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="157" x="158" y="259.5332">Create Delta Lake tables</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="285" x="382" y="239.9238">Creating a Delta Lake table from a dataframe</text><path d="M329,253.8047 L339,253.8047 C354,253.8047 354,234.1953 369,234.1953 L379,234.1953 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="424" x="382" y="259.5332">Making conditional updates (update, delete, and merge operations)</text><path d="M329,253.8047 L339,253.8047 C354,253.8047 354,253.8047 369,253.8047 L379,253.8047 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="241" x="382" y="279.1426">Querying a previous version of a table</text><path d="M329,253.8047 L339,253.8047 C354,253.8047 354,273.4141 369,273.4141 L379,273.4141 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M98,282.6094 L108,282.6094 C123,282.6094 123,253.8047 138,253.8047 L148,253.8047 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="159" x="148" y="313.4375"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="135" x="158" y="337.9707">Create catalog tables</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="174" x="360" y="308.5566">External vs managed tables</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="571" x="587" y="298.752">A managed table is defined without a specified location, dropping the table deletes the files</text><path d="M534,302.8281 L544,302.8281 C559,302.8281 559,293.0234 574,293.0234 L584,293.0234 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="606" x="587" y="318.3613">An external table is defined for a custom file location, dropping the table does not delete the files</text><path d="M534,302.8281 L544,302.8281 C559,302.8281 559,312.6328 574,312.6328 L584,312.6328 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><path d="M307,332.2422 L317,332.2422 C332,332.2422 332,302.8281 347,302.8281 L357,302.8281 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="417" x="360" y="337.9707">Creating a catalog table from a dataframe (df.write.format("delta"))</text><path d="M307,332.2422 L317,332.2422 C332,332.2422 332,332.2422 347,332.2422 L357,332.2422 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="714" x="360" y="357.5801">Creating a catalog table using SQL (CREATE TABLE MyExternalTable USING DELTA LOCATION '/delta/mytable')</text><path d="M307,332.2422 L317,332.2422 C332,332.2422 332,351.8516 347,351.8516 L357,351.8516 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="201" x="360" y="377.1895">Using the DeltaTableBuilder API</text><path d="M307,332.2422 L317,332.2422 C332,332.2422 332,371.4609 347,371.4609 L357,371.4609 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M98,282.6094 L108,282.6094 C123,282.6094 123,332.2422 138,332.2422 L148,332.2422 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="246" x="148" y="391.2656"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="222" x="158" y="415.7988">Use Delta Lake with streaming data</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="175" x="447" y="401.0918">Spark Structured Streaming</text><path d="M394,410.0703 L404,410.0703 C419,410.0703 419,395.3633 434,395.3633 L444,395.3633 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="206" x="447" y="420.7012">Streaming with Delta Lake tables</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="520" x="706" y="410.8965">Using a Delta Lake table as a streaming source (spark.readStream.format("delta"))</text><path d="M653,414.9727 L663,414.9727 C678,414.9727 678,405.168 693,405.168 L703,405.168 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="775" x="706" y="430.5059">Using a Delta Lake table as a streaming sink (stream_df.writeStream.format("delta").option("checkpointLocation", "").start())</text><path d="M653,414.9727 L663,414.9727 C678,414.9727 678,424.7773 693,424.7773 L703,424.7773 " fill="none" style="stroke:#181818;stroke-width:1.0;"/><path d="M394,410.0703 L404,410.0703 C419,410.0703 419,414.9727 434,414.9727 L444,414.9727 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M98,282.6094 L108,282.6094 C123,282.6094 123,410.0703 138,410.0703 L148,410.0703 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#07641D" height="37.6094" rx="12.5" ry="12.5" style="stroke:#07641D;stroke-width:3.0;" width="210" x="148" y="448.875"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="186" x="158" y="473.4082">Use Delta Lake in a SQL pool</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="317" x="411" y="463.6035">Querying delta formatted files with OPENROWSET</text><path d="M358,467.6797 L368,467.6797 C383,467.6797 383,457.875 398,457.875 L408,457.875 " fill="none" style="stroke:#07641D;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="150" x="411" y="483.2129">Querying catalog tables</text><path d="M358,467.6797 L368,467.6797 C383,467.6797 383,477.4844 398,477.4844 L408,477.4844 " fill="none" style="stroke:#07641D;stroke-width:3.0;"/><path d="M98,282.6094 L108,282.6094 C123,282.6094 123,467.6797 138,467.6797 L148,467.6797 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[d94e815e73bc00e7260ddcaa557cb755]
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/use-delta-lake-azure-synapse-analytics/ Module]]: Use Delta Lake in Azure Synapse Analytics
++ Delta Lake
+++ Understand Delta Lake <<topic1>>
++++ What is it? <<topic1>>
+++++_ Open-source storage layer that adds relational database semantics to Spark
+++++_ Serialization format
++++ Benefits <<topic1>>
+++++_ CRUD
+++++_ Support for ACID transactions (Atomicity, Consistency, Isolation, Durability)
+++++_ Data versioning and time travel
+++++_ Support for batch and streaming workloads
+++++_ Standard formats and interoperability
+++ Create Delta Lake tables <<topic2>>
++++_ Creating a Delta Lake table from a dataframe
++++_ Making conditional updates (update, delete, and merge operations)
++++_ Querying a previous version of a table
+++ Create catalog tables <<topic3>>
++++_ External vs managed tables
+++++_ A managed table is defined without a specified location, dropping the table deletes the files
+++++_ An external table is defined for a custom file location, dropping the table does not delete the files
++++_ Creating a catalog table from a dataframe (df.write.format("delta"))
++++_ Creating a catalog table using SQL (CREATE TABLE MyExternalTable USING DELTA LOCATION '/delta/mytable')
++++_ Using the DeltaTableBuilder API
+++ Use Delta Lake with streaming data <<topic4>>
++++_ Spark Structured Streaming
++++_ Streaming with Delta Lake tables
+++++_ Using a Delta Lake table as a streaming source (spark.readStream.format("delta"))
+++++_ Using a Delta Lake table as a streaming sink (stream_df.writeStream.format("delta").option("checkpointLocation", "").start())
+++ Use Delta Lake in a SQL pool <<topic5>>
++++_ Querying delta formatted files with OPENROWSET
++++_ Querying catalog tables
+@endmindmap
+
+PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: en
+Country: US
+--></g></svg>

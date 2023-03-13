@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="659px" preserveAspectRatio="none" style="width:1280px;height:659px;background:#FFFFFF;" version="1.1" viewBox="0 0 1280 659" width="1280px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="47.7344" id="_title" style="stroke:none;stroke-width:1.0;" width="684" x="296.5" y="15"/><a href="https://learn.microsoft.com/training/modules/use-apache-spark-azure-databricks/" target="_top" title="https://learn.microsoft.com/training/modules/use-apache-spark-azure-databricks/" xlink:actuate="onRequest" xlink:href="https://learn.microsoft.com/training/modules/use-apache-spark-azure-databricks/" xlink:show="new" xlink:title="https://learn.microsoft.com/training/modules/use-apache-spark-azure-databricks/" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" text-decoration="underline" textLength="104" x="301.5" y="51.1426">Module</text></a><text fill="#000000" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" textLength="570" x="405.5" y="51.1426">: Use Apache Spark in Azure Databricks</text><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="109" x="10" y="339.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="89" x="20" y="364.0332">Apache Spark</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="140" x="169" y="136.6484"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="179" y="161.1816">Get to know Spark</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="145" x="359" y="79.3438"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121" x="369" y="103.877">High-level overview</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="52" x="557" y="84.2676">Clusters</text><path d="M504,98.1484 L514,98.1484 C529,98.1484 529,78.5391 544,78.5391 L554,78.5391 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="155" x="557" y="103.877">Driver and worker nodes</text><path d="M504,98.1484 L514,98.1484 C529,98.1484 529,98.1484 544,98.1484 L554,98.1484 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="94" x="557" y="123.4863">SparkSessions</text><path d="M504,98.1484 L514,98.1484 C529,98.1484 529,117.7578 544,117.7578 L554,117.7578 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M309,155.4531 L319,155.4531 C334,155.4531 334,98.1484 349,98.1484 L359,98.1484 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="144" x="359" y="136.9531"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="120" x="369" y="161.4863">Spark jobs in detail</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="228" x="556" y="151.6816">JVM Java Virtual Machine (executor)</text><path d="M503,155.7578 L513,155.7578 C528,155.7578 528,145.9531 543,145.9531 L553,145.9531 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="143" x="556" y="171.291">Slots (tasks in parallel)</text><path d="M503,155.7578 L513,155.7578 C528,155.7578 528,165.5625 543,165.5625 L553,165.5625 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M309,155.4531 L319,155.4531 C334,155.4531 334,155.7578 349,155.7578 L359,155.7578 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="131" x="359" y="194.5625"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="369" y="219.0957">Jobs and stages</text><path d="M309,155.4531 L319,155.4531 C334,155.4531 334,213.3672 349,213.3672 L359,213.3672 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M119,358.3047 L129,358.3047 C144,358.3047 144,155.4531 159,155.4531 L169,155.4531 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="166" x="169" y="252.7813"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="142" x="179" y="277.3145">Create a Spark cluster</text><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="104" x="385" y="252.7813"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="84" x="395" y="277.3145">Cluster mode</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="58" x="542" y="257.7051">Standard</text><path d="M489,271.5859 L499,271.5859 C514,271.5859 514,251.9766 529,251.9766 L539,251.9766 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="415" x="542" y="277.3145">High Concurrency (multiple users will use the cluster concurrently)</text><path d="M489,271.5859 L499,271.5859 C514,271.5859 514,271.5859 529,271.5859 L539,271.5859 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="67" x="542" y="296.9238">Single ode</text><path d="M489,271.5859 L499,271.5859 C514,271.5859 514,291.1953 529,291.1953 L539,291.1953 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M335,271.5859 L345,271.5859 C360,271.5859 360,271.5859 375,271.5859 L385,271.5859 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M119,358.3047 L129,358.3047 C144,358.3047 144,271.5859 159,271.5859 L169,271.5859 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="174" x="169" y="310.3906"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="150" x="179" y="334.9238">Use Spark in notebooks</text><path d="M119,358.3047 L129,358.3047 C144,358.3047 144,329.1953 159,329.1953 L169,329.1953 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="227" x="169" y="431.4258"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="203" x="179" y="455.959">Use Spark to work with data files</text><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="217" x="446" y="311"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="193" x="456" y="335.5332">Exploring data with dataframes</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="190" x="716" y="325.7285">Loading data into a dataframe</text><path d="M663,329.8047 L673,329.8047 C688,329.8047 688,320 703,320 L713,320 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="198" x="716" y="345.3379">Specifying a dataframe schema</text><path d="M663,329.8047 L673,329.8047 C688,329.8047 688,339.6094 703,339.6094 L713,339.6094 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M396,450.2305 L406,450.2305 C421,450.2305 421,329.8047 436,329.8047 L446,329.8047 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="238" x="446" y="368.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="214" x="456" y="393.1426">Filtering and grouping dataframes</text><path d="M396,450.2305 L406,450.2305 C421,450.2305 421,387.4141 436,387.4141 L446,387.4141 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="226" x="446" y="489.0352"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="202" x="456" y="513.5684">Using SQL expressions in Spark</text><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="320" x="722" y="436.6328"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="296" x="732" y="461.166">Creating database objects in the Spark catalog</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="173" x="1095" y="431.752">createOrReplaceTempView</text><path d="M1042,455.4375 L1052,455.4375 C1067,455.4375 1067,426.0234 1082,426.0234 L1092,426.0234 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76" x="1095" y="451.3613">createTable</text><path d="M1042,455.4375 L1052,455.4375 C1067,455.4375 1067,445.6328 1082,445.6328 L1092,445.6328 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="82" x="1095" y="470.9707">saveAsTable</text><path d="M1042,455.4375 L1052,455.4375 C1067,455.4375 1067,465.2422 1082,465.2422 L1092,465.2422 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="127" x="1095" y="490.5801">createExternalTable</text><path d="M1042,455.4375 L1052,455.4375 C1067,455.4375 1067,484.8516 1082,484.8516 L1092,484.8516 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M672,507.8398 L682,507.8398 C697,507.8398 697,455.4375 712,455.4375 L722,455.4375 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="269" x="722" y="494.2422"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="245" x="732" y="518.7754">Using the Spark SQL API to query data</text><path d="M672,507.8398 L682,507.8398 C697,507.8398 697,513.0469 712,513.0469 L722,513.0469 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="126" x="722" y="551.8516"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="102" x="732" y="576.3848">Using SQL code</text><path d="M672,507.8398 L682,507.8398 C697,507.8398 697,570.6563 712,570.6563 L722,570.6563 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M396,450.2305 L406,450.2305 C421,450.2305 421,507.8398 436,507.8398 L446,507.8398 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M119,358.3047 L129,358.3047 C144,358.3047 144,450.2305 159,450.2305 L169,450.2305 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#07641D" height="37.6094" rx="12.5" ry="12.5" style="stroke:#07641D;stroke-width:3.0;" width="111" x="169" y="600.2656"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="87" x="179" y="624.7988">Visualize data</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="187" x="333" y="614.9941">Using built-in notebook charts</text><path d="M280,619.0703 L290,619.0703 C305,619.0703 305,609.2656 320,609.2656 L330,609.2656 " fill="none" style="stroke:#07641D;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="282" x="333" y="634.6035">Using graphics packages in code (matplotlib)</text><path d="M280,619.0703 L290,619.0703 C305,619.0703 305,628.875 320,628.875 L330,628.875 " fill="none" style="stroke:#07641D;stroke-width:3.0;"/><path d="M119,358.3047 L129,358.3047 C144,358.3047 144,619.0703 159,619.0703 L169,619.0703 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[16e1e1b8c92d2ea0321fca8242c1865a]
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/use-apache-spark-azure-databricks/ Module]]: Use Apache Spark in Azure Databricks
++ Apache Spark
+++ Get to know Spark <<topic1>>
++++ High-level overview <<topic1>>
+++++_ Clusters
+++++_ Driver and worker nodes
+++++_ SparkSessions
++++ Spark jobs in detail <<topic1>>
+++++_ JVM Java Virtual Machine (executor)
+++++_ Slots (tasks in parallel)
++++ Jobs and stages  <<topic1>>
+++ Create a Spark cluster <<topic2>>
++++ Cluster mode<<topic2>>
+++++_ Standard
+++++_ High Concurrency (multiple users will use the cluster concurrently)
+++++_ Single ode
+++ Use Spark in notebooks <<topic3>>
+++ Use Spark to work with data files <<topic4>>
++++ Exploring data with dataframes <<topic4>>
+++++_ Loading data into a dataframe
+++++_ Specifying a dataframe schema
++++ Filtering and grouping dataframes <<topic4>>
++++ Using SQL expressions in Spark <<topic4>>
+++++ Creating database objects in the Spark catalog <<topic4>>
++++++_ createOrReplaceTempView
++++++_ createTable
++++++_ saveAsTable
++++++_ createExternalTable
+++++ Using the Spark SQL API to query data <<topic4>>
+++++ Using SQL code <<topic4>>
+++ Visualize data <<topic5>>
++++_ Using built-in notebook charts
++++_ Using graphics packages in code (matplotlib)
+@endmindmap
+
+PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: en
+Country: US
+--></g></svg>

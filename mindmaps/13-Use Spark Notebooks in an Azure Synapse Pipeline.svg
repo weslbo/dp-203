@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="403px" preserveAspectRatio="none" style="width:1370px;height:403px;background:#FFFFFF;" version="1.1" viewBox="0 0 1370 403" width="1370px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="47.7344" id="_title" style="stroke:none;stroke-width:1.0;" width="864" x="251.5" y="15"/><a href="https://learn.microsoft.com/training/modules/use-spark-notebooks-azure-synapse-pipeline/" target="_top" title="https://learn.microsoft.com/training/modules/use-spark-notebooks-azure-synapse-pipeline/" xlink:actuate="onRequest" xlink:href="https://learn.microsoft.com/training/modules/use-spark-notebooks-azure-synapse-pipeline/" xlink:show="new" xlink:title="https://learn.microsoft.com/training/modules/use-spark-notebooks-azure-synapse-pipeline/" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" text-decoration="underline" textLength="104" x="256.5" y="51.1426">Module</text></a><text fill="#000000" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" textLength="750" x="360.5" y="51.1426">: Use Spark Notebooks in an Azure Synapse Pipeline</text><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="128" x="10" y="211.4023"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="108" x="20" y="235.9355">Spark Notebooks</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="316" x="188" y="128.3672"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="292" x="198" y="152.9004">Understand Synapse Notebooks and Pipelines</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="286" x="557" y="84.2676">Apache Spark pool to run code in a notebook</text><path d="M504,147.1719 L514,147.1719 C529,147.1719 529,78.5391 544,78.5391 L554,78.5391 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="801" x="557" y="103.877">The pipeline can then be run on a schedule or in response to an event (such as new data files being loaded into the data lake).</text><path d="M504,147.1719 L514,147.1719 C529,147.1719 529,98.1484 544,98.1484 L554,98.1484 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="113" x="554" y="147.9766"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="89" x="564" y="172.5098">Best practices</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="166" x="720" y="123.4863">Keep your code organized</text><path d="M667,166.7813 L677,166.7813 C692,166.7813 692,117.7578 707,117.7578 L717,117.7578 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="169" x="720" y="143.0957">Cache intermediate results</text><path d="M667,166.7813 L677,166.7813 C692,166.7813 692,137.3672 707,137.3672 L717,137.3672 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="208" x="720" y="162.7051">Avoid unnecessary computations</text><path d="M667,166.7813 L677,166.7813 C692,166.7813 692,156.9766 707,156.9766 L717,156.9766 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="241" x="720" y="182.3145">Avoid using collect() unless necessary</text><path d="M667,166.7813 L677,166.7813 C692,166.7813 692,176.5859 707,176.5859 L717,176.5859 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="271" x="720" y="201.9238">Use Spark UI for monitoring and debugging</text><path d="M667,166.7813 L677,166.7813 C692,166.7813 692,196.1953 707,196.1953 L717,196.1953 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="361" x="720" y="221.5332">Keep your dependencies version-consistent and updated</text><path d="M667,166.7813 L677,166.7813 C692,166.7813 692,215.8047 707,215.8047 L717,215.8047 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M504,147.1719 L514,147.1719 C529,147.1719 529,166.7813 544,166.7813 L554,166.7813 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M138,230.207 L148,230.207 C163,230.207 163,147.1719 178,147.1719 L188,147.1719 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="309" x="188" y="265.6328"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="285" x="198" y="290.166">Use a Synapse notebook activity in a pipeline</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="336" x="550" y="241.1426">Add a notebook activity and configure it appropriately</text><path d="M497,284.4375 L507,284.4375 C522,284.4375 522,235.4141 537,235.4141 L547,235.4141 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="68" x="550" y="260.752">Spark pool</text><path d="M497,284.4375 L507,284.4375 C522,284.4375 522,255.0234 537,255.0234 L547,255.0234 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="83" x="550" y="280.3613">Executor size</text><path d="M497,284.4375 L507,284.4375 C522,284.4375 522,274.6328 537,274.6328 L547,274.6328 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="193" x="550" y="299.9707">Dynamically allocate executors</text><path d="M497,284.4375 L507,284.4375 C522,284.4375 522,294.2422 537,294.2422 L547,294.2422 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="550" y="319.5801">Min/Max executors</text><path d="M497,284.4375 L507,284.4375 C522,284.4375 522,313.8516 537,313.8516 L547,313.8516 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="66" x="550" y="339.1895">Driver size</text><path d="M497,284.4375 L507,284.4375 C522,284.4375 522,333.4609 537,333.4609 L547,333.4609 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M138,230.207 L148,230.207 C163,230.207 163,284.4375 178,284.4375 L188,284.4375 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="214" x="188" y="344.0703"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="190" x="198" y="368.6035">Use parameters in a notebook</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="258" x="455" y="358.7988">Create a parameters cell in the notebook</text><path d="M402,362.875 L412,362.875 C427,362.875 427,353.0703 442,353.0703 L452,353.0703 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="287" x="455" y="378.4082">Set base parameters for the notebook activity</text><path d="M402,362.875 L412,362.875 C427,362.875 427,372.6797 442,372.6797 L452,372.6797 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M138,230.207 L148,230.207 C163,230.207 163,362.875 178,362.875 L188,362.875 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[5bf1bd4161caa0f418093a2b1113f719]
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/use-spark-notebooks-azure-synapse-pipeline/ Module]]: Use Spark Notebooks in an Azure Synapse Pipeline
++ Spark Notebooks
+++ Understand Synapse Notebooks and Pipelines <<topic1>>
++++_ Apache Spark pool to run code in a notebook
++++_ The pipeline can then be run on a schedule or in response to an event (such as new data files being loaded into the data lake).
++++ Best practices <<topic1>>
+++++_ Keep your code organized
+++++_ Cache intermediate results
+++++_ Avoid unnecessary computations
+++++_ Avoid using collect() unless necessary
+++++_ Use Spark UI for monitoring and debugging
+++++_ Keep your dependencies version-consistent and updated
+++ Use a Synapse notebook activity in a pipeline <<topic2>>
++++_ Add a notebook activity and configure it appropriately
++++_ Spark pool
++++_ Executor size
++++_ Dynamically allocate executors
++++_ Min/Max executors
++++_ Driver size
+++ Use parameters in a notebook <<topic3>>
++++_ Create a parameters cell in the notebook
++++_ Set base parameters for the notebook activity
+@endmindmap
+
+PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: en
+Country: US
+--></g></svg>

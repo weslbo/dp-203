@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="237px" preserveAspectRatio="none" style="width:1310px;height:237px;background:#FFFFFF;" version="1.1" viewBox="0 0 1310 237" width="1310px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="47.7344" id="_title" style="stroke:none;stroke-width:1.0;" width="816" x="245.5" y="15"/><a href="https://learn.microsoft.com/training/modules/build-data-pipeline-azure-synapse-analytics/" target="_top" title="https://learn.microsoft.com/training/modules/build-data-pipeline-azure-synapse-analytics/" xlink:actuate="onRequest" xlink:href="https://learn.microsoft.com/training/modules/build-data-pipeline-azure-synapse-analytics/" xlink:show="new" xlink:title="https://learn.microsoft.com/training/modules/build-data-pipeline-azure-synapse-analytics/" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" text-decoration="underline" textLength="104" x="250.5" y="51.1426">Module</text></a><text fill="#000000" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" textLength="702" x="354.5" y="51.1426">: Build a data pipeline in Azure Synapse Analytics</text><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="77" x="644" y="128.3672"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="57" x="654" y="152.9004">Pipelines</text><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="290" x="771" y="98.9531"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="266" x="781" y="123.4863">Create a pipeline in Azure Synapse Studio</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="166" x="1114" y="113.6816">Graphical design interface</text><path d="M1061,117.7578 L1071,117.7578 C1086,117.7578 1086,107.9531 1101,107.9531 L1111,107.9531 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184" x="1114" y="133.291">Defining a pipeline with JSON</text><path d="M1061,117.7578 L1071,117.7578 C1086,117.7578 1086,127.5625 1101,127.5625 L1111,127.5625 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M721,147.1719 L731,147.1719 C746,147.1719 746,117.7578 761,117.7578 L771,117.7578 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="132" x="771" y="157.1719"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="108" x="781" y="181.7051">Define data flows</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="52" x="956" y="162.0957">Sources</text><path d="M903,175.9766 L913,175.9766 C928,175.9766 928,156.3672 943,156.3672 L953,156.3672 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103" x="956" y="181.7051">Transformations</text><path d="M903,175.9766 L913,175.9766 C928,175.9766 928,175.9766 943,175.9766 L953,175.9766 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="34" x="956" y="201.3145">Sinks</text><path d="M903,175.9766 L913,175.9766 C928,175.9766 928,195.5859 943,195.5859 L953,195.5859 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M721,147.1719 L731,147.1719 C746,147.1719 746,175.9766 761,175.9766 L771,175.9766 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="331" x="263" y="89.1484"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="307" x="273" y="113.6816">Understand pipelines in Azure Synapse Analytics</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="55" x="155" y="84.2676">Activities</text><path d="M263,107.9531 L253,107.9531 C238,107.9531 238,78.5391 223,78.5391 L213,78.5391 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="118" x="92" y="103.877">Integration runtime</text><path d="M263,107.9531 L253,107.9531 C238,107.9531 238,98.1484 223,98.1484 L213,98.1484 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="112" y="123.4863">Linked services</text><path d="M263,107.9531 L253,107.9531 C238,107.9531 238,117.7578 223,117.7578 L213,117.7578 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56" x="154" y="143.0957">Datasets</text><path d="M263,107.9531 L253,107.9531 C238,107.9531 238,137.3672 223,137.3672 L213,137.3672 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M644,147.1719 L634,147.1719 C619,147.1719 619,107.9531 604,107.9531 L594,107.9531 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="115" x="479" y="167.5859"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="91" x="489" y="192.1191">Run a pipeline</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="74" x="352" y="162.7051">Immediately</text><path d="M479,186.3906 L469,186.3906 C454,186.3906 454,156.9766 439,156.9766 L429,156.9766 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117" x="309" y="182.3145">Scheduled interval</text><path d="M479,186.3906 L469,186.3906 C454,186.3906 454,176.5859 439,176.5859 L429,176.5859 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149" x="277" y="201.9238">In response to an event</text><path d="M479,186.3906 L469,186.3906 C454,186.3906 454,196.1953 439,196.1953 L429,196.1953 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="416" x="10" y="221.5332">Lineage: integrate Azure Synapse Analytics and Microsoft Purview</text><path d="M479,186.3906 L469,186.3906 C454,186.3906 454,215.8047 439,215.8047 L429,215.8047 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M644,147.1719 L634,147.1719 C619,147.1719 619,186.3906 604,186.3906 L594,186.3906 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[b5cc949045fefbef57883156662fb63e]
+@startmindmap
+<style>
+title {
+        FontSize 30
+        FontColor #000000
+    }
+mindmapDiagram {
+    :depth(0) {
+        BackgroundColor #091f2c
+        FontColor #ffffff
+        LineThickness 3.0
+    }
+    .topic1 {
+        BackgroundColor #ffb900
+        LineColor #ffb900
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic2 {
+        BackgroundColor #f4364c
+        LineColor #f4364c
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+    .topic3 {
+        BackgroundColor #c5b4e3
+        LineColor #c5b4e3
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic4 {
+        BackgroundColor #e1d3c7
+        LineColor #e1d3c7
+        LineThickness 3.0
+        FontColor #000000
+    }
+    .topic5 {
+        BackgroundColor #07641d
+        LineColor #07641d
+        LineThickness 3.0
+        FontColor #ffffff
+    }
+}
+</style>
+title [[https://learn.microsoft.com/training/modules/build-data-pipeline-azure-synapse-analytics/ Module]]: Build a data pipeline in Azure Synapse Analytics
++ Pipelines
+- - Understand pipelines in Azure Synapse Analytics <<topic1>>
+- - -_ Activities
+- - -_ Integration runtime
+- - -_ Linked services
+- - -_ Datasets
+++ Create a pipeline in Azure Synapse Studio <<topic2>>
++++_ Graphical design interface
++++_ Defining a pipeline with JSON
+++ Define data flows <<topic3>>
++++_ Sources
++++_ Transformations
++++_ Sinks
+- - Run a pipeline <<topic4>>
+- - -_ Immediately
+- - -_ Scheduled interval
+- - -_ In response to an event
+- - -_ Lineage: integrate Azure Synapse Analytics and Microsoft Purview
+@endmindmap
+
+PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: en
+Country: US
+--></g></svg>
