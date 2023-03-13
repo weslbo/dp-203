@@ -65,3 +65,11 @@ To deploy this environment:
 
 1. Open the pipeline **00-setup-pipeline** and **execute** it (trigger now).
 1. Validate files have been stored on the data lake container **files**/labs.
+
+## Modules
+
+see [modules](./modules.md) for a summary of the learn modules
+
+## Labs
+
+see [labs](./labs_demos.md) for a list of labs and demos

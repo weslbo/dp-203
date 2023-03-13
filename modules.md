@@ -1,175 +1,652 @@
-# Modules + Lab/Demo flow
-
-## DP-203-00-Setup
-
-No demo: Run pipeline, Scripts to setup environment
+# Modules
 
 ## DP-203-01-Intro to data engineering
 
-Lab 1: [Explore Azure Synapse Analytics](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/01-Explore-Azure-Synapse.html), 90 min
-
-1. Explore Synapse Studio
-2. Ingest data with a pipeline
-3. Use a serverless SQL pool to analyze data
-4. Use a Spark pool to analyze data
-5. Use a dedicated SQL pool to query a data warehouse
-6. Explore data with a Data Explorer pool
+- [Introduction to data engineering on Azure](https://learn.microsoft.com/training/modules/introduction-to-data-engineering-azure/)
+  - What is data engineering [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-data-engineering-azure/2-what-data-engineering)
+    - Types of data
+      - Structured
+      - Unstructed
+      - Semi-Structured
+    - Data operations
+      - Data integration
+      - Data transformation
+      - Data consolidation
+    - Common languages
+      - SQL
+      - Python
+      - Others: R, Java, Scala, .NET, ...
+  - Important data engineering concepts [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-data-engineering-azure/4-common-patterns-azure-data-engineering)
+    - Operational and analytical data
+    - Streaming data
+    - Data pipelines
+    - Data lakes
+    - Data warehouses
+    - Apache Spark
+  - Data engineering in Microsoft Azure [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-data-engineering-azure/5-common-tooling-azure-data-engineering)
+    - Azure Synapse Analytics
+    - Azure Data Lake Storage Gen2
+    - Azure Stream Analytics
+    - Azure Data Factory
+    - Azure Databricks
+- [Introduction to Azure Data Lake Storage Gen2](https://learn.microsoft.com/training/modules/introduction-to-azure-data-lake-storage/)
+  - Understand Azure Data Lake Storage Gen2 [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-azure-data-lake-storage/2-azure-data-lake-gen2)
+    - What is it (file system, storage platform for analytics workloads)
+    - Benefits
+      - Hadoop compatible access (Databricks, HDInsight, Synapse Analytics)
+      - Security (ACLs)
+      - Performance (folders, subfolders)
+      - Data redundancy (LRS, GRS)
+    - Governance required
+      - Types of data to be stored
+      - How the data will be transformed
+      - Who should access the data
+      - What are the typical access patterns
+  - Enable Azure Data Lake Storage Gen2 in Azure Storage [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-azure-data-lake-storage/3-create-data-lake-account)
+    - Enable hierarchical namespace
+    - Data Lake Gen2 upgrade
+  - Compare Azure Data Lake Store to Azure Blob storage [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-azure-data-lake-storage/4-azure-data-lake-and-blob-storage)
+    - Flat namespace versus Hierarchical namespace
+    - Pricing differences?
+  - Understand the stages for processing big data [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-azure-data-lake-storage/5-stages-for-processing-big-data)
+    - Ingest (Synapse Pipelines, Azure Data Factory, Kafka, Stream Analytics)
+    - Store (Data Lake Storage Gen2)
+    - Prep and train (Synapse Analytics, Databricks, HDInsight, Azure Machine Learning)
+    - Model and serve (Power BI, Synapse Analytics)
+  - Use Azure Data Lake Storage Gen2 in data analytics workloads [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-azure-data-lake-storage/6-use-cases)
+    - Big data processing and analytics
+    - Data warehousing
+    - Real-time data analytics
+    - Data science and machine learning
+- [Introduction to Azure Synapse Analytics](https://learn.microsoft.com/training/modules/introduction-azure-synapse-analytics/)
+  - What is Azure Synapse Analytics [link](https://learn.microsoft.com/en-us/training/modules/introduction-azure-synapse-analytics/2-what-happening-business)
+    - Types of analytics
+      - Descriptive analytics
+      - Diagnostic analytics
+      - Predictive analytics
+      - Prescriptive analytics
+    - What? SQL, Apache Spark, and others; while providing a centrally managed service and a single, consistent user interface.
+  - How Azure Synapse Analytics works [link](https://learn.microsoft.com/en-us/training/modules/introduction-azure-synapse-analytics/3-how-works)
+    - Creating and using an Azure Synapse Analytics workspace
+    - Working with files in a data lake
+    - Ingesting and transforming data with pipelines
+    - Querying and manipulating data with SQL
+      - A built-in serverless pool
+      - Custom dedicated SQL pools
+    - Processing and analyzing data with Apache Spark
+    - Exploring data with Data Explorer
+    - Integrating with other Azure data services
+      - Azure Synapse Link
+      - Power BI
+      - Microsoft Purview
+      - Azure Machine Learning
+  - When to use Azure Synapse Analytics [link](https://learn.microsoft.com/en-us/training/modules/introduction-azure-synapse-analytics/4-when-use)
+    - Large-scale data warehousing
+    - Advanced analytics
+    - Data exploration and discovery
+    - Real time analytics
+    - Data integration
+    - Integrated analytics
 
 ## DP-203-02-Serverless SQL
 
-Demo 2: [Query files using a serverless SQL pool](https://microsoftlearning.github.io/DP-500-Azure-Data-Analyst/Instructions/labs/01-analyze-data-with-sql.html), 45 min
-
-1. Query data in files
-2. Access external data in a database
-3. Visualize query results
-
-Lab 3: [Transform data using a serverless SQL pool](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/03-Transform-data-with-sql.html), 30 min
-
-1. Query data in files
-2. Transform data using CREATE EXTERAL TABLE AS SELECT (CETAS) statements
-3. Encapsulate data transformation in a stored procedure
-
-Demo 4: [Analyze data in a lake database](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/04-Create-a-Lake-Database.html), 45 min
-
-1. Create a lake database (RetailDB in files/labs-dp-203/04/RetailDB)
-2. Create a table (Customer + Load csv + query SQL)
-3. Create a table from a database template (RetailProduct -> Product -> Load csv + query SQL)
-4. Create a table from existing data (Load salesorder.csv, Create table SalesOrder, define fields, create relationships)
-5. Work with lake database tables
+- [Use Azure Synapse serverless SQL pool to query files in a data lake](https://learn.microsoft.com/training/modules/query-data-lake-using-azure-synapse-serverless-sql-pools/)
+  - Understand Azure Synapse serverless SQL pool capabilities and use cases [link](https://learn.microsoft.com/en-us/training/modules/query-data-lake-using-azure-synapse-serverless-sql-pools/2-understand-serverless-pools)
+    - Benefits
+      - familiar Transact-SQL
+      - Integrated connectivity (driver)
+      - Distributed query processing
+      - Fault-tolerance
+      - No infrastructure to manage
+      - No charge for resources reserved, pay for data processed by queries you run
+    - When to use serverless?
+      - Data exploration
+      - Data transformation
+      - Logical datawarehouse
+  - Query files using a serverless SQL pool [link](https://learn.microsoft.com/en-us/training/modules/query-data-lake-using-azure-synapse-serverless-sql-pools/3-query-files)
+    - File types supported in OPENROWSET()
+      - Delimited text (CSV) files
+        - With and without a header row
+        - Comma and tab-delimited values
+        - Windows and Unix style line endings
+        - Non-quoted and quoted values, and escaping characters
+        - FIELDTERMINATOR, ROWTERMINATOR, FIELDQUOTE
+        - Specifying the rowset schema
+      - JSON files
+        - JSON_VALUE
+        - Flattening
+      - Parquet files
+      - Query partitioned data
+        - Wildcard
+        - filepath() function
+  - Create external database objects [link](https://learn.microsoft.com/en-us/training/modules/query-data-lake-using-azure-synapse-serverless-sql-pools/4-external-objects)
+    - CREATE DATABASE
+    - CREATE EXTERNAL DATA SOURCE
+    - CREATE DATABASE SCOPED CREDENTIAL
+    - CREATE EXTERNAL FILE FORMAT
+    - CREATE EXTERNAL TABLE
+- [Use Azure Synapse serverless SQL pools to transform data in a data lake](https://learn.microsoft.com/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake/)
+  - Transform data files with the CREATE EXTERNAL TABLE AS SELECT statement [link](https://learn.microsoft.com/en-us/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake/2-transform-data-using-create-external-table-select-statement)
+    - Transformations
+      - Filter rows and columns in a dataset
+      - Rename data fields and convert between data types
+      - Calculate derived data fields
+      - Manipulate string values
+      - Group and aggregate data
+    - CREATE EXTERNAL TABLE AS SELECT (CETAS)
+      - Persist the results of a query in an external table, which stores its data in a file in the data lake.
+      - CREATE EXTERNAL DATA SOURCE
+      - CREATE DATABASE SCOPED CREDENTIAL
+      - CREATE EXTERNAL FILE FORMAT
+      - CREATE EXTERNAL TABLE ... AS SELECT
+    - Dropping external tables (does not delete the underlying files)
+  - Encapsulate data transformations in a stored procedure [link](https://learn.microsoft.com/en-us/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake/3-operationalize-data-transformation-using-stored-procedures)
+    - CREATE PROCEDURE
+      - Delete the target folder if it exists before running the stored procedure
+    - Benefits
+      - Reduces client to server network traffic
+      - Provides a security boundary
+      - Eases maintenance
+      - Improved performance
+  - Include a data transformation stored procedure in a pipeline [link](https://learn.microsoft.com/en-us/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake/4-pool-stored-procedures-synapse-pipelines)
+    - Azure Synapse Analytics Pipeline
+      - Delete activity to delete the target folder
+      - Stored procedure activity to run the stored procedure containing the CETAS
+- [Create a lake database in Azure Synapse Analytics](https://learn.microsoft.com/training/modules/create-metadata-objects-azure-synapse-serverless-sql-pools/)
+  - Understand lake database concepts [link](https://learn.microsoft.com/en-us/training/modules/create-metadata-objects-azure-synapse-serverless-sql-pools/2-lake-database)
+    - Provides a relational metadata layer over one or more files in a data lake
+    - Data is stored in files (which may be structured, unstructed, or semi-structured)
+    - Query it using SQL (T-SQL in Serverless Pools or Spark SQL API)
+  - Explore database templates [link](https://learn.microsoft.com/en-us/training/modules/create-metadata-objects-azure-synapse-serverless-sql-pools/3-database-templates)
+    - Common schemas found in multiple business scenarios
+    - Starting point for creating a lake database
+  - Create a lake database [link](https://learn.microsoft.com/en-us/training/modules/create-metadata-objects-azure-synapse-serverless-sql-pools/4-create-lake-database)
+    - Database designer in Azure Synapse Studio
+    - Specify the name and storage settings for each table.
+    - Specifying the names, key usage, nullability, and data types for each column.
+    - Defining relationships between key columns in tables.
+  - Use a lake database [link](https://learn.microsoft.com/en-us/training/modules/create-metadata-objects-azure-synapse-serverless-sql-pools/5-use-lake-database)
+    - Using a serverless SQL pool
+    - Using an Apache Spark pool
 
 ## DP-203-03-Spark
 
-Demo 5: [Analyze data in a data lake with Spark](https://microsoftlearning.github.io/DP-500-Azure-Data-Analyst/Instructions/labs/02-analyze-files-with-Spark.html), 45 min
-
-1. Query data in files
-2. Analyze data in a dataframe
-3. Query data using Spark SQL
-4. Visualize data with Spark
-
-Lab 6: [Transform data using Spark in Synapse Analytics](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/06-Transform-Data-with-Spark.html), 30 min
-
-1. Use a Spark notebook to transform data
-
-Lab 7: [Use Delta Lake in Azure Synapse Analytics](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/07-Use-delta-lake.html), 40 min
-
-1. Create delta tables
-2. Create catalog tables
-3. Use delta tables for streaming data
-4. Query a delta table from a serverless SQL pool
+- [Analyze data with Apache Spark in Azure Synapse Analytics](https://learn.microsoft.com/training/modules/understand-big-data-engineering-with-apache-spark-azure-synapse-analytics/)
+  - Get to know Apache Spark [link](https://learn.microsoft.com/en-us/training/modules/understand-big-data-engineering-with-apache-spark-azure-synapse-analytics/2-get-to-know-spark)
+    - How Spark works
+    - Spark pools in Azure Synapse Analytics
+  - Use Spark in Azure Synapse Analytics [link](https://learn.microsoft.com/en-us/training/modules/understand-big-data-engineering-with-apache-spark-azure-synapse-analytics/3-use-spark)
+    - Workloads
+      - Batch or stream processing (ingest, clean, transform)
+      - Interactive analysis (explore, analyze, visualize)
+    - Running Spark code in notebooks
+      - Syntax highlighting and error support
+      - Code auto-completion
+      - Interactive data visualizations
+      - The ability to export results.
+    - Accessing data from a Synapse Spark pool
+      - A data lake based on the primary storage account for the Azure Synapse Analytics workspace.
+      - A data lake based on storage defined as a linked service in the workspace.
+      - A dedicated or serverless SQL pool in the workspace.
+      - An Azure SQL or SQL Server database (using the Spark connector for SQL Server)
+      - An Azure Cosmos DB analytical database defined as a linked service and configured using Azure Synapse Link for Cosmos DB.
+      - An Azure Data Explorer Kusto database defined as a linked service in the workspace.
+      - An external Hive metastore defined as a linked service in the workspace.
+  - Analyze data with Spark [link](https://learn.microsoft.com/en-us/training/modules/understand-big-data-engineering-with-apache-spark-azure-synapse-analytics/4-write-spark-code)
+    - Exploring data with dataframes
+      - Loading data into a dataframe
+      - Specifying a dataframe schema
+    - Filtering and grouping dataframes
+    - Using SQL expressions in Spark
+      - Creating database objects in the Spark catalog (createOrReplaceTempView)
+      - Using the Spark SQL API to query data
+      - Using SQL code
+  - Visualize data with Spark [link](https://learn.microsoft.com/en-us/training/modules/understand-big-data-engineering-with-apache-spark-azure-synapse-analytics/5-visualize-data)
+    - Using built-in notebook charts
+    - Using graphics packages in code (matplotlib)
+- [Transform data with Spark in Azure Synapse Analytics](https://learn.microsoft.com/training/modules/transform-data-spark-azure-synapse-analytics/)
+  - Modify and save dataframes [link](https://learn.microsoft.com/en-us/training/modules/transform-data-spark-azure-synapse-analytics/2-transform-dataframe)
+    - Typical operations on a dataframe include:
+      - Filtering rows and columns
+      - Renaming columns
+      - Creating new columns, often derived from existing ones
+      - Replacing null or other values
+    - Save the transformed data (Parquet format)
+  - Partition data files [link](https://learn.microsoft.com/en-us/training/modules/transform-data-spark-azure-synapse-analytics/3-partition-data)
+    - Partitioning is an optimization technique that enables spark to maximize performance across the worker nodes.
+    - Partition the output file (partitionBy method)
+    - Filter parquet files in a query
+  - Transform data with SQL [link](https://learn.microsoft.com/en-us/training/modules/transform-data-spark-azure-synapse-analytics/4-tramsform-sql)
+    - Define tables and views
+    - External tables are "loosely bound" to the underlying files and deleting the table does not delete the files
+    - Use SQL to query and transform the data
+    - Query the metastore
+    - Drop tables
+- [Use Delta Lake in Azure Synapse Analytics](https://learn.microsoft.com/training/modules/use-delta-lake-azure-synapse-analytics/)
+  - Understand Delta Lake [link](https://learn.microsoft.com/en-us/training/modules/use-delta-lake-azure-synapse-analytics/2-understand-delta-lake)
+    - What is it?
+      - Open-source storage layer that adds relational database semantics to Spark
+      - Serialization format
+    - Benefits
+      - CRUD
+      - Support for ACID transactions (Atomicity, Consistency, Isolation, Durability)
+      - Data versioning and time travel
+      - Support for batch and streaming workloads
+      - Standard formats and interoperability
+  - Create Delta Lake tables [link](https://learn.microsoft.com/en-us/training/modules/use-delta-lake-azure-synapse-analytics/3-create-delta-tables)
+    - Creating a Delta Lake table from a dataframe
+    - Making conditional updates (update, delete, and merge operations)
+    - Querying a previous version of a table
+  - Create catalog tables [link](https://learn.microsoft.com/en-us/training/modules/use-delta-lake-azure-synapse-analytics/4-catalog-tables)
+    - External vs managed tables
+      - A managed table is defined without a specified location, dropping the table deletes the files
+      - An external table is defined for a custom file location, dropping the table does not delete the files
+    - Creating a catalog table from a dataframe (df.write.format("delta"))
+    - Creating a catalog table using SQL (CREATE TABLE MyExternalTable USING DELTA LOCATION '/delta/mytable')
+    - Using the DeltaTableBuilder API
+  - Use Delta Lake with streaming data [link](https://learn.microsoft.com/en-us/training/modules/use-delta-lake-azure-synapse-analytics/5-use-delta-lake-streaming-data)
+    - Spark Structured Streaming
+    - Streaming with Delta Lake tables
+      - Using a Delta Lake table as a streaming source (spark.readStream.format("delta"))
+      - Using a Delta Lake table as a streaming sink (stream_df.writeStream.format("delta").option("checkpointLocation", "").start())
+  - Use Delta Lake in a SQL pool [link](https://learn.microsoft.com/en-us/training/modules/use-delta-lake-azure-synapse-analytics/6-delta-with-sql)
+    - Querying delta formatted files with OPENROWSET
+    - Querying catalog tables
 
 ## DP-203-04-Data Warehouse
 
-Demo 8: [Explore a relational data warehouse](https://microsoftlearning.github.io/DP-500-Azure-Data-Analyst/Instructions/labs/03-Explore-data-warehouse.html), 45 min
-
-1. Explore the data warehouse schema
-2. Query the data warehouse tables
-3. Challenge - Analyze reseller sales
-
-Lab 9: [Load Data into a Relational Data Warehouse](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/09-Load-Data-into-Data-Warehouse.html), 30 min
-
-1. Prepare to load data
-2. Load data warehouse tables
-3. Perform post-load optimization
+- [Analyze data in a relational data warehouse](https://learn.microsoft.com/training/modules/design-multidimensional-schema-to-optimize-analytical-workloads/)
+  - Design a data warehouse schema [link](https://learn.microsoft.com/en-us/training/modules/design-multidimensional-schema-to-optimize-analytical-workloads/2-design-star-schema)
+    - Tables in a data warehouse
+      - Dimension tables
+        - Surrogate key (unique to the DWH)
+        - Alternate key (natural key, business key, from transactional system)
+        - Slowly changing dimensions
+      - Fact tables
+      - Data warehouse schema designs
+  - Create data warehouse tables [link](https://learn.microsoft.com/en-us/training/modules/design-multidimensional-schema-to-optimize-analytical-workloads/3-create-tables)
+    - Creating a dedicated SQL pool
+      - A unique name
+      - A performance level [DW100c - DW30000c]
+      - Empty pool or restore from a backup.
+      - The collation of the SQL pool (can't change)
+    - Considerations for creating tables
+      - Fact, Dimension and Staging tables
+      - Data integrity constraints
+      - Indexes
+      - Distribution
+        - Hash (fact tables)
+        - Round-robin (staging tables)
+        - Replicated (dimension tables)
+      - Creating dimension tables
+        - Time dimension tables
+      - Creating fact tables
+      - Creating staging tables
+        - CREATE EXTERNAL DATA SOURCE
+        - CREATE EXTERNAL FILE FORMAT
+        - CREATE EXTERNAL TABLE
+  - Load data warehouse tables [link](https://learn.microsoft.com/en-us/training/modules/design-multidimensional-schema-to-optimize-analytical-workloads/4-load-data)
+    - COPY INTO
+    - Considerations for designing a data warehouse load process
+      - Source -> Data Lake -> Staging tables
+      - Load the dimension tables from the dimension data in the staging tables, updating existing rows or inserting new rows and generating surrogate key values as necessary.
+      - Load the fact tables from the fact data in the staging tables, looking up the appropriate surrogate keys for related dimensions.
+      - Perform post-load optimization by updating indexes and table distribution statistics.
+  - Query a data warehouse [link](https://learn.microsoft.com/en-us/training/modules/design-multidimensional-schema-to-optimize-analytical-workloads/5-query-data)
+    - Aggregating measures by dimension attributes
+    - Joins in a snowflake schema
+    - Using ranking functions
+      - ROW_NUMBER
+      - RANK
+      - DENSE_RANK
+      - NTILE
+    - Retrieving an approximate count
+- [Load data into a relational data warehouse](https://learn.microsoft.com/training/modules/load-optimize-data-into-relational-data-warehouse/)
+  - Load staging tables [link](https://learn.microsoft.com/en-us/training/modules/load-optimize-data-into-relational-data-warehouse/2-load-staging-tables)
+    - Creating staging tables
+    - Using the COPY command
+    - Using external tables
+  - Load dimension tables [link](https://learn.microsoft.com/en-us/training/modules/load-optimize-data-into-relational-data-warehouse/3-load-dimension-tables)
+    - Using a CREATE TABLE AS (CTAS) statement
+      - You can't use IDENTITY to generate a unique integer value for the surrogate key when using a CTAS statement. Use ROW_NUMBER() instead.
+    - Using an INSERT statement
+  - Load time dimension tables [link](https://learn.microsoft.com/en-us/training/modules/load-optimize-data-into-relational-data-warehouse/4-load-time-dimension-tables)
+    - Generate a sequence of time dimension values based on a date grain.
+    - Scripting this in SQL may be time-consuming
+  - Load slowly changing dimensions [link](https://learn.microsoft.com/en-us/training/modules/load-optimize-data-into-relational-data-warehouse/5-load-slowly-changing-dimensions)
+    - Type 0 (data can't be changed)
+    - Type 1 (in-place update)
+    - Type 2 (updates are inserted as new rows)
+    - Type 3 (add new attribute)
+    - Type 4 (add history table)
+    - Type 5 (add history table and new attribute)
+    - Type 6 (combine type 1, 2 and 3)
+    - Combining INSERT and UPDATE statements
+    - Using a MERGE statement
+  - Load fact tables [link](https://learn.microsoft.com/en-us/training/modules/load-optimize-data-into-relational-data-warehouse/6-load-fact-tables)
+    - Load fact tables after dimension tables
+  - Perform post load optimization [link](https://learn.microsoft.com/en-us/training/modules/load-optimize-data-into-relational-data-warehouse/7-perform-post-load-optimization)
+    - Rebuild indexes
+    - Update statistics
 
 ## DP-203-05-Pipelines
 
-Lab 10: [Build a data pipeline in Azure Synapse Analytics](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/10-Synpase-pipeline.html), 45 min
-
-1. View source and destination data stores
-2. Implement a pipeline
-3. Debug the Data Flow
-4. Publish and run the pipeline
-
-Lab 11: [Use an Apache Spark notebook in a pipeline](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/11-Spark-nobook-in-Synapse-Pipeline.html), 30 min
-
-1. Run a Spark notebook interactively
-2. Run the notebook in a pipeline
+- [Build a data pipeline in Azure Synapse Analytics](https://learn.microsoft.com/training/modules/build-data-pipeline-azure-synapse-analytics/)
+  - Understand pipelines in Azure Synapse Analytics [link](https://learn.microsoft.com/en-us/training/modules/build-data-pipeline-azure-synapse-analytics/2-understand-pipelines-azure-synapse-analytics)
+    - Core pipeline concepts
+      - Activities
+      - Integration runtime
+      - Linked services
+      - Datasets
+  - Create a pipeline in Azure Synapse Studio [link](https://learn.microsoft.com/en-us/training/modules/build-data-pipeline-azure-synapse-analytics/3-create-pipeline-azure-synapse-studio)
+    - Graphical design interface
+    - Defining a pipeline with JSON
+  - Define data flows [link](https://learn.microsoft.com/en-us/training/modules/build-data-pipeline-azure-synapse-analytics/4-define-data-flows)
+    - Sources
+    - Transformations – Various operations that you can apply to data as it streams through the data flow.
+    - Sinks
+  - Run a pipeline [link](https://learn.microsoft.com/en-us/training/modules/build-data-pipeline-azure-synapse-analytics/5-run-pipelines)
+    - Immediately
+    - Scheduled interval
+    - In response to an event
+    - Lineage: integrate Azure Synapse Analytics and Microsoft Purview
+- [Use Spark Notebooks in an Azure Synapse Pipeline](https://learn.microsoft.com/training/modules/use-spark-notebooks-azure-synapse-pipeline/)
+  - Understand Synapse Notebooks and Pipelines [link](https://learn.microsoft.com/en-us/training/modules/use-spark-notebooks-azure-synapse-pipeline/2-understand-notebooks-pipelines)
+    - Apache Spark pool to run code in a notebook
+    - The pipeline can then be run on a schedule or in response to an event (such as new data files being loaded into the data lake).
+    - Best practices
+      - Keep your code organized
+      - Cache intermediate results
+      - Avoid unnecessary computations
+      - Avoid using collect() unless necessary
+      - Use Spark UI for monitoring and debugging
+      - Keep your dependencies version-consistent and updated
+  - Use a Synapse notebook activity in a pipeline [link](https://learn.microsoft.com/en-us/training/modules/use-spark-notebooks-azure-synapse-pipeline/3-use-notebook-activity)
+    - Add a notebook activity and configure it appropriately
+    - Spark pool
+    - Executor size
+    - Dynamically allocate executors
+    - Min/Max executors
+    - Driver size
+  - Use parameters in a notebook [link](https://learn.microsoft.com/en-us/training/modules/use-spark-notebooks-azure-synapse-pipeline/4-notebook-parameters)
+    - Create a parameters cell in the notebook
+    - Set base parameters for the notebook activity
 
 ## DP-203-06-HTAP
 
-Lab 14: [Use Azure Synapse Link for Azure Cosmos DB](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/14-Synapselink-cosmos.html), 35 min
-
-1. Configure Synapse Link in Azure Cosmos DB
-2. Configure Synapse Link in Azure Synapse Analytics
-3. Query Azure Cosmos DB from Azure Synapse Analytics
-
-Demo 15: [Use Azure Synapse Link for SQL](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/15-Synapse-link-sql.html), 35 min
-
-1. Configure Azure SQL Database
-2. Explore the transactional database
-3. Configure Azure Synapse Link
+- [Plan hybrid transactional and analytical processing using Azure Synapse Analytics](https://learn.microsoft.com/training/modules/design-hybrid-transactional-analytical-processing-using-azure-synapse-analytics/)
+  - Understand hybrid transactional and analytical processing patterns [link](https://learn.microsoft.com/en-us/training/modules/design-hybrid-transactional-analytical-processing-using-azure-synapse-analytics/2-understand-patterns)
+    - OLTP versus OLAP
+    - Hybrid Transactional / Analytical Processing (HTAP)
+  - Describe Azure Synapse Link [link](https://learn.microsoft.com/en-us/training/modules/design-hybrid-transactional-analytical-processing-using-azure-synapse-analytics/3-azure-synapse-link)
+    - Azure Synapse Link for Cosmos DB
+      - Cosmos DB Container autosync
+      - Synapse SQL and Apache Spark runtimes
+    - Azure Synapse Link for SQL
+      - Replicates the table data to a dedicated SQL pool
+    - Azure Synapse Link for Dataverse
+      - Replicates the data to a Azure Data Lake storage Gen2 account
+- [Implement Azure Synapse Link with Azure Cosmos DB](https://learn.microsoft.com/training/modules/configure-azure-synapse-link-with-azure-cosmos-db/)
+  - Enable Cosmos DB account to use Azure Synapse Link [link](https://learn.microsoft.com/en-us/training/modules/configure-azure-synapse-link-with-azure-cosmos-db/2-enable-cosmos-db-account-to-use)
+    - Enabling Azure Synapse Link in Azure Cosmos DB (Using the Azure portal or Azure CLI, PowerShell)
+      - Azure Cosmos DB for NoSQL
+      - Azure Cosmos DB for MongoDB
+      - Azure Cosmos DB for Apache Gremlin (preview)
+    - Considerations for enabling Azure Synapse Link
+      - You can't disable it
+      - Create or update a container with support for an analytical store
+      - Schema Type: WellDefined (default) or FullFidelity
+      - After a schema type has been assigned, you can't change it.
+  - Create an analytical store enabled container [link](https://learn.microsoft.com/en-us/training/modules/configure-azure-synapse-link-with-azure-cosmos-db/3-create-analytical-store-enabled-container)
+    - Analytical store schema types
+      - Well-defined: The default schema type for an Azure Cosmos DB for NoSQL account.
+      - Full fidelity: The default (and only supported) schema type for an Azure Cosmos DB for MongoDB account.
+    - Enabling analytical store support in a container
+    - Considerations for enabling analytical store support
+      - Analytical store support can't be disabled without deleting the container
+      - Setting the analytical store TTL value to 0 or null effectively disables the analytical store
+        - By no longer synchronizing new items
+        - Deleting items already synchronized
+      - After setting this value to 0, you can't re-enable analytical store support in the container
+  - Create a linked service for Cosmos DB [link](https://learn.microsoft.com/en-us/training/modules/configure-azure-synapse-link-with-azure-cosmos-db/4-implement-synapse-link)
+    - Authentication options:
+      - Account key: Specify an authentication key for your Cosmos DB account.
+      - Service Principal: Use the identity of the Azure Synapse Analytics service.
+      - System Assigned Managed Identity: Use system-assigned managed identity.
+      - User Managed Identity: Use a user-defined managed identity.
+  - Query Cosmos DB data with Spark [link](https://learn.microsoft.com/en-us/training/modules/configure-azure-synapse-link-with-azure-cosmos-db/5-query-with-spark)
+    - Loading Azure Cosmos DB analytical data into a dataframe (spark.read.format("cosmos.olap"))
+    - Writing a dataframe to a Cosmos DB container (mydf.write.format("cosmos.oltp"))
+    - Using Spark SQL to query Azure Cosmos DB analytical data
+  - Query Cosmos DB with Synapse SQL [link](https://learn.microsoft.com/en-us/training/modules/configure-azure-synapse-link-with-azure-cosmos-db/6-query-with-sql)
+    - Using OPENROWSET with an authentication key
+    - Using OPENROWSET with a credential
+    - Specifying a schema
+    - Creating a view in a database
+    - Considerations for Serverless SQL pools and Azure Cosmos DB
+      - Provision your Azure Cosmos DB analytical storage and any client applications (for example Microsoft Power BI) in the same region as serverless SQL pool.
+      - When working with string columns, use the OPENROWSET function with the explicit WITH clause and specify an appropriate data length for the string data.
+- [Implement Azure Synapse Link for SQL](https://learn.microsoft.com/training/modules/implement-synapse-link-for-sql/)
+  - What is Azure Synapse Link for SQL? [link](https://learn.microsoft.com/en-us/training/modules/implement-synapse-link-for-sql/2-understand-synapse-link-sql)
+    - Why?
+      - The traditional ETL process can be complex to implement and operate
+      - The analytical store is only updated at periodic intervals, so reporting doesn't reflect the most up-to-date operational data.
+    - What?
+      - Azure SQL Database or SQL Server 2022
+      - Not supported for Azure SQL Managed Instance.
+      - Azure Synapse Link for SQL replicates the table data to a dedicated SQL pool
+      - Queries in the dedicated SQL pool, or connected to as an external source from a Spark pool
+      - Uses change feed
+  - Configure Azure Synapse Link for Azure SQL Database [link](https://learn.microsoft.com/en-us/training/modules/implement-synapse-link-for-sql/3-synapse-link-azure-sql)
+    - Implementing Azure Synapse Link for Azure SQL Database
+      - Configure Azure SQL Database
+        - System assigned managed identity
+        - Firewall rules
+      - Prepare the target SQL pool
+        - CREATE SCHEMA
+      - Create a link connection
+        - Select or create a linked service
+        - Select the tables
+        - Select the target dedicated SQL pool
+        - Specify the number of CPU cores
+        - VARBINARY(MAX) need to use HEAP (unindexed tables)
+  - Configure Azure Synapse Link for SQL Server 2022 [link](https://learn.microsoft.com/en-us/training/modules/implement-synapse-link-for-sql/4-synapse-link-sql-server)
+    - Create an Azure Data Lake Storage Gen2 landing zone
+    - Create a master key in the SQL Server database
+    - Create a dedicated SQL pool in Azure Synapse Analytics
+    - Create a linked service for the SQL Server source database
+    - Create a linked service for your Data Lake Storage Gen2 account
+    - Create a link connection for Azure Synapse Link
+    - Tables are initialized by copying a .parquet file for each source table to a landing zone in
+    - From where the data is imported into tables in the dedicated SQL pool
+    - Subsequently, the change feed process copies all changes as .csv files to the landing zone where they're applied to the target tables.
 
 ## DP-203-07-Stream Analytics
 
-Demo 17: [Get started with Azure Stream Analytics](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/17-stream-analytics.html), 15 min
-
-```bash
-rm -r dp-203 -f
-git clone https://github.com/MicrosoftLearning/dp-203-azure-data-engineer dp-203
-cd dp-203/Allfiles/labs/17
-code setup.txt
-az eventhubs namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name events-weslbo --resource-group rg-dp-203 | jq '.primaryConnectionString'
-(ctrl+s, ctrl+q)
-cp setup.txt orderclient.js
-npm install @azure/event-hubs | Out-Null
-node ~/dp-203/Allfiles/labs/17/orderclient
-```
-
-1. View the streaming data source
-2. Create an Azure Stream Analytics job
-3. Create an input for the event stream
-4. Create an output for the blob store
-5. Create a query
-6. Run the streaming job
-
-Lab 18: [Ingest realtime data with Azure Stream Analytics and Azure Synapse Analytics](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/18-Ingest-stream-synapse.html), 45 min
-
-1. Ingest streaming data into a dedicated SQL pool
-2. Summarize streaming data in a data lake
-
-Demo 19: [Create a realtime report with Azure Stream Analytics and Microsoft Power BI](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/19-Stream-Power-BI.html), 45 min
-
-1. Create a Power BI workspace
-2. Use Azure Stream Analytics to process streaming data
-3. Visualize the streaming data in Power BI
+- [Get started with Azure Stream Analytics](https://learn.microsoft.com/training/modules/introduction-to-data-streaming/)
+  - Understand data streams [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-data-streaming/2-understand-data-streams)
+    - Examples
+      - Real-time clickstream data to provide recommendations
+      - Telemetry data to remotely monitor manufacturing equipment
+      - Credit card transactions to detect fraud
+    - Characteristics of stream processing solutions
+      - The source data stream is unbounded
+      - Each data record in the stream includes temporal (time-based) data
+      - Aggregation of streaming data is performed over temporal windows
+      - Supports real-time automation or visualization
+  - Understand event processing [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-data-streaming/3-understand-event-processing)
+    - Azure Stream Analytics jobs and clusters (dedicated tenant)
+    - Inputs
+      - Azure Event Hubs
+      - Azure IoT Hub
+      - Azure Blob storage
+      - Azure Data Lake Storage Gen2
+    - Output
+      - Data Lake, Data Warehouse
+      - Microsoft Power BI
+      - Generate filtered or summarized events (Event Hub)
+    - Queries: SELECT INTO FROM TIMESTAMP WHERE
+  - Understand window functions [link](https://learn.microsoft.com/en-us/training/modules/introduction-to-data-streaming/3b-understand-windows)
+    - Tumbling
+    - Hopping
+    - Sliding
+    - Session
+    - Snapshot
+- [Ingest streaming data using Azure Stream Analytics and Azure Synapse Analytics](https://learn.microsoft.com/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/)
+  - Stream ingestion scenarios [link](https://learn.microsoft.com/en-us/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/2-stream-ingestion-scenarios)
+    - Approaches to large-scale data analytics
+      - Data Warehouse
+      - Data Lake
+  - Configure inputs and outputs [link](https://learn.microsoft.com/en-us/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/3-configure-inputs-outputs)
+    - Streaming data inputs
+      - Azure Event Hubs
+      - Azure IoT Hubs
+      - Azure Blob or Data Lake Gen 2 Storage
+    - Azure Synapse Analytics outputs
+    - Azure Data Lake Storage Gen2 outputs
+  - Define a query to select, filter, and aggregate data [link](https://learn.microsoft.com/en-us/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/4-define-query)
+    - Selecting input fields
+    - Filtering event data
+    - Aggregating events over temporal windows
+  - Run a job to ingest data [link](https://learn.microsoft.com/en-us/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/5-run-job-ingest)
+    - Querying data in a relational data warehouse
+    - Querying data in a data lake
+- [Visualize real-time data with Azure Stream Analytics and Power BI](https://learn.microsoft.com/training/modules/visualize-real-time-data-azure-stream-analytics-power-bi/)
+  - Use a Power BI output in Azure Stream Analytics [link](https://learn.microsoft.com/en-us/training/modules/visualize-real-time-data-azure-stream-analytics-power-bi/2-power-bi-output)
+    - Power BI outputs
+      - Output alias
+      - Group workspace
+      - Dataset name
+      - Table name
+      - Authorize connection
+  - Create a query for real-time visualization [link](https://learn.microsoft.com/en-us/training/modules/visualize-real-time-data-azure-stream-analytics-power-bi/3-realtime-query)
+  - Create real-time data visualizations in Power BI [link](https://learn.microsoft.com/en-us/training/modules/visualize-real-time-data-azure-stream-analytics-power-bi/4-create-real-time-data-visualizations-power-bi)
+    - Create real-time visualizations in a dashboard
 
 ## DP-203-08-Purview
 
-Lab 22: [Use Microsoft Purview with Azure Synapse Analytics](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/22-Synapse-purview.html), 40 min
-
-1. Catalog Azure Synapse Analytics data assets in Microsoft Purview
-2. Integrate Microsoft Purview with Azure Synapse Analytics
+- [Introduction to Microsoft Purview](https://learn.microsoft.com/training/modules/intro-to-microsoft-purview/)
+  - What is Microsoft Purview? [link](https://learn.microsoft.com/en-us/training/modules/intro-to-microsoft-purview/2-what-is-microsoft-purview)
+    - Unified data-governance service
+    - Data Map
+    - Data Catalog
+    - Data Estate Insights
+      - Asset insights
+      - Scan insights
+      - Glossary insights
+      - Classification insights
+      - Sensitivity insights
+      - File extensions insights
+  - How Microsoft Purview works [link](https://learn.microsoft.com/en-us/training/modules/intro-to-microsoft-purview/3-how-microsoft-purview-works)
+    - Loading data in the Data Map
+      - Mapping data
+      - Scanning data
+      - Classification
+    - Browse and search information
+      - Semantic search and browse
+      - Business glossary and workflows
+      - Data lineage with sources, owners, transformations, and lifecycle
+    - Data Lineage
+  - When to use Microsoft Purview [link](https://learn.microsoft.com/en-us/training/modules/intro-to-microsoft-purview/4-when-to-use-microsoft-purview)
+    - Decision criteria
+      - Discovery
+        - No central data source registration
+        - Catalog makes data sources discoverable
+        - Connection string/path required
+        - Data use hidden without documentation
+        - Consumed through different experiences
+      - Governance
+        - Task of discovering, protecting, and governing data difficult
+        - Data stored in different locations
+        - Compliance with security policies, government regulations, and customer needs critical
+        - Sensitive information in data
+        - Knowing where protections needed
+      - Roles in Purview
+        - Purview Data Reader Role
+        - Purvider Data Curator Role
+        - Purview Data Source Administrator Role
+- [Integrate Microsoft Purview and Azure Synapse Analytics](https://learn.microsoft.com/training/modules/integrate-microsoft-purview-azure-synapse-analytics/)
+  - Catalog Azure Synapse Analytics data assets in Microsoft Purview [link](https://learn.microsoft.com/en-us/training/modules/integrate-microsoft-purview-azure-synapse-analytics/02-catalog-azure-synapse)
+    - Configure data access for Microsoft Purview
+    - Register and scan data sources
+    - View and manage cataloged data assets
+  - Connect Azure purview to an Azure Synapse Analytics workspace [link](https://learn.microsoft.com/en-us/training/modules/integrate-microsoft-purview-azure-synapse-analytics/03-configure-purview-integration)
+    - Why?
+      - Search the Purview catalog in the Synapse Studio user interface.
+      - Push details of data pipeline activities to Purview in order to track data lineage information.
+    - Security considerations
+      - Requires Collection Administrator access to the Purview account's root collection
+      - Managed identity will become a data curator
+  - Search a Purview catalog in Synapse Studio [link](https://learn.microsoft.com/en-us/training/modules/integrate-microsoft-purview-azure-synapse-analytics/04-search-purview)
+  - Track data lineage in pipelines [link](https://learn.microsoft.com/en-us/training/modules/integrate-microsoft-purview-azure-synapse-analytics/05-track-data-lineage)
+    - From
+      - The Copy Data activity
+      - The Data Flow activity
+    - The assets recorded include
+      - The source from which the data is extracted
+      - The activity used to transfer the data
+      - The destination where the data is stored
 
 ## DP-203-09-Databricks
 
-Demo 23: [Explore Azure Databricks](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/23-Explore-Azure-Databricks.html), 30 min
-
-1. Create a cluster
-2. Use Spark to analyze a data file
-3. Create and query a database table
-
-Lab 24: [Use Spark in Azure Databricks](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/24-Analyze-Files-in-Azure-Databricks.html), 45 min
-
-1. Provision an Azure Databricks workspace
-2. Create a cluster
-3. Explore data using a notebook
-
-Demo 25: [Use Delta Lake in Azure Databricks](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/25-Delta-lake-in-Azure-Databricks.html), 40 min
-
-1. Provision an Azure Databricks workspace
-2. Create a cluster
-3. Explore data using a notebook
-
-Demo 26: [Use a SQL Warehouse in Azure Databricks](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/26-Azure-Databricks-SQL.html), 30 min
-
-1. View and start a SQL Warehouse
-2. Create a database
-3. Create a table
-4. Create a query
-5. Create a dashboard
-
-Demo 27: [Automate an Azure Databricks Notebook with Azure Data Factory](https://microsoftlearning.github.io/dp-203-azure-data-engineer/Instructions/Labs/27-Azure-Databricks-Data-Factory.html), 40 min
-
-1. Import a notebook
-2. Enable Azure Databricks integration with Azure Data Factory
-3. Use a pipeline to run the Azure Databricks notebook
+- [Explore Azure Databricks](https://learn.microsoft.com/training/modules/explore-azure-databricks/)
+  - Get started with Azure Databricks [link](https://learn.microsoft.com/en-us/training/modules/explore-azure-databricks/02-azure-databricks)
+    - Creating an Azure Databricks workspace
+    - Pricing tiers
+      - Standard (Azure AD integration)
+      - Premium (Role-based access control + Enterprise-level features)
+      - Trial (14-day free trial)
+    - Using the Azure Databricks portal
+  - Identify Azure Databricks workloads [link](https://learn.microsoft.com/en-us/training/modules/explore-azure-databricks/03-workloads)
+    - Data Science and Engineering
+    - Machine Learning
+    - SQL Warehouse (Premium)
+  - Understand key concepts [link](https://learn.microsoft.com/en-us/training/modules/explore-azure-databricks/04-key-concepts)
+    - Apache Spark Clusters
+    - Databricks File System DBFS (mount storage)
+    - Notebooks
+    - Hive metastore
+    - Delta Lake
+    - SQL Warehouse (Premium)
+- [Use Apache Spark in Azure Databricks](https://learn.microsoft.com/training/modules/use-apache-spark-azure-databricks/)
+  - Get to know Spark [link](https://learn.microsoft.com/en-us/training/modules/use-apache-spark-azure-databricks/02-understand-spark)
+    - High-level overview
+      - Clusters
+      - Driver and worker nodes
+      - SparkSessions
+    - Spark jobs in detail
+      - JVM Java Virtual Machine (executor)
+      - Slots (tasks in parallel)
+    - Jobs and stages
+  - Create a Spark cluster [link](https://learn.microsoft.com/en-us/training/modules/use-apache-spark-azure-databricks/03-spark-cluster)
+    - Cluster mode
+      - Standard
+      - High Concurrency (multiple users will use the cluster concurrently)
+      - Single ode
+  - Use Spark in notebooks [link](https://learn.microsoft.com/en-us/training/modules/use-apache-spark-azure-databricks/04-use-spark)
+  - Use Spark to work with data files [link](https://learn.microsoft.com/en-us/training/modules/use-apache-spark-azure-databricks/05-write-spark-code)
+    - Exploring data with dataframes
+      - Loading data into a dataframe
+      - Specifying a dataframe schema
+    - Filtering and grouping dataframes
+    - Using SQL expressions in Spark
+      - Creating database objects in the Spark catalog
+        - createOrReplaceTempView
+        - createTable
+        - saveAsTable
+        - createExternalTable
+      - Using the Spark SQL API to query data
+      - Using SQL code
+  - Visualize data [link](https://learn.microsoft.com/en-us/training/modules/use-apache-spark-azure-databricks/06-visualize-data)
+    - Using built-in notebook charts
+    - Using graphics packages in code (matplotlib)
+- [Run Azure Databricks Notebooks with Azure Data Factory](https://learn.microsoft.com/training/modules/run-azure-databricks-notebooks-azure-data-factory/)
+  - Understand Azure Databricks notebooks and pipelines [link](https://learn.microsoft.com/en-us/training/modules/run-azure-databricks-notebooks-azure-data-factory/02-databricks-notebooks)
+  - Create a linked service for Azure Databricks [link](https://learn.microsoft.com/en-us/training/modules/run-azure-databricks-notebooks-azure-data-factory/03-linked-service)
+    - Generating an access token
+    - Creating a linked service
+  - Use a Notebook activity in a pipeline [link](https://learn.microsoft.com/en-us/training/modules/run-azure-databricks-notebooks-azure-data-factory/04-notebook-activity)
+  - Use parameters in a notebook [link](https://learn.microsoft.com/en-us/training/modules/run-azure-databricks-notebooks-azure-data-factory/05-notebook-parameters)
+    - dbutils.widgets.get()
+    - dbutils.notebook.exit()
+    - Setting parameter values in a pipeline
