@@ -1,50 +1,43 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/use-apache-spark-azure-databricks/ Module]]: Use Apache Spark in Azure Databricks
 + Apache Spark
-++ Get to know Spark <<topic1>>
+++ 1) Get to know Spark <<topic1>>
 +++ High-level overview <<topic1>>
 ++++_ Clusters
 ++++_ Driver and worker nodes
@@ -53,13 +46,13 @@ title [[https://learn.microsoft.com/training/modules/use-apache-spark-azure-data
 ++++_ JVM Java Virtual Machine (executor)
 ++++_ Slots (tasks in parallel)
 +++ Jobs and stages  <<topic1>>
-++ Create a Spark cluster <<topic2>>
+++ 2) Create a Spark cluster <<topic2>>
 +++ Cluster mode<<topic2>>
 ++++_ Standard
 ++++_ High Concurrency (multiple users will use the cluster concurrently)
 ++++_ Single ode
-++ Use Spark in notebooks <<topic3>>
-++ Use Spark to work with data files <<topic4>>
+++ 3) Use Spark in notebooks <<topic3>>
+++ 4) Use Spark to work with data files <<topic4>>
 +++ Exploring data with dataframes <<topic4>>
 ++++_ Loading data into a dataframe
 ++++_ Specifying a dataframe schema
@@ -72,7 +65,7 @@ title [[https://learn.microsoft.com/training/modules/use-apache-spark-azure-data
 +++++_ createExternalTable
 ++++ Using the Spark SQL API to query data <<topic4>>
 ++++ Using SQL code <<topic4>>
-++ Visualize data <<topic5>>
+++ 5) Visualize data <<topic5>>
 +++_ Using built-in notebook charts
 +++_ Using graphics packages in code (matplotlib)
 @endmindmap

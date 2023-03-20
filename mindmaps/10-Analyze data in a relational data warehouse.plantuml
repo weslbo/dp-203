@@ -1,86 +1,78 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/design-multidimensional-schema-to-optimize-analytical-workloads Module]]: Analyze data in a relational data warehouse
 + Data warehouse
--- Design a data warehouse schema <<topic1>>
---- Tables in a data warehouse <<topic1>>
----- Dimension tables <<topic1>>
------_ Surrogate key (unique to the DWH)
------_ Alternate key (natural key, business key, from transactional system)
------_ Slowly changing dimensions
----- Fact tables <<topic1>>
----- Data warehouse schema designs <<topic1>>
--- Create data warehouse tables <<topic2>>
---- Creating a dedicated SQL pool <<topic2>>
-----_ A unique name
-----_ A performance level [DW100c - DW30000c]
-----_ Empty pool or restore from a backup.
-----_ The collation of the SQL pool (can't change)
---- Considerations for creating tables <<topic2>>
-----_ Fact, Dimension and Staging tables
-----_ Data integrity constraints
-----_ Indexes
-----_ Distribution
------_ Hash (fact tables)
------_ Round-robin (staging tables)
------_ Replicated (dimension tables)
-----_ Creating dimension tables
------_ Time dimension tables
-----_ Creating fact tables
-----_ Creating staging tables
------_ CREATE EXTERNAL DATA SOURCE
------_ CREATE EXTERNAL FILE FORMAT
------_ CREATE EXTERNAL TABLE
-++ Load data warehouse tables <<topic3>>
+++ 1) Design <<topic1>>
++++ Dimension tables <<topic1>>
+++++_ Surrogate key (unique to the DWH)
+++++_ Alternate key (natural key, business key, from transactional system)
+++++_ Slowly changing dimensions
++++ Fact tables <<topic1>>
++++ Data warehouse schema designs <<topic1>>
+++ 2) Create tables <<topic2>>
++++ Creating a dedicated SQL pool <<topic2>>
+++++_ A unique name
+++++_ A performance level [DW100c - DW30000c]
+++++_ Empty pool or restore from a backup.
+++++_ The collation of the SQL pool (can't change)
++++ Considerations for creating tables <<topic2>>
+++++_ Fact, Dimension and Staging tables
+++++_ Data integrity constraints
+++++_ Indexes
+++++_ Distribution
++++++_ Hash (fact tables)
++++++_ Round-robin (staging tables)
++++++_ Replicated (dimension tables)
+++++_ Creating dimension tables
++++++_ Time dimension tables
+++++_ Creating fact tables
+++++_ Creating staging tables
++++++_ CREATE EXTERNAL DATA SOURCE
++++++_ CREATE EXTERNAL FILE FORMAT
++++++_ CREATE EXTERNAL TABLE
+++ 3) Load tables <<topic3>>
 +++ COPY INTO <<topic3>>
 +++ Considerations <<topic3>>
 ++++_ Source -> Data Lake -> Staging tables
-++++_ Load the dimension tables from the dimension data in the staging tables, updating existing rows or inserting new rows and generating surrogate key values as necessary.
-++++_ Load the fact tables from the fact data in the staging tables, looking up the appropriate surrogate keys for related dimensions.
-++++_ Perform post-load optimization by updating indexes and table distribution statistics.
-++ Query a data warehouse <<topic4>>
+++++_ For dimension tables: update or insert new rows and generate surrogate key values
+++++_ For fact tables: look up the surrogate keys for related dimensions
+++++_ Update indexes and table distribution statistics.
+++ 4) Query a data warehouse <<topic4>>
 +++_ Aggregating measures by dimension attributes
 +++_ Joins in a snowflake schema
 +++_ Using ranking functions

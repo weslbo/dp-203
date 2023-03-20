@@ -1,65 +1,58 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="658px" preserveAspectRatio="none" style="width:1325px;height:658px;background:#FFFFFF;" version="1.1" viewBox="0 0 1325 658" width="1325px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="47.7344" id="_title" style="stroke:none;stroke-width:1.0;" width="1292" x="15" y="15"/><a href="https://learn.microsoft.com/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/" target="_top" title="https://learn.microsoft.com/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/" xlink:actuate="onRequest" xlink:href="https://learn.microsoft.com/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/" xlink:show="new" xlink:title="https://learn.microsoft.com/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" text-decoration="underline" textLength="104" x="20" y="51.1426">Module</text></a><text fill="#000000" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" textLength="1178" x="124" y="51.1426">: Ingest streaming data using Azure Stream Analytics and Azure Synapse Analytics</text><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="165" x="192.5" y="338.5859"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="145" x="202.5" y="363.1191">Azure Stream Analytics</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="195" x="407.5" y="107.5391"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="171" x="417.5" y="132.0723">Stream ingestion scenarios</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="131" x="652.5" y="78.7344"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="107" x="662.5" y="103.2676">Data Warehouse</text><path d="M602.5,126.3438 L612.5,126.3438 C627.5,126.3438 627.5,97.5391 642.5,97.5391 L652.5,97.5391 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="89" x="652.5" y="136.3438"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="662.5" y="160.877">Data Lake</text><path d="M602.5,126.3438 L612.5,126.3438 C627.5,126.3438 627.5,155.1484 642.5,155.1484 L652.5,155.1484 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M357.5,357.3906 L367.5,357.3906 C382.5,357.3906 382.5,126.3438 397.5,126.3438 L407.5,126.3438 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="207" x="407.5" y="252.1719"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="183" x="417.5" y="276.7051">Configure inputs and outputs</text><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="162" x="664.5" y="194.5625"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="138" x="674.5" y="219.0957">Streaming data inputs</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="112" x="879.5" y="199.4863">Azure Event Hubs</text><path d="M826.5,213.3672 L836.5,213.3672 C851.5,213.3672 851.5,193.7578 866.5,193.7578 L876.5,193.7578 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="96" x="879.5" y="219.0957">Azure IoT Hubs</text><path d="M826.5,213.3672 L836.5,213.3672 C851.5,213.3672 851.5,213.3672 866.5,213.3672 L876.5,213.3672 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="251" x="879.5" y="238.7051">Azure Blob or Data Lake Gen 2 Storage</text><path d="M826.5,213.3672 L836.5,213.3672 C851.5,213.3672 851.5,232.9766 866.5,232.9766 L876.5,232.9766 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M614.5,270.9766 L624.5,270.9766 C639.5,270.9766 639.5,213.3672 654.5,213.3672 L664.5,213.3672 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="230" x="664.5" y="252.7813"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="206" x="674.5" y="277.3145">Azure Synapse Analytics outputs</text><path d="M614.5,270.9766 L624.5,270.9766 C639.5,270.9766 639.5,271.5859 654.5,271.5859 L664.5,271.5859 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="273" x="664.5" y="310.3906"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="249" x="674.5" y="334.9238">Azure Data Lake Storage Gen2 outputs</text><path d="M614.5,270.9766 L624.5,270.9766 C639.5,270.9766 639.5,329.1953 654.5,329.1953 L664.5,329.1953 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M357.5,357.3906 L367.5,357.3906 C382.5,357.3906 382.5,270.9766 397.5,270.9766 L407.5,270.9766 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="342" x="407.5" y="425.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="318" x="417.5" y="450.1426">Define a query to select, filter, and aggregate data</text><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="154" x="799.5" y="368"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="809.5" y="392.5332">Selecting input fields</text><path d="M749.5,444.4141 L759.5,444.4141 C774.5,444.4141 774.5,386.8047 789.5,386.8047 L799.5,386.8047 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="146" x="799.5" y="425.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="122" x="809.5" y="450.1426">Filtering event data</text><path d="M749.5,444.4141 L759.5,444.4141 C774.5,444.4141 774.5,444.4141 789.5,444.4141 L799.5,444.4141 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="294" x="799.5" y="483.2188"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="270" x="809.5" y="507.752">Aggregating events over temporal windows</text><path d="M749.5,444.4141 L759.5,444.4141 C774.5,444.4141 774.5,502.0234 789.5,502.0234 L799.5,502.0234 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M357.5,357.3906 L367.5,357.3906 C382.5,357.3906 382.5,444.4141 397.5,444.4141 L407.5,444.4141 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="175" x="407.5" y="569.6328"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="151" x="417.5" y="594.166">Run a job to ingest data</text><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="308" x="632.5" y="540.8281"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="284" x="642.5" y="565.3613">Querying data in a relational data warehouse</text><path d="M582.5,588.4375 L592.5,588.4375 C607.5,588.4375 607.5,559.6328 622.5,559.6328 L632.5,559.6328 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="203" x="632.5" y="598.4375"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="179" x="642.5" y="622.9707">Querying data in a data lake</text><path d="M582.5,588.4375 L592.5,588.4375 C607.5,588.4375 607.5,617.2422 622.5,617.2422 L632.5,617.2422 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M357.5,357.3906 L367.5,357.3906 C382.5,357.3906 382.5,588.4375 397.5,588.4375 L407.5,588.4375 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[81efd77e7a39d6a73e60336d4e27831d]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="599px" preserveAspectRatio="none" style="width:977px;height:599px;background:#FFFFFF;" version="1.1" viewBox="0 0 977 599" width="977px" zoomAndPan="magnify"><defs/><g><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="165" x="10" y="279.8516"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="145" x="20" y="304.3848">Azure Stream Analytics</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="212" x="225" y="48.8047"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="188" x="235" y="73.3379">1) Stream ingestion scenarios</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="131" x="487" y="20"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="107" x="497" y="44.5332">Data Warehouse</text><path d="M437,67.6094 L447,67.6094 C462,67.6094 462,38.8047 477,38.8047 L487,38.8047 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="89" x="487" y="77.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65" x="497" y="102.1426">Data Lake</text><path d="M437,67.6094 L447,67.6094 C462,67.6094 462,96.4141 477,96.4141 L487,96.4141 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M175,298.6563 L185,298.6563 C200,298.6563 200,67.6094 215,67.6094 L225,67.6094 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="224" x="225" y="193.4375"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="200" x="235" y="217.9707">2) Configure inputs and outputs</text><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="162" x="499" y="135.8281"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="138" x="509" y="160.3613">Streaming data inputs</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="112" x="714" y="140.752">Azure Event Hubs</text><path d="M661,154.6328 L671,154.6328 C686,154.6328 686,135.0234 701,135.0234 L711,135.0234 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="96" x="714" y="160.3613">Azure IoT Hubs</text><path d="M661,154.6328 L671,154.6328 C686,154.6328 686,154.6328 701,154.6328 L711,154.6328 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="251" x="714" y="179.9707">Azure Blob or Data Lake Gen 2 Storage</text><path d="M661,154.6328 L671,154.6328 C686,154.6328 686,174.2422 701,174.2422 L711,174.2422 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M449,212.2422 L459,212.2422 C474,212.2422 474,154.6328 489,154.6328 L499,154.6328 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="230" x="499" y="194.0469"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="206" x="509" y="218.5801">Azure Synapse Analytics outputs</text><path d="M449,212.2422 L459,212.2422 C474,212.2422 474,212.8516 489,212.8516 L499,212.8516 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="273" x="499" y="251.6563"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="249" x="509" y="276.1895">Azure Data Lake Storage Gen2 outputs</text><path d="M449,212.2422 L459,212.2422 C474,212.2422 474,270.4609 489,270.4609 L499,270.4609 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M175,298.6563 L185,298.6563 C200,298.6563 200,212.2422 215,212.2422 L225,212.2422 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="359" x="225" y="366.875"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="335" x="235" y="391.4082">3) Define a query to select, filter, and aggregate data</text><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="154" x="634" y="309.2656"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="644" y="333.7988">Selecting input fields</text><path d="M584,385.6797 L594,385.6797 C609,385.6797 609,328.0703 624,328.0703 L634,328.0703 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="146" x="634" y="366.875"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="122" x="644" y="391.4082">Filtering event data</text><path d="M584,385.6797 L594,385.6797 C609,385.6797 609,385.6797 624,385.6797 L634,385.6797 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="294" x="634" y="424.4844"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="270" x="644" y="449.0176">Aggregating events over temporal windows</text><path d="M584,385.6797 L594,385.6797 C609,385.6797 609,443.2891 624,443.2891 L634,443.2891 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M175,298.6563 L185,298.6563 C200,298.6563 200,385.6797 215,385.6797 L225,385.6797 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="192" x="225" y="510.8984"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="168" x="235" y="535.4316">4) Run a job to ingest data</text><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="308" x="467" y="482.0938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="284" x="477" y="506.627">Querying data in a relational data warehouse</text><path d="M417,529.7031 L427,529.7031 C442,529.7031 442,500.8984 457,500.8984 L467,500.8984 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="203" x="467" y="539.7031"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="179" x="477" y="564.2363">Querying data in a data lake</text><path d="M417,529.7031 L427,529.7031 C442,529.7031 442,558.5078 457,558.5078 L467,558.5078 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M175,298.6563 L185,298.6563 C200,298.6563 200,529.7031 215,529.7031 L225,529.7031 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[c1598a5d0fb21e6ba3bb76445e3613c3]
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/ Module]]: Ingest streaming data using Azure Stream Analytics and Azure Synapse Analytics
 + Azure Stream Analytics
-++ Stream ingestion scenarios <<topic1>>
+++ 1) Stream ingestion scenarios <<topic1>>
 +++ Data Warehouse <<topic1>>
 +++ Data Lake <<topic1>>
-++ Configure inputs and outputs <<topic2>>
+++ 2) Configure inputs and outputs <<topic2>>
 +++ Streaming data inputs <<topic2>>
 ++++_ Azure Event Hubs
 ++++_ Azure IoT Hubs
 ++++_ Azure Blob or Data Lake Gen 2 Storage
 +++ Azure Synapse Analytics outputs <<topic2>>
 +++ Azure Data Lake Storage Gen2 outputs <<topic2>>
-++ Define a query to select, filter, and aggregate data <<topic3>>
+++ 3) Define a query to select, filter, and aggregate data <<topic3>>
 +++ Selecting input fields <<topic3>>
 +++ Filtering event data <<topic3>>
 +++ Aggregating events over temporal windows <<topic3>>
-++ Run a job to ingest data <<topic4>>
+++ 4) Run a job to ingest data <<topic4>>
 +++ Querying data in a relational data warehouse <<topic4>>
 +++ Querying data in a data lake <<topic4>>
 @endmindmap

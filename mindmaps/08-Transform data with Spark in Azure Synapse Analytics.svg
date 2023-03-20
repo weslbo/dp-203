@@ -1,62 +1,58 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="237px" preserveAspectRatio="none" style="width:2090px;height:237px;background:#FFFFFF;" version="1.1" viewBox="0 0 2090 237" width="2090px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="47.7344" id="_title" style="stroke:none;stroke-width:1.0;" width="907" x="590" y="15"/><a href="https://learn.microsoft.com/training/modules/transform-data-spark-azure-synapse-analytics/" target="_top" title="https://learn.microsoft.com/training/modules/transform-data-spark-azure-synapse-analytics/" xlink:actuate="onRequest" xlink:href="https://learn.microsoft.com/training/modules/transform-data-spark-azure-synapse-analytics/" xlink:show="new" xlink:title="https://learn.microsoft.com/training/modules/transform-data-spark-azure-synapse-analytics/" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" text-decoration="underline" textLength="104" x="595" y="51.1426">Module</text></a><text fill="#000000" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" textLength="793" x="699" y="51.1426">: Transform data with Spark in Azure Synapse Analytics</text><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="186" x="953" y="128.3672"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="166" x="963" y="152.9004">Transform data with Spark</text><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="137" x="1189" y="79.3438"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="113" x="1199" y="103.877">Partition data files</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="693" x="1379" y="84.2676">Partitioning is an optimization technique that enables spark to maximize performance across the worker nodes.</text><path d="M1326,98.1484 L1336,98.1484 C1351,98.1484 1351,78.5391 1366,78.5391 L1376,78.5391 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="274" x="1379" y="103.877">Partition the output file (partitionBy method)</text><path d="M1326,98.1484 L1336,98.1484 C1351,98.1484 1351,98.1484 1366,98.1484 L1376,98.1484 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="181" x="1379" y="123.4863">Filter parquet files in a query</text><path d="M1326,98.1484 L1336,98.1484 C1351,98.1484 1351,117.7578 1366,117.7578 L1376,117.7578 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M1139,147.1719 L1149,147.1719 C1164,147.1719 1164,98.1484 1179,98.1484 L1189,98.1484 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="181" x="1189" y="157.7813"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="157" x="1199" y="182.3145">Transform data with SQL</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149" x="1423" y="143.0957">Define tables and views</text><path d="M1370,176.5859 L1380,176.5859 C1395,176.5859 1395,137.3672 1410,137.3672 L1420,137.3672 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="655" x="1423" y="162.7051">External tables are "loosely bound" to the underlying files and deleting the table does not delete the files</text><path d="M1370,176.5859 L1380,176.5859 C1395,176.5859 1395,156.9766 1410,156.9766 L1420,156.9766 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="260" x="1423" y="182.3145">Use SQL to query and transform the data</text><path d="M1370,176.5859 L1380,176.5859 C1395,176.5859 1395,176.5859 1410,176.5859 L1420,176.5859 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="1423" y="201.9238">Query the metastore</text><path d="M1370,176.5859 L1380,176.5859 C1395,176.5859 1395,196.1953 1410,196.1953 L1420,196.1953 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="73" x="1423" y="221.5332">Drop tables</text><path d="M1370,176.5859 L1380,176.5859 C1395,176.5859 1395,215.8047 1410,215.8047 L1420,215.8047 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M1139,147.1719 L1149,147.1719 C1164,147.1719 1164,176.5859 1179,176.5859 L1189,176.5859 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="202" x="701" y="128.3672"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="178" x="711" y="152.9004">Modify and save dataframes</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="240" x="411" y="99.5625"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="216" x="421" y="124.0957">Typical operations on a dataframe</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="168" x="190" y="94.6816">Filtering rows and columns</text><path d="M411,118.3672 L401,118.3672 C386,118.3672 386,88.9531 371,88.9531 L361,88.9531 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="120" x="238" y="114.291">Renaming columns</text><path d="M411,118.3672 L401,118.3672 C386,118.3672 386,108.5625 371,108.5625 L361,108.5625 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="348" x="10" y="133.9004">Creating new columns, often derived from existing ones</text><path d="M411,118.3672 L401,118.3672 C386,118.3672 386,128.1719 371,128.1719 L361,128.1719 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="188" x="170" y="153.5098">Replacing null or other values</text><path d="M411,118.3672 L401,118.3672 C386,118.3672 386,147.7813 371,147.7813 L361,147.7813 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M701,147.1719 L691,147.1719 C676,147.1719 676,118.3672 661,118.3672 L651,118.3672 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="300" x="351" y="167.5859"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="276" x="361" y="192.1191">Save the transformed data (Parquet format)</text><path d="M701,147.1719 L691,147.1719 C676,147.1719 676,186.3906 661,186.3906 L651,186.3906 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M953,147.1719 L943,147.1719 C928,147.1719 928,147.1719 913,147.1719 L903,147.1719 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[c427989ac0a15db3e36c875a67f498e6]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="393px" preserveAspectRatio="none" style="width:1288px;height:393px;background:#FFFFFF;" version="1.1" viewBox="0 0 1288 393" width="1288px" zoomAndPan="magnify"><defs/><g><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="186" x="10" y="176.8281"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="166" x="20" y="201.3613">Transform data with Spark</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="219" x="286" y="88.8047"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="195" x="296" y="113.3379">1) Modify and save dataframes</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="240" x="595" y="40"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="216" x="605" y="64.5332">Typical operations on a dataframe</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="168" x="928" y="35.1191">Filtering rows and columns</text><path d="M835,58.8047 L845,58.8047 C860,58.8047 900,29.3906 915,29.3906 L925,29.3906 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="120" x="928" y="54.7285">Renaming columns</text><path d="M835,58.8047 L845,58.8047 C860,58.8047 900,49 915,49 L925,49 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="348" x="928" y="74.3379">Creating new columns, often derived from existing ones</text><path d="M835,58.8047 L845,58.8047 C860,58.8047 900,68.6094 915,68.6094 L925,68.6094 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="188" x="928" y="93.9473">Replacing null or other values</text><path d="M835,58.8047 L845,58.8047 C860,58.8047 900,88.2188 915,88.2188 L925,88.2188 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M505,107.6094 L515,107.6094 C530,107.6094 570,58.8047 585,58.8047 L595,58.8047 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="300" x="595" y="137.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="276" x="605" y="162.1426">Save the transformed data (Parquet format)</text><path d="M505,107.6094 L515,107.6094 C530,107.6094 570,156.4141 585,156.4141 L595,156.4141 " fill="none" style="stroke:#FFB900;stroke-width:3.0;"/><path d="M196,195.6328 L206,195.6328 C221,195.6328 261,107.6094 276,107.6094 L286,107.6094 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="154" x="286" y="215.8281"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="296" y="240.3613">2) Partition data files</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="693" x="533" y="220.752">Partitioning is an optimization technique that enables spark to maximize performance across the worker nodes.</text><path d="M440,234.6328 L450,234.6328 C465,234.6328 505,215.0234 520,215.0234 L530,215.0234 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="274" x="533" y="240.3613">Partition the output file (partitionBy method)</text><path d="M440,234.6328 L450,234.6328 C465,234.6328 505,234.6328 520,234.6328 L530,234.6328 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="181" x="533" y="259.9707">Filter parquet files in a query</text><path d="M440,234.6328 L450,234.6328 C465,234.6328 505,254.2422 520,254.2422 L530,254.2422 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M196,195.6328 L206,195.6328 C221,195.6328 261,234.6328 276,234.6328 L286,234.6328 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="198" x="286" y="313.4375"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="174" x="296" y="337.9707">3) Transform data with SQL</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149" x="577" y="298.752">Define tables and views</text><path d="M484,332.2422 L494,332.2422 C509,332.2422 549,293.0234 564,293.0234 L574,293.0234 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="655" x="577" y="318.3613">External tables are "loosely bound" to the underlying files and deleting the table does not delete the files</text><path d="M484,332.2422 L494,332.2422 C509,332.2422 549,312.6328 564,312.6328 L574,312.6328 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="260" x="577" y="337.9707">Use SQL to query and transform the data</text><path d="M484,332.2422 L494,332.2422 C509,332.2422 549,332.2422 564,332.2422 L574,332.2422 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="130" x="577" y="357.5801">Query the metastore</text><path d="M484,332.2422 L494,332.2422 C509,332.2422 549,351.8516 564,351.8516 L574,351.8516 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="73" x="577" y="377.1895">Drop tables</text><path d="M484,332.2422 L494,332.2422 C509,332.2422 549,371.4609 564,371.4609 L574,371.4609 " fill="none" style="stroke:#C5B4E3;stroke-width:3.0;"/><path d="M196,195.6328 L206,195.6328 C221,195.6328 261,332.2422 276,332.2422 L286,332.2422 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[3567c4ec12d682ea7ba05ef9e5422cb1]
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+node {
+    Margin 30
+}
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/transform-data-spark-azure-synapse-analytics/ Module]]: Transform data with Spark in Azure Synapse Analytics
 + Transform data with Spark
-- - Modify and save dataframes <<topic1>>
-- - - Typical operations on a dataframe <<topic1>>
-- - - -_ Filtering rows and columns
-- - - -_ Renaming columns
-- - - -_ Creating new columns, often derived from existing ones
-- - - -_ Replacing null or other values
-- - - Save the transformed data (Parquet format) <<topic1>>
-++ Partition data files <<topic2>>
+++ 1) Modify and save dataframes <<topic1>>
++++ Typical operations on a dataframe <<topic1>>
+++++_ Filtering rows and columns
+++++_ Renaming columns
+++++_ Creating new columns, often derived from existing ones
+++++_ Replacing null or other values
++++ Save the transformed data (Parquet format) <<topic1>>
+++ 2) Partition data files <<topic2>>
 +++_ Partitioning is an optimization technique that enables spark to maximize performance across the worker nodes.
 +++_ Partition the output file (partitionBy method)
 +++_ Filter parquet files in a query
-++ Transform data with SQL <<topic3>>
+++ 3) Transform data with SQL <<topic3>>
 +++_ Define tables and views
 +++_ External tables are "loosely bound" to the underlying files and deleting the table does not delete the files
 +++_ Use SQL to query and transform the data

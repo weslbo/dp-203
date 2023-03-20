@@ -1,50 +1,46 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+node {
+    Margin 30
+}
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/use-delta-lake-azure-synapse-analytics/ Module]]: Use Delta Lake in Azure Synapse Analytics
 + Delta Lake
-++ Understand Delta Lake <<topic1>>
+++ 1) Understand Delta Lake <<topic1>>
 +++ What is it? <<topic1>>
 ++++_ Open-source storage layer that adds relational database semantics to Spark
 ++++_ Serialization format
@@ -54,23 +50,24 @@ title [[https://learn.microsoft.com/training/modules/use-delta-lake-azure-synaps
 ++++_ Data versioning and time travel
 ++++_ Support for batch and streaming workloads
 ++++_ Standard formats and interoperability
-++ Create Delta Lake tables <<topic2>>
+++ 2) Create Delta Lake tables <<topic2>>
 +++_ Creating a Delta Lake table from a dataframe
 +++_ Making conditional updates (update, delete, and merge operations)
 +++_ Querying a previous version of a table
-++ Create catalog tables <<topic3>>
-+++_ External vs managed tables
-++++_ A managed table is defined without a specified location, dropping the table deletes the files
-++++_ An external table is defined for a custom file location, dropping the table does not delete the files
-+++_ Creating a catalog table from a dataframe (df.write.format("delta"))
-+++_ Creating a catalog table using SQL (CREATE TABLE MyExternalTable USING DELTA LOCATION '/delta/mytable')
-+++_ Using the DeltaTableBuilder API
-++ Use Delta Lake with streaming data <<topic4>>
-+++_ Spark Structured Streaming
-+++_ Streaming with Delta Lake tables
-++++_ Using a Delta Lake table as a streaming source (spark.readStream.format("delta"))
-++++_ Using a Delta Lake table as a streaming sink (stream_df.writeStream.format("delta").option("checkpointLocation", "").start())
-++ Use Delta Lake in a SQL pool <<topic5>>
+++ 3) Create catalog tables <<topic3>>
++++ External vs managed tables <<topic3>>
+++++_ A managed table is defined without a specified location, \ndropping the table deletes the files
+++++_ An external table is defined for a custom file location, \ndropping the table does not delete the files
++++ How to create <<topic3>>
+++++_ Creating a catalog table from a dataframe (df.write.format("delta"))
+++++_ Creating a catalog table using SQL (CREATE TABLE MyExternalTable USING DELTA LOCATION '/delta/mytable')
+++++_ Using the DeltaTableBuilder API
+++ 4) Use Delta Lake with streaming data <<topic4>>
++++ Spark Structured Streaming <<topic4>>
++++ Streaming with Delta Lake tables <<topic4>>
+++++_ As a streaming source \n(spark.readStream.format("delta"))
+++++_ As a streaming sink \n(stream_df.writeStream.format("delta").option("checkpointLocation", "").start())
+++ 5) Use Delta Lake in a SQL pool <<topic5>>
 +++_ Querying delta formatted files with OPENROWSET
 +++_ Querying catalog tables
 @endmindmap

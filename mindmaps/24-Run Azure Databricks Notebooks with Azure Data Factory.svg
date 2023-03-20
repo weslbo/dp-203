@@ -1,59 +1,52 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="312px" preserveAspectRatio="none" style="width:990px;height:312px;background:#FFFFFF;" version="1.1" viewBox="0 0 990 312" width="990px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="47.7344" id="_title" style="stroke:none;stroke-width:1.0;" width="957" x="15" y="15"/><a href="https://learn.microsoft.com/training/modules/run-azure-databricks-notebooks-azure-data-factory/" target="_top" title="https://learn.microsoft.com/training/modules/run-azure-databricks-notebooks-azure-data-factory/" xlink:actuate="onRequest" xlink:href="https://learn.microsoft.com/training/modules/run-azure-databricks-notebooks-azure-data-factory/" xlink:show="new" xlink:title="https://learn.microsoft.com/training/modules/run-azure-databricks-notebooks-azure-data-factory/" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" text-decoration="underline" textLength="104" x="20" y="51.1426">Module</text></a><text fill="#000000" font-family="sans-serif" font-size="30" font-weight="bold" lengthAdjust="spacing" textLength="843" x="124" y="51.1426">: Run Azure Databricks Notebooks with Azure Data Factory</text><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="50" x="178" y="165.7578"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="188" y="190.291">Start</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="366" x="278" y="78.7344"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="342" x="288" y="103.2676">Understand Azure Databricks notebooks and pipelines</text><path d="M228,184.5625 L238,184.5625 C253,184.5625 253,97.5391 268,97.5391 L278,97.5391 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="301" x="278" y="136.3438"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="277" x="288" y="160.877">Create a linked service for Azure Databricks</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="178" x="632" y="151.0723">Generating an access token</text><path d="M579,155.1484 L589,155.1484 C604,155.1484 604,145.3438 619,145.3438 L629,145.3438 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="156" x="632" y="170.6816">Creating a linked service</text><path d="M579,155.1484 L589,155.1484 C604,155.1484 604,164.9531 619,164.9531 L629,164.9531 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M228,184.5625 L238,184.5625 C253,184.5625 253,155.1484 268,155.1484 L278,155.1484 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="251" x="278" y="193.9531"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="227" x="288" y="218.4863">Use a Notebook activity in a pipeline</text><path d="M228,184.5625 L238,184.5625 C253,184.5625 253,212.7578 268,212.7578 L278,212.7578 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="214" x="278" y="252.1719"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="190" x="288" y="276.7051">Use parameters in a notebook</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="126" x="545" y="257.0957">dbutils.widgets.get()</text><path d="M492,270.9766 L502,270.9766 C517,270.9766 517,251.3672 532,251.3672 L542,251.3672 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="139" x="545" y="276.7051">dbutils.notebook.exit()</text><path d="M492,270.9766 L502,270.9766 C517,270.9766 517,270.9766 532,270.9766 L542,270.9766 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="238" x="545" y="296.3145">Setting parameter values in a pipeline</text><path d="M492,270.9766 L502,270.9766 C517,270.9766 517,290.5859 532,290.5859 L542,290.5859 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M228,184.5625 L238,184.5625 C253,184.5625 253,270.9766 268,270.9766 L278,270.9766 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[36eaf096c4092dbe15ca4fdd342ece70]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="253px" preserveAspectRatio="none" style="width:660px;height:253px;background:#FFFFFF;" version="1.1" viewBox="0 0 660 253" width="660px" zoomAndPan="magnify"><defs/><g><rect fill="#091F2C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:3.0;" width="50" x="10" y="107.0234"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="20" y="131.5566">Start</text><rect fill="#FFB900" height="37.6094" rx="12.5" ry="12.5" style="stroke:#FFB900;stroke-width:3.0;" width="383" x="110" y="20"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="359" x="120" y="44.5332">1) Understand Azure Databricks notebooks and pipelines</text><path d="M60,125.8281 L70,125.8281 C85,125.8281 85,38.8047 100,38.8047 L110,38.8047 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#F4364C" height="37.6094" rx="12.5" ry="12.5" style="stroke:#F4364C;stroke-width:3.0;" width="318" x="110" y="77.6094"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="294" x="120" y="102.1426">2) Create a linked service for Azure Databricks</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="167" x="481" y="92.3379">Generate an access token</text><path d="M428,96.4141 L438,96.4141 C453,96.4141 453,86.6094 468,86.6094 L478,86.6094 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="145" x="481" y="111.9473">Create a linked service</text><path d="M428,96.4141 L438,96.4141 C453,96.4141 453,106.2188 468,106.2188 L478,106.2188 " fill="none" style="stroke:#F4364C;stroke-width:3.0;"/><path d="M60,125.8281 L70,125.8281 C85,125.8281 85,96.4141 100,96.4141 L110,96.4141 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#C5B4E3" height="37.6094" rx="12.5" ry="12.5" style="stroke:#C5B4E3;stroke-width:3.0;" width="268" x="110" y="135.2188"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="244" x="120" y="159.752">3) Use a Notebook activity in a pipeline</text><path d="M60,125.8281 L70,125.8281 C85,125.8281 85,154.0234 100,154.0234 L110,154.0234 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><rect fill="#E1D3C7" height="37.6094" rx="12.5" ry="12.5" style="stroke:#E1D3C7;stroke-width:3.0;" width="231" x="110" y="193.4375"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="207" x="120" y="217.9707">4) Use parameters in a notebook</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="126" x="394" y="198.3613">dbutils.widgets.get()</text><path d="M341,212.2422 L351,212.2422 C366,212.2422 366,192.6328 381,192.6328 L391,192.6328 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="139" x="394" y="217.9707">dbutils.notebook.exit()</text><path d="M341,212.2422 L351,212.2422 C366,212.2422 366,212.2422 381,212.2422 L391,212.2422 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="215" x="394" y="237.5801">Set parameter values in a pipeline</text><path d="M341,212.2422 L351,212.2422 C366,212.2422 366,231.8516 381,231.8516 L391,231.8516 " fill="none" style="stroke:#E1D3C7;stroke-width:3.0;"/><path d="M60,125.8281 L70,125.8281 C85,125.8281 85,212.2422 100,212.2422 L110,212.2422 " fill="none" style="stroke:#181818;stroke-width:3.0;"/><!--MD5=[f557bde1b6440b03983f08d6cd9d3356]
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/run-azure-databricks-notebooks-azure-data-factory/ Module]]: Run Azure Databricks Notebooks with Azure Data Factory
 + Start
-++ Understand Azure Databricks notebooks and pipelines <<topic1>>
-++ Create a linked service for Azure Databricks <<topic2>>
-+++_ Generating an access token
-+++_ Creating a linked service
-++ Use a Notebook activity in a pipeline <<topic3>>
-++ Use parameters in a notebook <<topic4>>
+++ 1) Understand Azure Databricks notebooks and pipelines <<topic1>>
+++ 2) Create a linked service for Azure Databricks <<topic2>>
++++_ Generate an access token
++++_ Create a linked service
+++ 3) Use a Notebook activity in a pipeline <<topic3>>
+++ 4) Use parameters in a notebook <<topic4>>
 +++_ dbutils.widgets.get()
 +++_ dbutils.notebook.exit()
-+++_ Setting parameter values in a pipeline
++++_ Set parameter values in a pipeline
 @endmindmap
 
 PlantUML version 1.2022.7(Mon Aug 22 19:01:30 CEST 2022)

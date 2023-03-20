@@ -1,52 +1,48 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+node {
+    Margin 40
+}
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/use-spark-notebooks-azure-synapse-pipeline/ Module]]: Use Spark Notebooks in an Azure Synapse Pipeline
 + Spark Notebooks
-++ Understand Synapse Notebooks and Pipelines <<topic1>>
+++ 1) Understand Synapse Notebooks and Pipelines <<topic1>>
 +++_ Apache Spark pool to run code in a notebook
-+++_ The pipeline can then be run on a schedule or in response to an event (such as new data files being loaded into the data lake).
++++_ On schedule or in response to an event
 +++ Best practices <<topic1>>
 ++++_ Keep your code organized
 ++++_ Cache intermediate results
@@ -54,14 +50,14 @@ title [[https://learn.microsoft.com/training/modules/use-spark-notebooks-azure-s
 ++++_ Avoid using collect() unless necessary
 ++++_ Use Spark UI for monitoring and debugging
 ++++_ Keep your dependencies version-consistent and updated
-++ Use a Synapse notebook activity in a pipeline <<topic2>>
+++ 2) Use a Synapse notebook activity in a pipeline <<topic2>>
 +++_ Add a notebook activity and configure it appropriately
 +++_ Spark pool
 +++_ Executor size
 +++_ Dynamically allocate executors
 +++_ Min/Max executors
 +++_ Driver size
-++ Use parameters in a notebook <<topic3>>
+++ 3) Use parameters in a notebook <<topic3>>
 +++_ Create a parameters cell in the notebook
 +++_ Set base parameters for the notebook activity
 @endmindmap

@@ -1,62 +1,55 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/create-metadata-objects-azure-synapse-serverless-sql-pools/ Module]]: Create a lake database in Azure Synapse Analytics
 + Lake databases
--- Understand lake database concepts <<topic1>>
----_ Provides a relational metadata layer over one or more files in a data lake
----_ Data is stored in files (which may be strucctured, unstructed, or semi-structured)
+-- 1) Concepts <<topic1>>
+---_ Relational metadata layer over files in a data lake
+---_ Data is stored in files (csv, json, parquet, ...)
 ---_ Query it using SQL (T-SQL in Serverless Pools or Spark SQL API)
--- Explore database templates <<topic2>>
+-- 2) Database templates <<topic2>>
 ---_ Common schemas found in multiple business scenarios
 ---_ Starting point for creating a lake database
-++ Create a lake database <<topic3>>
-+++_ Database designer in Azure Synapse Studio
-+++_ Specify the name and storage settings for each table.
-+++_ Specifying the names, key usage, nullability, and data types for each column.
-+++_ Defining relationships between key columns in tables.
-++ Use a lake database <<topic4>>
-+++_ Using a serverless SQL pool
-+++_ Using an Apache Spark pool
+++ 3) How to create? <<topic3>>
++++_ Database designer
++++_ Table storage settings
++++_ Field names, key usage, nullability, and data types
++++_ Relationships between key columns in tables
+++ 4) How to use? <<topic4>>
++++_ Use serverless SQL pool
++++_ Use Apache Spark pool
 @endmindmap

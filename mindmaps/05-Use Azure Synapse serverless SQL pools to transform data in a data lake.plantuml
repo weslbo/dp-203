@@ -1,57 +1,58 @@
 @startmindmap
 <style>
 title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+    FontSize 30
+    FontColor #000000
+}
+node {
+    FontSize 18
+    MarginTop 50
+}
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake Module]]: Use Azure Synapse serverless SQL pools to transform data in a data lake
 + Serverless SQL pools
-++ Transform data files with the CREATE EXTERNAL TABLE AS SELECT statement <<topic1>>
-+++ Transformations <<topic1>>
+++ 1) Transform data <<topic1>>
++++ What? <<topic1>>
 ++++_ Filter rows and columns in a dataset
 ++++_ Rename data fields and convert between data types
 ++++_ Calculate derived data fields
 ++++_ Manipulate string values
 ++++_ Group and aggregate data
-+++ CREATE EXTERNAL TABLE AS SELECT (CETAS) <<topic1>>
++++ How? CETAS <<topic1>>
 ++++_ Persist the results of a query in an external table, which stores its data in a file in the data lake.
 ++++_ CREATE EXTERNAL DATA SOURCE
 ++++_ CREATE DATABASE SCOPED CREDENTIAL
@@ -59,7 +60,7 @@ title [[https://learn.microsoft.com/training/modules/use-azure-synapse-serverles
 ++++_ CREATE EXTERNAL TABLE ... AS SELECT
 +++ Dropping external tables <<topic1>>
 ++++_ does not delete the underlying files
-++ Encapsulate data transformations in a stored procedure <<topic2>>
+++ 2) Encapsulate data transformations in a stored procedure <<topic2>>
 +++ CREATE PROCEDURE <<topic2>>
 ++++_ Delete the target folder if it exists before running the stored procedure
 +++ Benefits <<topic2>>
@@ -67,8 +68,7 @@ title [[https://learn.microsoft.com/training/modules/use-azure-synapse-serverles
 ++++_ Provides a security boundary
 ++++_ Eases maintenance
 ++++_ Improved performance
-++ Include a data transformation stored procedure in a pipeline <<topic3>>
-+++ Azure Synapse Analytics Pipeline <<topic3>>
++++ Call SP from a pipeline <<topic2>>
 ++++_ Delete activity to delete the target folder
 ++++_ Stored procedure activity to run the stored procedure containing the CETAS
 @endmindmap

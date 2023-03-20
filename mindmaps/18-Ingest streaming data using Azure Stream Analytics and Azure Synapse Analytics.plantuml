@@ -1,64 +1,57 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/ingest-streaming-data-use-azure-stream-analytics-synapse/ Module]]: Ingest streaming data using Azure Stream Analytics and Azure Synapse Analytics
 + Azure Stream Analytics
-++ Stream ingestion scenarios <<topic1>>
+++ 1) Stream ingestion scenarios <<topic1>>
 +++ Data Warehouse <<topic1>>
 +++ Data Lake <<topic1>>
-++ Configure inputs and outputs <<topic2>>
+++ 2) Configure inputs and outputs <<topic2>>
 +++ Streaming data inputs <<topic2>>
 ++++_ Azure Event Hubs
 ++++_ Azure IoT Hubs
 ++++_ Azure Blob or Data Lake Gen 2 Storage
 +++ Azure Synapse Analytics outputs <<topic2>>
 +++ Azure Data Lake Storage Gen2 outputs <<topic2>>
-++ Define a query to select, filter, and aggregate data <<topic3>>
+++ 3) Define a query to select, filter, and aggregate data <<topic3>>
 +++ Selecting input fields <<topic3>>
 +++ Filtering event data <<topic3>>
 +++ Aggregating events over temporal windows <<topic3>>
-++ Run a job to ingest data <<topic4>>
+++ 4) Run a job to ingest data <<topic4>>
 +++ Querying data in a relational data warehouse <<topic4>>
 +++ Querying data in a data lake <<topic4>>
 @endmindmap

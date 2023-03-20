@@ -1,53 +1,43 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/understand-big-data-engineering-with-apache-spark-azure-synapse-analytics/ Module]]: Analyze data with Apache Spark in Azure Synapse Analytics
 + Analyze data with Apache Spark
--- Get to know Apache Spark <<topic1>>
---- How Spark works <<topic1>>
---- Spark pools in Azure Synapse Analytics <<topic1>>
-++ Use Spark in Azure Synapse Analytics <<topic2>>
+++ 1) Spark in Azure Synapse Analytics <<topic2>>
 +++ Workloads <<topic2>>
 ++++ Batch or stream processing <<topic2>>
 +++++_ ingest
@@ -57,29 +47,29 @@ title [[https://learn.microsoft.com/training/modules/understand-big-data-enginee
 +++++_ explore
 +++++_ analyze
 +++++_ visualize
-+++ Running Spark code in notebooks <<topic2>>
++++ Notebooks <<topic2>>
 ++++_ Syntax highlighting and error support
 ++++_ Code auto-completion
 ++++_ Interactive data visualizations
 ++++_ The ability to export results.
-+++ Accessing data from a Synapse Spark pool <<topic2>>
++++ Accessing data from a Spark<<topic2>>
 ++++_ A data lake based on the primary storage account for the Azure Synapse Analytics workspace.
 ++++_ A data lake based on storage defined as a linked service in the workspace.
 ++++_ A dedicated or serverless SQL pool in the workspace.
 ++++_ An Azure SQL or SQL Server database (using the Spark connector for SQL Server)
-++++_ An Azure Cosmos DB analytical database defined as a linked service and configured using Azure Synapse Link for Cosmos DB.
+++++_ An Azure Cosmos DB analytical database defined as \n...a linked service and configured using Azure Synapse Link for Cosmos DB.
 ++++_ An Azure Data Explorer Kusto database defined as a linked service in the workspace.
 ++++_ An external Hive metastore defined as a linked service in the workspace.
--- Analyze data with Spark <<topic3>>
---- Exploring data with dataframes <<topic3>>
-----_ Loading data into a dataframe
-----_ Specifying a dataframe schema
---- Filtering and grouping dataframes <<topic3>>
---- Using SQL expressions in Spark <<topic3>>
-----_ Creating database objects in the Spark catalog (createOrReplaceTempView)
-----_ Using the Spark SQL API to query data
-----_ Using SQL code
-++ Visualize data with Spark <<topic4>>
+++ 2) Analyze data with Spark <<topic3>>
++++ Exploring data with dataframes <<topic3>>
+++++_ Loading data into a dataframe
+++++_ Specifying a dataframe schema
++++ Filtering and grouping dataframes <<topic3>>
++++ Using SQL expressions in Spark <<topic3>>
+++++_ Creating database objects in the Spark catalog\n(createOrReplaceTempView)
+++++_ Using the Spark SQL API to query data
+++++_ Using SQL code
+++ 3) Visualize data with Spark <<topic4>>
 +++_ Using built-in notebook charts
 +++_ Using graphics packages in code (matplotlib)
 @endmindmap

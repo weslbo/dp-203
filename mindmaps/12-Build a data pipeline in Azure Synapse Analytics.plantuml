@@ -1,64 +1,60 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+node {
+    Margin 20
+}
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/build-data-pipeline-azure-synapse-analytics/ Module]]: Build a data pipeline in Azure Synapse Analytics
 + Pipelines
--- Understand pipelines in Azure Synapse Analytics <<topic1>>
+-- 1) What? <<topic1>>
 ---_ Activities
 ---_ Integration runtime
 ---_ Linked services
 ---_ Datasets
-++ Create a pipeline in Azure Synapse Studio <<topic2>>
+++ 2) How to create? <<topic2>>
 +++_ Graphical design interface
 +++_ Defining a pipeline with JSON
-++ Define data flows <<topic3>>
+++ 3) Define data flows <<topic3>>
 +++_ Sources
 +++_ Transformations
 +++_ Sinks
--- Run a pipeline <<topic4>>
+-- 4) Run a pipeline <<topic4>>
 ---_ Immediately
 ---_ Scheduled interval
 ---_ In response to an event
----_ Lineage: integrate Azure Synapse Analytics and Microsoft Purview
+---_ Lineage: integrate Synapse and Microsoft Purview
 @endmindmap

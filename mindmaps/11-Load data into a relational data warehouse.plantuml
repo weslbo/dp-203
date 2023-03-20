@@ -1,67 +1,57 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic6 {
-        BackgroundColor #0078d4
-        LineColor #0078d4
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+node {
+    Margin 20
+}
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/load-optimize-data-into-relational-data-warehouse Module]]: Load data into a relational data warehouse
 + Data warehouse
-++ Load staging tables <<topic1>>
+++ 1) Load staging tables <<topic1>>
 +++_ Creating staging tables
 +++_ Using the COPY command
 +++_ Using external tables
-++ Load dimension tables  <<topic2>>
+++ 2) Load dimension tables  <<topic2>>
 +++_ Using a CREATE TABLE AS (CTAS) statement
-++++_ You can't use IDENTITY to generate a unique integer value for the surrogate key when using a CTAS statement. Use ROW_NUMBER() instead.
++++_ You can't use IDENTITY for the surrogate key when using a CTAS statement. Use ROW_NUMBER() instead.
 +++_ Using an INSERT statement
-++ Load time dimension tables <<topic3>>
+++ 3) Load time dimension tables <<topic3>>
 +++_ Generate a sequence of time dimension values based on a date grain.
 +++_ Scripting this in SQL may be time-consuming
-++ Load slowly changing dimensions <<topic4>>
+++ 4) Load slowly changing dimensions <<topic4>>
 +++_ Type 0 (data can't be changed)
 +++_ Type 1 (in-place update)
 +++_ Type 2 (updates are inserted as new rows)
@@ -71,9 +61,9 @@ title [[https://learn.microsoft.com/training/modules/load-optimize-data-into-rel
 +++_ Type 6 (combine type 1, 2 and 3)
 +++_ Combining INSERT and UPDATE statements
 +++_ Using a MERGE statement
-++ Load fact tables  <<topic5>>
+++ 5) Load fact tables  <<topic5>>
 +++_ Load fact tables after dimension tables
-++ Perform post load optimization <<topic6>>
+++ 6) Perform post load optimization <<topic6>>
 +++_ Rebuild indexes
 +++_ Update statistics
 @endmindmap

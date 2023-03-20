@@ -1,50 +1,43 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/introduction-to-data-streaming/ Module]]: Get started with Azure Stream Analytics
 + Azure Stream Analytics
-++ Understand data streams <<topic1>>
+++ 1) Understand data streams <<topic1>>
 +++ Examples <<topic1>>
 ++++_ Real-time clickstream data to provide recommendations
 ++++_ Telemetry data to remotely monitor manufacturing equipment
@@ -54,7 +47,7 @@ title [[https://learn.microsoft.com/training/modules/introduction-to-data-stream
 ++++_ Each data record in the stream includes temporal (time-based) data
 ++++_ Aggregation of streaming data is performed over temporal windows
 ++++_ Supports real-time automation or visualization
-++ Understand event processing <<topic2>>
+++ 2) Understand event processing <<topic2>>
 +++ Azure Stream Analytics jobs and clusters (dedicated tenant) <<topic2>>
 +++ Inputs <<topic2>>
 ++++_ Azure Event Hubs
@@ -67,10 +60,10 @@ title [[https://learn.microsoft.com/training/modules/introduction-to-data-stream
 ++++_ Generate filtered or summarized events (Event Hub)
 +++ Queries  <<topic2>> 
 ++++_ SELECT INTO FROM TIMESTAMP WHERE
--- Understand window functions <<topic3>>
---- Tumbling <<topic3>>
---- Hopping <<topic3>>
---- Sliding <<topic3>>
---- Session <<topic3>>
---- Snapshot <<topic3>>
+++ 3) Understand window functions <<topic3>>
++++ Tumbling <<topic3>>
++++ Hopping <<topic3>>
++++ Sliding <<topic3>>
++++ Session <<topic3>>
++++ Snapshot <<topic3>>
 @endmindmap

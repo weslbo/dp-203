@@ -1,76 +1,66 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/introduction-azure-synapse-analytics/ Module]]: Introduction to Azure Synapse Analytics
 + Azure Synapse Analytics
-++ What is Azure Synapse Analytics <<topic1>>
-+++ Types of analytics <<topic1>>
-++++_ Descriptive analytics
-++++_ Diagnostic analytics
-++++_ Predictive analytics
-++++_ Prescriptive analytics
-+++ What? <<topic1>>
-++++_ SQL, Apache Spark, and others
--- How Azure Synapse Analytics works <<topic2>>
---- Creating and using an Azure Synapse Analytics workspace <<topic2>>
---- Working with files in a data lake <<topic2>>
---- Ingesting and transforming data with pipelines <<topic2>>
---- Querying and manipulating data with SQL <<topic2>>
-----_ A built-in serverless pool
-----_ Custom dedicated SQL pools
---- Processing and analyzing data with Apache Spark <<topic2>>
---- Exploring data with Data Explorer <<topic2>>
---- Integrating with other Azure data services <<topic2>>
-----_ Azure Synapse Link
-----_ Power BI
-----_ Microsoft Purview
-----_ Azure Machine Learning
-++ When to use Azure Synapse Analytics <<topic3>>
-+++ Large-scale data warehousing <<topic3>>
-+++ Advanced analytics <<topic3>>
-+++ Data exploration and discovery <<topic3>>
-+++ Real time analytics <<topic3>>
-+++ Data integration <<topic3>>
-+++ Integrated analytics <<topic3>>
+++ 1) Types of analytics <<topic1>>
++++_ Descriptive analytics
++++_ Diagnostic analytics
++++_ Predictive analytics
++++_ Prescriptive analytics
+++ 3) When to use it? <<topic3>>
++++_ Large-scale data warehousing
++++_ Advanced analytics
++++_ Data exploration and discovery
++++_ Real time analytics
++++_ Data integration
++++_ Integrated analytics
+++ 2) How does it work <<topic2>>
++++_ Creating and using an Azure Synapse Analytics workspace
++++_ Working with files in a data lake
++++_ Ingesting and transforming data with pipelines
++++_ Querying and manipulating data with SQL
+++++_ A built-in serverless pool
+++++_ Custom dedicated SQL pools
++++_ Processing and analyzing data with Apache Spark
++++_ Exploring data with Data Explorer
++++_ Integrating with other Azure data services
+++++_ Azure Synapse Link
+++++_ Power BI
+++++_ Microsoft Purview
+++++_ Azure Machine Learning
 @endmindmap

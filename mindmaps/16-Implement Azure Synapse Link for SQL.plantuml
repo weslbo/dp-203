@@ -1,79 +1,69 @@
 @startmindmap
 <style>
-title {
-        FontSize 30
-        FontColor #000000
-    }
-mindmapDiagram {
-    :depth(0) {
-        BackgroundColor #091f2c
-        FontColor #ffffff
-        LineThickness 3.0
-    }
-    .topic1 {
-        BackgroundColor #ffb900
-        LineColor #ffb900
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic2 {
-        BackgroundColor #f4364c
-        LineColor #f4364c
-        LineThickness 3.0
-        FontColor #ffffff
-    }
-    .topic3 {
-        BackgroundColor #c5b4e3
-        LineColor #c5b4e3
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic4 {
-        BackgroundColor #e1d3c7
-        LineColor #e1d3c7
-        LineThickness 3.0
-        FontColor #000000
-    }
-    .topic5 {
-        BackgroundColor #07641d
-        LineColor #07641d
-        LineThickness 3.0
-        FontColor #ffffff
-    }
+:depth(0) {
+    BackgroundColor #091f2c
+    FontColor #ffffff
+    LineThickness 3.0
+}
+.topic1 {
+    BackgroundColor #ffb900
+    LineColor #ffb900
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic2 {
+    BackgroundColor #f4364c
+    LineColor #f4364c
+    LineThickness 3.0
+    FontColor #ffffff
+}
+.topic3 {
+    BackgroundColor #c5b4e3
+    LineColor #c5b4e3
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic4 {
+    BackgroundColor #e1d3c7
+    LineColor #e1d3c7
+    LineThickness 3.0
+    FontColor #000000
+}
+.topic5 {
+    BackgroundColor #07641d
+    LineColor #07641d
+    LineThickness 3.0
+    FontColor #ffffff
 }
 </style>
-title [[https://learn.microsoft.com/training/modules/implement-synapse-link-for-sql/ Module]]: Implement Azure Synapse Link for SQL
 + Synapse Link for SQL
--- What is Azure Synapse Link for SQL? <<topic1>>
---- Why? <<topic1>>
-----_ The traditional ETL process can be complex to implement and operate
-----_ The analytical store is only updated at periodic intervals, so reporting doesn't reflect the most up-to-date operational data.
---- What? <<topic1>>
-----_ Azure SQL Database or SQL Server 2022
-----_ Not supported for Azure SQL Managed Instance.
-----_ Azure Synapse Link for SQL replicates the table data to a dedicated SQL pool
-----_ Queries in the dedicated SQL pool, or connected to as an external source from a Spark pool
-----_ Uses change feed
-++ Configure Azure Synapse Link for Azure SQL Database <<topic2>>
-+++ Configure Azure SQL Database <<topic2>>
+++ 1) What is it? <<topic1>>
++++ What? <<topic1>>
+++++_ Azure SQL Database or SQL Server 2022
+++++_ Not supported for Azure SQL Managed Instance.
+++++_ Azure Synapse Link for SQL replicates the table data to a dedicated SQL pool
+++++_ Queries in the dedicated SQL pool, or connected to as an external source from a Spark pool
+++++_ Uses change feed
+++ 2) Azure SQL Database <<topic2>>
++++_ Configure Azure SQL Database
 ++++_ System assigned managed identity
 ++++_ Firewall rules
-+++ Prepare the target SQL pool <<topic2>>
++++_ Prepare the target SQL pool
 ++++_ CREATE SCHEMA
-+++ Create a link connection <<topic2>>
-++++_ Select or create a linked service
-++++_ Select the tables
-++++_ Select the target dedicated SQL pool
-++++_ Specify the number of CPU cores
-++++_ VARBINARY(MAX) need to use HEAP (unindexed tables)
-++ Configure Azure Synapse Link for SQL Server 2022 <<topic3>>
-+++_ Create an Azure Data Lake Storage Gen2 landing zone
-+++_ Create a master key in the SQL Server database
-+++_ Create a dedicated SQL pool in Azure Synapse Analytics
-+++_ Create a linked service for the SQL Server source database
-+++_ Create a linked service for your Data Lake Storage Gen2 account
-+++_ Create a link connection for Azure Synapse Link
-+++_ Tables are initialized by copying a .parquet file for each source table to a landing zone in
-+++_ From where the data is imported into tables in the dedicated SQL pool
-+++_ Subsequently, the change feed process copies all changes as .csv files to the landing zone where they're applied to the target tables.
++++_ Create a link connection
+++++_ 1. Select or create a linked service
+++++_ 2. Select the tables
+++++_ 3. Select the target dedicated SQL pool
+++++_ 4. Specify the number of CPU cores
+++++_ 5. VARBINARY(MAX) need to use HEAP (unindexed tables)
+++ 3) SQL Server 2022 <<topic3>>
++++_ 1. Create an ADLS landing zone
++++_ 2. Create a master key in the SQL Server database
++++_ 3. Create a dedicated SQL pool
++++_ 4. Create a linked service for the SQL Server source db
++++_ 5. Create a linked service for your ADLS
++++_ 6. Create a link connection for Azure Synapse Link
++++_ 7. Tables are initialized by copying a .parquet file for each source table to a landing zone
++++_ 8. From where the data is imported into tables in the dedicated SQL pool
++++_ 9. Subsequently, the change feed process copies all changes as .csv files to the landing zone \nwhere they're applied to the target tables.
 @endmindmap
