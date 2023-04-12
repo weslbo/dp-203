@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "96bb8048-eed7-4cfa-b4cf-bac8e7523747"
+				"spark.autotune.trackingId": "c54df159-0a3c-4a6d-a2fe-7059c3fdf98a"
 			}
 		},
 		"metadata": {
@@ -174,7 +174,7 @@
 					"    .setPromptCol(\"prompt\")\r\n",
 					"    .setErrorCol(\"error\")\r\n",
 					"    .setOutputCol(\"response\")\r\n",
-					"    .setTemperature(1.0)\r\n",
+					"    .setTemperature(0.7)\r\n",
 					")\r\n",
 					"\r\n",
 					"def generateRestaurantPrompt() -> str:\r\n",
@@ -187,7 +187,7 @@
 					"\r\n",
 					"display(df_prompts)"
 				],
-				"execution_count": 29
+				"execution_count": 34
 			},
 			{
 				"cell_type": "markdown",
@@ -227,7 +227,7 @@
 					"\r\n",
 					"display(df_reviews_json)"
 				],
-				"execution_count": 30
+				"execution_count": 35
 			},
 			{
 				"cell_type": "markdown",
