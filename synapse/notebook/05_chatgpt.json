@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a812a941-ab78-4ca2-bd2d-bd1caa6dad14"
+				"spark.autotune.trackingId": "96bb8048-eed7-4cfa-b4cf-bac8e7523747"
 			}
 		},
 		"metadata": {
@@ -125,7 +125,7 @@
 					"  }\r\n",
 					"}"
 				],
-				"execution_count": 22
+				"execution_count": 1
 			},
 			{
 				"cell_type": "markdown",
@@ -163,7 +163,7 @@
 					"from synapse.ml.cognitive import OpenAICompletion\r\n",
 					"\r\n",
 					"key = find_secret(\"openaikey\", \"keyvault-weslbo\")  # replace this with your secret and keyvault\r\n",
-					"nrOfReviews = 5\r\n",
+					"nrOfReviews = 10\r\n",
 					"\r\n",
 					"completion = (\r\n",
 					"    OpenAICompletion()\r\n",
@@ -174,10 +174,11 @@
 					"    .setPromptCol(\"prompt\")\r\n",
 					"    .setErrorCol(\"error\")\r\n",
 					"    .setOutputCol(\"response\")\r\n",
+					"    .setTemperature(1.0)\r\n",
 					")\r\n",
 					"\r\n",
 					"def generateRestaurantPrompt() -> str:\r\n",
-					"    return \"Generate a json containing a restaurant review. Use the following json structure: {\\\"restaurant\\\": \\\"\\\",\\\"review\\\": \\\"\\\"}\"\r\n",
+					"    return \"Generate a random negative, neutral or positive restaurant review. Use the following json structure: {\\\"restaurant\\\": \\\"\\\",\\\"review\\\": \\\"\\\"}\"\r\n",
 					"generateRestaurantPrompt_udf = udf(lambda: generateRestaurantPrompt(), StringType())\r\n",
 					"\r\n",
 					"df_prompts = spark.range(1, nrOfReviews+1) \\\r\n",
@@ -267,7 +268,7 @@
 					"display(df_reviews_table)\r\n",
 					""
 				],
-				"execution_count": 31
+				"execution_count": 12
 			},
 			{
 				"cell_type": "markdown",
@@ -315,7 +316,7 @@
 					"df_sentiment_prompt = df_reviews_table.withColumn(\"prompt\", generateSentimentPrompt_udf(col(\"review\")))\r\n",
 					"display(df_sentiment_prompt)"
 				],
-				"execution_count": 32
+				"execution_count": 13
 			},
 			{
 				"cell_type": "markdown",
@@ -356,7 +357,7 @@
 					"display(df_sentiment_json)\r\n",
 					""
 				],
-				"execution_count": 33
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
