@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "cdcfb1fc-aae7-44dd-b529-6dcc12a368ce"
+				"spark.autotune.trackingId": "dc577fb8-6e0d-4bb1-b5e7-c6c27e2daa92"
 			}
 		},
 		"metadata": {
@@ -88,7 +88,7 @@
 					")\r\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 1
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -127,7 +127,7 @@
 					"df = spark.read.load('abfss://files@datalakeweslbo.dfs.core.windows.net/labs-dp-500/02/data/*.csv', format='csv')\r\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 2
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",
@@ -179,7 +179,7 @@
 					"df = spark.read.load('abfss://files@datalakeweslbo.dfs.core.windows.net/labs-dp-500/02/data/*.csv', format='csv', schema=orderSchema)\r\n",
 					"display(df.limit(100))"
 				],
-				"execution_count": 3
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -197,7 +197,7 @@
 				"source": [
 					" df.printSchema()"
 				],
-				"execution_count": 4
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -241,7 +241,7 @@
 					" print(customers.distinct().count())\r\n",
 					" display(customers.distinct())"
 				],
-				"execution_count": 5
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
@@ -276,7 +276,7 @@
 					" print(customers.distinct().count())\r\n",
 					" display(customers.distinct())"
 				],
-				"execution_count": 6
+				"execution_count": 9
 			},
 			{
 				"cell_type": "markdown",
@@ -311,7 +311,7 @@
 					" productSales = df.select(\"Item\", \"Quantity\").groupBy(\"Item\").sum()\r\n",
 					" display(productSales)"
 				],
-				"execution_count": 7
+				"execution_count": 10
 			},
 			{
 				"cell_type": "markdown",
@@ -344,7 +344,7 @@
 					" yearlySales = df.select(year(\"OrderDate\").alias(\"Year\")).groupBy(\"Year\").count().orderBy(\"Year\")\r\n",
 					" display(yearlySales)"
 				],
-				"execution_count": 8
+				"execution_count": 11
 			},
 			{
 				"cell_type": "markdown",
@@ -391,7 +391,7 @@
 					" spark_df = spark.sql(\"SELECT * FROM salesorders\")\r\n",
 					" display(spark_df)"
 				],
-				"execution_count": 9
+				"execution_count": 12
 			},
 			{
 				"cell_type": "markdown",
@@ -439,7 +439,7 @@
 					" GROUP BY YEAR(OrderDate)\r\n",
 					" ORDER BY OrderYear;"
 				],
-				"execution_count": 10
+				"execution_count": 13
 			},
 			{
 				"cell_type": "markdown",
@@ -487,7 +487,7 @@
 					" %%sql\r\n",
 					" SELECT * FROM salesorders"
 				],
-				"execution_count": 11
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
@@ -526,7 +526,7 @@
 					" df_spark = spark.sql(sqlQuery)\r\n",
 					" df_spark.show()"
 				],
-				"execution_count": 12
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
@@ -569,7 +569,7 @@
 					" # Display the plot\r\n",
 					" plt.show()"
 				],
-				"execution_count": 13
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
@@ -616,7 +616,7 @@
 					" # Show the figure\r\n",
 					" plt.show()"
 				],
-				"execution_count": 14
+				"execution_count": 17
 			},
 			{
 				"cell_type": "markdown",
@@ -666,7 +666,7 @@
 					" # Show the figure\r\n",
 					" plt.show()"
 				],
-				"execution_count": 15
+				"execution_count": 18
 			},
 			{
 				"cell_type": "markdown",
@@ -717,7 +717,7 @@
 					" # Show the figure\r\n",
 					" plt.show()"
 				],
-				"execution_count": 16
+				"execution_count": 19
 			},
 			{
 				"cell_type": "markdown",
@@ -759,7 +759,7 @@
 					" ax = sns.barplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
 					" plt.show()"
 				],
-				"execution_count": 17
+				"execution_count": 20
 			},
 			{
 				"cell_type": "markdown",
@@ -798,7 +798,7 @@
 					" ax = sns.barplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
 					" plt.show()"
 				],
-				"execution_count": 18
+				"execution_count": 21
 			},
 			{
 				"cell_type": "markdown",
@@ -834,7 +834,7 @@
 					" ax = sns.lineplot(x=\"OrderYear\", y=\"GrossRevenue\", data=df_sales)\r\n",
 					" plt.show()"
 				],
-				"execution_count": 19
+				"execution_count": 22
 			}
 		]
 	}

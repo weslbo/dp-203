@@ -1,0 +1,10 @@
+{
+	"name": "bing-covid-19-data",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"sasUri": "https://pandemicdatalake.blob.core.windows.net/public/curated/covid-19/bing_covid-19_data/latest/bing_covid-19_data.parquet?\"\""
+		}
+	}
+}

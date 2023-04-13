@@ -1,0 +1,20 @@
+{
+	"name": "Covid19",
+	"properties": {
+		"folder": {
+			"name": "dp-500/05-PowerBI"
+		},
+		"content": {
+			"query": "CREATE DATABASE Covid19\n\nUSE Covid19\n\nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nDROP EXTERNAL DATA SOURCE [PandemicDataLake] \nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'PandemicDataLake') \n\tCREATE EXTERNAL DATA SOURCE [PandemicDataLake] \n\tWITH (\n\t\tLOCATION   = 'https://pandemicdatalake.blob.core.windows.net/public', \n\t)\nGo\n\nDROP EXTERNAL TABLE BingCovid19\nCREATE EXTERNAL TABLE BingCovid19 (\n\t[id] int,\n\t[updated] date,\n\t[confirmed] int,\n\t[confirmed_change] int,\n\t[deaths] int,\n\t[deaths_change] smallint,\n\t[recovered] int,\n\t[recovered_change] int,\n\t[latitude] float,\n\t[longitude] float,\n\t[iso2] varchar(8000),\n\t[iso3] varchar(8000),\n\t[country_region] varchar(8000),\n\t[admin_region_1] varchar(8000),\n\t[iso_subdivision] varchar(8000),\n\t[admin_region_2] varchar(8000),\n\t[load_time] datetime2(7)\n\t)\n\tWITH (\n\tLOCATION = 'curated/covid-19/bing_covid-19_data/latest/bing_covid-19_data.parquet',\n\tDATA_SOURCE = [PandemicDataLake],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\nSELECT TOP 100 * FROM BingCovid19\nGO\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Covid19",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
