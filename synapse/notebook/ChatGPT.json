@@ -1,8 +1,8 @@
 {
-	"name": "05_chatgpt",
+	"name": "ChatGPT",
 	"properties": {
 		"folder": {
-			"name": "dp-500/03-Synapse"
+			"name": "Scenario"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c54df159-0a3c-4a6d-a2fe-7059c3fdf98a"
+				"spark.autotune.trackingId": "5c21f034-3bc3-40f6-a647-b1fb3f7f81a7"
 			}
 		},
 		"metadata": {
