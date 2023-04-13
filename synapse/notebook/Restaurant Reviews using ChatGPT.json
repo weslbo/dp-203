@@ -1,5 +1,5 @@
 {
-	"name": "ChatGPT",
+	"name": "Restaurant Reviews using ChatGPT",
 	"properties": {
 		"folder": {
 			"name": "Scenario"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5c21f034-3bc3-40f6-a647-b1fb3f7f81a7"
+				"spark.autotune.trackingId": "3438e4c7-0fa0-47e9-9fcb-d85291270a3e"
 			}
 		},
 		"metadata": {
@@ -62,7 +62,7 @@
 				},
 				"source": [
 					"# Sentiment review (fake) restaurant reviews using Synapse and ChatGPT\r\n",
-					"\r\n",
+					"![Picture](https://github.com/weslbo/dp-203/raw/main/images/e525e0a5-ff67-4d6d-b32a-f35f4e716919.jpg)\r\n",
 					"This notebook is based on an article and video from Thomas Costers and Stijn Wynants\r\n",
 					"\r\n",
 					"- https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/using-openai-gpt-in-synapse-analytics/ba-p/3751815\r\n",
@@ -77,9 +77,11 @@
 					"Use the [Azure OpenAI Studio playground](https://oai.azure.com/portal/playground) to test the following prompt\r\n",
 					"\r\n",
 					"```json\r\n",
-					"Generate a json containing a restaurant review. Use the following json structure: \r\n",
+					"Generate a random negative, neutral or positive restaurant review. Use the following json structure: \r\n",
 					"{\r\n",
 					"    \"restaurant\": \"\",\r\n",
+					"    \"location\": \"\",\r\n",
+					"    \"date\": \"\",\r\n",
 					"    \"review\": \"\"\r\n",
 					"}\r\n",
 					"````"
@@ -178,7 +180,7 @@
 					")\r\n",
 					"\r\n",
 					"def generateRestaurantPrompt() -> str:\r\n",
-					"    return \"Generate a random negative, neutral or positive restaurant review. Use the following json structure: {\\\"restaurant\\\": \\\"\\\",\\\"review\\\": \\\"\\\"}\"\r\n",
+					"    return \"Generate a random negative, neutral or positive restaurant review. Use the following json structure: {\\\"restaurant\\\": \\\"\\\",\\\"location\\\": \\\"\\\",\\\"date\\\": \\\"\\\",\\\"review\\\": \\\"\\\"}\"\r\n",
 					"generateRestaurantPrompt_udf = udf(lambda: generateRestaurantPrompt(), StringType())\r\n",
 					"\r\n",
 					"df_prompts = spark.range(1, nrOfReviews+1) \\\r\n",
@@ -187,7 +189,7 @@
 					"\r\n",
 					"display(df_prompts)"
 				],
-				"execution_count": 34
+				"execution_count": 2
 			},
 			{
 				"cell_type": "markdown",
@@ -221,13 +223,13 @@
 					"    .select(\r\n",
 					"        col(\"id\"),\r\n",
 					"        col(\"prompt\"),\r\n",
-					"        col(\"error\"),\r\n",
-					"        col(\"response.choices.text\").getItem(0).alias(\"json\")\r\n",
+					"        col(\"response.choices.text\").getItem(0).alias(\"json\"),\r\n",
+					"        col(\"error\")\r\n",
 					"    )\r\n",
 					"\r\n",
 					"display(df_reviews_json)"
 				],
-				"execution_count": 35
+				"execution_count": 11
 			},
 			{
 				"cell_type": "markdown",
@@ -259,6 +261,8 @@
 				"source": [
 					"schema = StructType([ \\\r\n",
 					"    StructField(\"restaurant\", StringType(), False), \\\r\n",
+					"    StructField(\"location\", StringType(), False), \\\r\n",
+					"    StructField(\"date\", StringType(), False), \\\r\n",
 					"    StructField(\"review\", StringType(), False) \\\r\n",
 					"])\r\n",
 					"\r\n",
@@ -269,6 +273,60 @@
 					""
 				],
 				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Use SQL"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_reviews_table.createOrReplaceTempView(\"reviews\")"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"SELECT * FROM reviews ORDER BY location"
+				],
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
@@ -316,7 +374,7 @@
 					"df_sentiment_prompt = df_reviews_table.withColumn(\"prompt\", generateSentimentPrompt_udf(col(\"review\")))\r\n",
 					"display(df_sentiment_prompt)"
 				],
-				"execution_count": 13
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
@@ -357,7 +415,7 @@
 					"display(df_sentiment_json)\r\n",
 					""
 				],
-				"execution_count": 14
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
