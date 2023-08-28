@@ -29,6 +29,9 @@
 		"Products_properties_typeProperties_url": {
 			"value": "https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/adventureworks/products.csv"
 		},
+		"bing-covid-19-data_sasUri": {
+			"value": ""
+		},
 		"synapse-weslbo-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://datalakeweslbo.dfs.core.windows.net"
 		}

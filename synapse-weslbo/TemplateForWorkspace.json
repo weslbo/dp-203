@@ -42,6 +42,10 @@
 			"type": "string",
 			"defaultValue": "https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/adventureworks/products.csv"
 		},
+		"bing-covid-19-data_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'bing-covid-19-data'"
+		},
 		"synapse-weslbo-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://datalakeweslbo.dfs.core.windows.net"
@@ -1731,6 +1735,19 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/bing-covid-19-data')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"sasUri": "[parameters('bing-covid-19-data_sasUri')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/synapse-weslbo-WorkspaceDefaultSqlServer')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -1789,6 +1806,16 @@
 						}
 					}
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/OnPremisesIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
 			},
 			"dependsOn": []
 		},
@@ -2501,6 +2528,29 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Covid19')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-500/05-PowerBI"
+				},
+				"content": {
+					"query": "CREATE DATABASE Covid19\n\nUSE Covid19\n\nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nDROP EXTERNAL DATA SOURCE [PandemicDataLake] \nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'PandemicDataLake') \n\tCREATE EXTERNAL DATA SOURCE [PandemicDataLake] \n\tWITH (\n\t\tLOCATION   = 'https://pandemicdatalake.blob.core.windows.net/public', \n\t)\nGo\n\nDROP EXTERNAL TABLE BingCovid19\nCREATE EXTERNAL TABLE BingCovid19 (\n\t[id] int,\n\t[updated] date,\n\t[confirmed] int,\n\t[confirmed_change] int,\n\t[deaths] int,\n\t[deaths_change] smallint,\n\t[recovered] int,\n\t[recovered_change] int,\n\t[latitude] float,\n\t[longitude] float,\n\t[iso2] varchar(8000),\n\t[iso3] varchar(8000),\n\t[country_region] varchar(8000),\n\t[admin_region_1] varchar(8000),\n\t[iso_subdivision] varchar(8000),\n\t[admin_region_2] varchar(8000),\n\t[load_time] datetime2(7)\n\t)\n\tWITH (\n\tLOCATION = 'curated/covid-19/bing_covid-19_data/latest/bing_covid-19_data.parquet',\n\tDATA_SOURCE = [PandemicDataLake],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\nSELECT TOP 100 * FROM BingCovid19\nGO\n\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Covid19",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Dedicated - Purview Permissions')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -2707,7 +2757,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "cdcfb1fc-aae7-44dd-b529-6dcc12a368ce"
+						"spark.autotune.trackingId": "dc577fb8-6e0d-4bb1-b5e7-c6c27e2daa92"
 					}
 				},
 				"metadata": {
@@ -2775,7 +2825,7 @@
 							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 4
 					},
 					{
 						"cell_type": "markdown",
@@ -2815,7 +2865,7 @@
 							"display(df.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 5
 					},
 					{
 						"cell_type": "markdown",
@@ -2868,7 +2918,7 @@
 							"display(df.limit(100))"
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -2887,7 +2937,7 @@
 							" df.printSchema()"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 7
 					},
 					{
 						"cell_type": "markdown",
@@ -2932,7 +2982,7 @@
 							" display(customers.distinct())"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 8
 					},
 					{
 						"cell_type": "markdown",
@@ -2968,7 +3018,7 @@
 							" display(customers.distinct())"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 9
 					},
 					{
 						"cell_type": "markdown",
@@ -3004,7 +3054,7 @@
 							" display(productSales)"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 10
 					},
 					{
 						"cell_type": "markdown",
@@ -3038,7 +3088,7 @@
 							" display(yearlySales)"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 11
 					},
 					{
 						"cell_type": "markdown",
@@ -3086,7 +3136,7 @@
 							" display(spark_df)"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 12
 					},
 					{
 						"cell_type": "markdown",
@@ -3135,7 +3185,7 @@
 							" ORDER BY OrderYear;"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 13
 					},
 					{
 						"cell_type": "markdown",
@@ -3184,7 +3234,7 @@
 							" SELECT * FROM salesorders"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 14
 					},
 					{
 						"cell_type": "markdown",
@@ -3224,7 +3274,7 @@
 							" df_spark.show()"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 15
 					},
 					{
 						"cell_type": "markdown",
@@ -3268,7 +3318,7 @@
 							" plt.show()"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 16
 					},
 					{
 						"cell_type": "markdown",
@@ -3316,7 +3366,7 @@
 							" plt.show()"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 17
 					},
 					{
 						"cell_type": "markdown",
@@ -3367,7 +3417,7 @@
 							" plt.show()"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 18
 					},
 					{
 						"cell_type": "markdown",
@@ -3419,7 +3469,7 @@
 							" plt.show()"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 19
 					},
 					{
 						"cell_type": "markdown",
@@ -3462,7 +3512,7 @@
 							" plt.show()"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 20
 					},
 					{
 						"cell_type": "markdown",
@@ -3502,7 +3552,7 @@
 							" plt.show()"
 						],
 						"outputs": [],
-						"execution_count": 18
+						"execution_count": 21
 					},
 					{
 						"cell_type": "markdown",
@@ -3539,7 +3589,7 @@
 							" plt.show()"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 22
 					}
 				]
 			},
@@ -6340,394 +6390,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/05_chatgpt')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "dp-500/03-Synapse"
-				},
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"bigDataPool": {
-					"referenceName": "sparkpool",
-					"type": "BigDataPoolReference"
-				},
-				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 2,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "a812a941-ab78-4ca2-bd2d-bd1caa6dad14"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"enableDebugMode": false,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"a365ComputeOptions": {
-						"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-weslbo/bigDataPools/sparkpool",
-						"name": "sparkpool",
-						"type": "Spark",
-						"endpoint": "https://synapse-weslbo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
-						"auth": {
-							"type": "AAD",
-							"authResource": "https://dev.azuresynapse.net"
-						},
-						"sparkVersion": "3.2",
-						"nodeCount": 3,
-						"cores": 4,
-						"memory": 28
-					},
-					"sessionKeepAliveTimeout": 30
-				},
-				"cells": [
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"# Sentiment review (fake) restaurant reviews using Synapse and ChatGPT\r\n",
-							"\r\n",
-							"This notebook is based on an article and video from Thomas Costers and Stijn Wynants\r\n",
-							"\r\n",
-							"- https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/using-openai-gpt-in-synapse-analytics/ba-p/3751815\r\n",
-							"- https://www.youtube.com/watch?v=CY4dAWvh60M\r\n",
-							"\r\n",
-							"One of the SynapseML’s capabilities is providing simple APIs for pre-built intelligent services, such as Azure cognitive services. Azure OpenAI is part of the cognitive services stack, making it accessible from within Synapse Spark pools. In order to use the Azure OpenAI in Synapse Spark, we’ll be using three components. The setup of these components is out of scope for this article.\r\n",
-							"\r\n",
-							"- A Synapse Analytics workspace with a Spark Pool\r\n",
-							"- An Azure OpenAI cognitive service with text-davinci-003 model deployed\r\n",
-							"- Azure Key vault to store the OpenAI API key\r\n",
-							"\r\n",
-							"Use the [Azure OpenAI Studio playground](https://oai.azure.com/portal/playground) to test the following prompt\r\n",
-							"\r\n",
-							"```json\r\n",
-							"Generate a json containing a restaurant review. Use the following json structure: \r\n",
-							"{\r\n",
-							"    \"restaurant\": \"\",\r\n",
-							"    \"review\": \"\"\r\n",
-							"}\r\n",
-							"````"
-						]
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"The following code is applicable For Spark3.2 pool. SynapseML can be conveniently installed on Synapse using this piece of configuration"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"%%configure -f\r\n",
-							"{\r\n",
-							"  \"name\": \"synapseml\",\r\n",
-							"  \"conf\": {\r\n",
-							"      \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.11.0,org.apache.spark:spark-avro_2.12:3.3.1\",\r\n",
-							"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\",\r\n",
-							"      \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12,com.fasterxml.jackson.core:jackson-databind\",\r\n",
-							"      \"spark.yarn.user.classpath.first\": \"true\",\r\n",
-							"      \"spark.sql.parquet.enableVectorizedReader\": \"false\",\r\n",
-							"      \"spark.sql.legacy.replaceDatabricksSparkAvro.enabled\": \"true\"\r\n",
-							"  }\r\n",
-							"}"
-						],
-						"outputs": [],
-						"execution_count": 22
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"## Generate fake reviews, using ChatGPT\r\n",
-							"\r\n",
-							"Now we will genrate 5 reviews. We first create a set of prompts for the number of reviews we want to generate"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": false
-						},
-						"source": [
-							"from synapse.ml.core.platform import running_on_synapse, find_secret\r\n",
-							"from pyspark.sql.types import *\r\n",
-							"from pyspark.sql.functions import *\r\n",
-							"from synapse.ml.cognitive import OpenAICompletion\r\n",
-							"\r\n",
-							"key = find_secret(\"openaikey\", \"keyvault-weslbo\")  # replace this with your secret and keyvault\r\n",
-							"nrOfReviews = 5\r\n",
-							"\r\n",
-							"completion = (\r\n",
-							"    OpenAICompletion()\r\n",
-							"    .setSubscriptionKey(key)\r\n",
-							"    .setDeploymentName(\"text-davinci-003\")\r\n",
-							"    .setUrl(\"https://openai-wedebols-3.openai.azure.com/\")\r\n",
-							"    .setMaxTokens(2048)\r\n",
-							"    .setPromptCol(\"prompt\")\r\n",
-							"    .setErrorCol(\"error\")\r\n",
-							"    .setOutputCol(\"response\")\r\n",
-							")\r\n",
-							"\r\n",
-							"def generateRestaurantPrompt() -> str:\r\n",
-							"    return \"Generate a json containing a restaurant review. Use the following json structure: {\\\"restaurant\\\": \\\"\\\",\\\"review\\\": \\\"\\\"}\"\r\n",
-							"generateRestaurantPrompt_udf = udf(lambda: generateRestaurantPrompt(), StringType())\r\n",
-							"\r\n",
-							"df_prompts = spark.range(1, nrOfReviews+1) \\\r\n",
-							"    .withColumnRenamed(\"restaurant\", \"review\") \\\r\n",
-							"    .withColumn(\"prompt\", generateRestaurantPrompt_udf())\r\n",
-							"\r\n",
-							"display(df_prompts)"
-						],
-						"outputs": [],
-						"execution_count": 29
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"Then, we will call the OpenAI service and get the actual (fake) reviews"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": false
-						},
-						"source": [
-							"df_reviews_json = completion.transform(df_prompts).cache() \\\r\n",
-							"    .select(\r\n",
-							"        col(\"id\"),\r\n",
-							"        col(\"prompt\"),\r\n",
-							"        col(\"error\"),\r\n",
-							"        col(\"response.choices.text\").getItem(0).alias(\"json\")\r\n",
-							"    )\r\n",
-							"\r\n",
-							"display(df_reviews_json)"
-						],
-						"outputs": [],
-						"execution_count": 30
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"Since we get json data back, we have to apply some schema to it and retrieve the actual Restaurant Name and Review text."
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": false
-						},
-						"source": [
-							"schema = StructType([ \\\r\n",
-							"    StructField(\"restaurant\", StringType(), False), \\\r\n",
-							"    StructField(\"review\", StringType(), False) \\\r\n",
-							"])\r\n",
-							"\r\n",
-							"df_reviews_table = df_reviews_json.withColumn(\"json\", from_json(col(\"json\"), schema)) \\\r\n",
-							"    .select(col(\"id\"), col(\"json.*\"), col(\"error\"))\r\n",
-							"\r\n",
-							"display(df_reviews_table)\r\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": 31
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"## Detect sentiment\r\n",
-							"\r\n",
-							"Now that we have are restaurants and reviews, it's time to detect the sentiment. Again, we can use the OpenAI playground to test our prompt \r\n",
-							"\r\n",
-							"```text\r\n",
-							"Classify the sentiment of following restaurant review.\r\n",
-							"Classifications: [Positive, Negative, Neutral]\r\n",
-							"Review: \"\"\"The food here is so delicious. The crepes are made to perfection and the servers are so friendly and helpful. I highly recommend it!\"\"\"\r\n",
-							"Classification:\r\n",
-							"``` \r\n",
-							"\r\n",
-							"When we are ready we the prompt, it's time to generate the prompt within our dataset."
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": false
-						},
-						"source": [
-							"def generateSentimentPrompt(s: str) -> str:\r\n",
-							"    return \"Classify the sentiment of following restaurant review.\\nClassifications: [Positive, Negative, Neutral]\\nReview: \" + s +\"\\nClassification:\"\r\n",
-							"generateSentimentPrompt_udf = udf(lambda s: generateSentimentPrompt(s), StringType())\r\n",
-							"\r\n",
-							"df_sentiment_prompt = df_reviews_table.withColumn(\"prompt\", generateSentimentPrompt_udf(col(\"review\")))\r\n",
-							"display(df_sentiment_prompt)"
-						],
-						"outputs": [],
-						"execution_count": 32
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"Now, we apply the transformation. This is where the actual call happens towards OpenAI api"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							},
-							"collapsed": false
-						},
-						"source": [
-							"df_sentiment_json = completion.transform(df_sentiment_prompt).cache() \\\r\n",
-							"    .select(\r\n",
-							"        col(\"id\"),\r\n",
-							"        col(\"restaurant\"),\r\n",
-							"        col(\"review\"),\r\n",
-							"        col(\"response.choices.text\").getItem(0).alias(\"sentiment\")\r\n",
-							"    )\r\n",
-							"\r\n",
-							"display(df_sentiment_json)\r\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": 33
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"Review the output above!\r\n",
-							"\r\n",
-							"Todo:\r\n",
-							"1. Make sure quotes are properly handled (otherwise you get 'undefined')\r\n",
-							"2. I only get positive sentiment... Probably need to tweak the openai deployment model...."
-						]
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/11-Spark Transform')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -7501,6 +7163,708 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Restaurant Reviews using ChatGPT')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "Scenario"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "3438e4c7-0fa0-47e9-9fcb-d85291270a3e"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-weslbo/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://synapse-weslbo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Sentiment review (fake) restaurant reviews using Synapse and ChatGPT\r\n",
+							"![Picture](https://github.com/weslbo/dp-203/raw/main/images/e525e0a5-ff67-4d6d-b32a-f35f4e716919.jpg)\r\n",
+							"This notebook is based on an article and video from Thomas Costers and Stijn Wynants\r\n",
+							"\r\n",
+							"- https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/using-openai-gpt-in-synapse-analytics/ba-p/3751815\r\n",
+							"- https://www.youtube.com/watch?v=CY4dAWvh60M\r\n",
+							"\r\n",
+							"One of the SynapseML’s capabilities is providing simple APIs for pre-built intelligent services, such as Azure cognitive services. Azure OpenAI is part of the cognitive services stack, making it accessible from within Synapse Spark pools. In order to use the Azure OpenAI in Synapse Spark, we’ll be using three components. The setup of these components is out of scope for this article.\r\n",
+							"\r\n",
+							"- A Synapse Analytics workspace with a Spark Pool\r\n",
+							"- An Azure OpenAI cognitive service with text-davinci-003 model deployed\r\n",
+							"- Azure Key vault to store the OpenAI API key\r\n",
+							"\r\n",
+							"Use the [Azure OpenAI Studio playground](https://oai.azure.com/portal/playground) to test the following prompt\r\n",
+							"\r\n",
+							"```json\r\n",
+							"Generate a random negative, neutral or positive restaurant review. Use the following json structure: \r\n",
+							"{\r\n",
+							"    \"restaurant\": \"\",\r\n",
+							"    \"location\": \"\",\r\n",
+							"    \"date\": \"\",\r\n",
+							"    \"review\": \"\"\r\n",
+							"}\r\n",
+							"````"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"The following code is applicable For Spark3.2 pool. SynapseML can be conveniently installed on Synapse using this piece of configuration"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%%configure -f\r\n",
+							"{\r\n",
+							"  \"name\": \"synapseml\",\r\n",
+							"  \"conf\": {\r\n",
+							"      \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.11.0,org.apache.spark:spark-avro_2.12:3.3.1\",\r\n",
+							"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\",\r\n",
+							"      \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12,com.fasterxml.jackson.core:jackson-databind\",\r\n",
+							"      \"spark.yarn.user.classpath.first\": \"true\",\r\n",
+							"      \"spark.sql.parquet.enableVectorizedReader\": \"false\",\r\n",
+							"      \"spark.sql.legacy.replaceDatabricksSparkAvro.enabled\": \"true\"\r\n",
+							"  }\r\n",
+							"}"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Generate fake reviews, using ChatGPT\r\n",
+							"\r\n",
+							"Now we will genrate 5 reviews. We first create a set of prompts for the number of reviews we want to generate"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from synapse.ml.core.platform import running_on_synapse, find_secret\r\n",
+							"from pyspark.sql.types import *\r\n",
+							"from pyspark.sql.functions import *\r\n",
+							"from synapse.ml.cognitive import OpenAICompletion\r\n",
+							"\r\n",
+							"key = find_secret(\"openaikey\", \"keyvault-weslbo\")  # replace this with your secret and keyvault\r\n",
+							"nrOfReviews = 10\r\n",
+							"\r\n",
+							"completion = (\r\n",
+							"    OpenAICompletion()\r\n",
+							"    .setSubscriptionKey(key)\r\n",
+							"    .setDeploymentName(\"text-davinci-003\")\r\n",
+							"    .setUrl(\"https://openai-wedebols-3.openai.azure.com/\")\r\n",
+							"    .setMaxTokens(2048)\r\n",
+							"    .setPromptCol(\"prompt\")\r\n",
+							"    .setErrorCol(\"error\")\r\n",
+							"    .setOutputCol(\"response\")\r\n",
+							"    .setTemperature(0.7)\r\n",
+							")\r\n",
+							"\r\n",
+							"def generateRestaurantPrompt() -> str:\r\n",
+							"    return \"Generate a random negative, neutral or positive restaurant review. Use the following json structure: {\\\"restaurant\\\": \\\"\\\",\\\"location\\\": \\\"\\\",\\\"date\\\": \\\"\\\",\\\"review\\\": \\\"\\\"}\"\r\n",
+							"generateRestaurantPrompt_udf = udf(lambda: generateRestaurantPrompt(), StringType())\r\n",
+							"\r\n",
+							"df_prompts = spark.range(1, nrOfReviews+1) \\\r\n",
+							"    .withColumnRenamed(\"restaurant\", \"review\") \\\r\n",
+							"    .withColumn(\"prompt\", generateRestaurantPrompt_udf())\r\n",
+							"\r\n",
+							"display(df_prompts)"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Then, we will call the OpenAI service and get the actual (fake) reviews"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df_reviews_json = completion.transform(df_prompts).cache() \\\r\n",
+							"    .select(\r\n",
+							"        col(\"id\"),\r\n",
+							"        col(\"prompt\"),\r\n",
+							"        col(\"response.choices.text\").getItem(0).alias(\"json\"),\r\n",
+							"        col(\"error\")\r\n",
+							"    )\r\n",
+							"\r\n",
+							"display(df_reviews_json)"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Since we get json data back, we have to apply some schema to it and retrieve the actual Restaurant Name and Review text."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"schema = StructType([ \\\r\n",
+							"    StructField(\"restaurant\", StringType(), False), \\\r\n",
+							"    StructField(\"location\", StringType(), False), \\\r\n",
+							"    StructField(\"date\", StringType(), False), \\\r\n",
+							"    StructField(\"review\", StringType(), False) \\\r\n",
+							"])\r\n",
+							"\r\n",
+							"df_reviews_table = df_reviews_json.withColumn(\"json\", from_json(col(\"json\"), schema)) \\\r\n",
+							"    .select(col(\"id\"), col(\"json.*\"), col(\"error\"))\r\n",
+							"\r\n",
+							"display(df_reviews_table)\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Use SQL"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_reviews_table.createOrReplaceTempView(\"reviews\")"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\r\n",
+							"SELECT * FROM reviews ORDER BY location"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Detect sentiment\r\n",
+							"\r\n",
+							"Now that we have are restaurants and reviews, it's time to detect the sentiment. Again, we can use the OpenAI playground to test our prompt \r\n",
+							"\r\n",
+							"```text\r\n",
+							"Classify the sentiment of following restaurant review.\r\n",
+							"Classifications: [Positive, Negative, Neutral]\r\n",
+							"Review: \"\"\"The food here is so delicious. The crepes are made to perfection and the servers are so friendly and helpful. I highly recommend it!\"\"\"\r\n",
+							"Classification:\r\n",
+							"``` \r\n",
+							"\r\n",
+							"When we are ready we the prompt, it's time to generate the prompt within our dataset."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"def generateSentimentPrompt(s: str) -> str:\r\n",
+							"    return \"Classify the sentiment of following restaurant review.\\nClassifications: [Positive, Negative, Neutral]\\nReview: \" + s +\"\\nClassification:\"\r\n",
+							"generateSentimentPrompt_udf = udf(lambda s: generateSentimentPrompt(s), StringType())\r\n",
+							"\r\n",
+							"df_sentiment_prompt = df_reviews_table.withColumn(\"prompt\", generateSentimentPrompt_udf(col(\"review\")))\r\n",
+							"display(df_sentiment_prompt)"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Now, we apply the transformation. This is where the actual call happens towards OpenAI api"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df_sentiment_json = completion.transform(df_sentiment_prompt).cache() \\\r\n",
+							"    .select(\r\n",
+							"        col(\"id\"),\r\n",
+							"        col(\"restaurant\"),\r\n",
+							"        col(\"review\"),\r\n",
+							"        col(\"response.choices.text\").getItem(0).alias(\"sentiment\")\r\n",
+							"    )\r\n",
+							"\r\n",
+							"display(df_sentiment_json)\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Review the output above!\r\n",
+							"\r\n",
+							"Todo:\r\n",
+							"1. Make sure quotes are properly handled (otherwise you get 'undefined')\r\n",
+							"2. I only get positive sentiment... Probably need to tweak the openai deployment model...."
+						]
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ShipGenerator')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "Scenario"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "55454808-4e84-4dc6-baaf-a142567026b0"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/784f1210-8faf-4cf4-b9aa-e50fa084adce/resourceGroups/rg-dp-203/providers/Microsoft.Synapse/workspaces/synapse-weslbo/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://synapse-weslbo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"vessel_names = ['Sea Serpent', 'Ocean\\'s Fury', 'The Kraken', 'Neptune\\'s Trident', 'The Leviathan', 'The Siren\\'s Call', 'The Mermaid\\'s Song', 'The Sea Witch', 'The Black Pearl', 'The Flying Dutchman', 'Davy Jones\\' Locker', 'Poseidon\\'s Wrath', 'The Jolly Roger', 'Captain Hook\\'s Revenge','Treasure Island','Calypso\\'s Curse','Moby Dick','White Whale','Nemo\\'s Nautilus','The Salty Dog','The Seafarer','The Mariner','The Corsair','The Buccaneer','The Privateer','The Swashbuckler','The Cutlass ',' The Long John Silver ',' The Blackbeard ',' The Bluebeard']\r\n",
+							"\r\n",
+							"data = [\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Wind Speed Range\",\r\n",
+							"        \"comment\": \"0 to 99 knots (1 to 185 kph)\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0,\r\n",
+							"        \"max_value\": 99,\r\n",
+							"        \"frequency_in_ms\": 100\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Wind Speed Resolution\",\r\n",
+							"        \"comment\": \"0.1 knot (0.19 kph)\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0.0,\r\n",
+							"        \"max_value\": 1.0,\r\n",
+							"        \"frequency_in_ms\": 100\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Wind Speed Accuracy\",\r\n",
+							"        \"comment\": \"+/-10% or 1 knot (1.9kph), Tilt 0° (operates to 30° tilt)\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0,\r\n",
+							"        \"max_value\": 360,\r\n",
+							"        \"frequency_in_ms\": 100\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Wind Direction Accuracy\",\r\n",
+							"        \"comment\": \"+/-5°\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0,\r\n",
+							"        \"max_value\": 360,\r\n",
+							"        \"frequency_in_ms\": 100\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Temperature Range\",\r\n",
+							"        \"comment\": \"-25° to 55° C\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": -25,\r\n",
+							"        \"max_value\": 55,\r\n",
+							"        \"frequency_in_ms\": 500\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Temperature Resolution\",\r\n",
+							"        \"comment\": \"0.18°F (0.1°C)\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0.0,\r\n",
+							"        \"max_value\": 1.0,\r\n",
+							"        \"frequency_in_ms\": 500\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Temperature Accuracy\",\r\n",
+							"        \"comment\": \"+/-1.8°F (1°C)\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0.0,\r\n",
+							"        \"max_value\": 1.0,\r\n",
+							"        \"frequency_in_ms\": 500\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Relative Humidity Range\",\r\n",
+							"        \"comment\": \"0-99% RH\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0,\r\n",
+							"        \"max_value\": 99,\r\n",
+							"        \"frequency_in_ms\": 1000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Relative Humidity Resolution\",\r\n",
+							"        \"comment\": \"1% RH\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0,\r\n",
+							"        \"max_value\": 99,\r\n",
+							"        \"frequency_in_ms\": 1000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Relative Humidity Accuracy +/-4% RH\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": -4,\r\n",
+							"        \"max_value\": 4,\r\n",
+							"        \"frequency_in_ms\": 1000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Barometric Pressure Range\",\r\n",
+							"        \"comment\": \"26 to 32” HG (880 to 1080 mb)\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 800,\r\n",
+							"        \"max_value\": 1080,\r\n",
+							"        \"frequency_in_ms\": 10000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Barometric Pressure Resolution\",\r\n",
+							"        \"comment\": \"0.03” HG (1 mb)\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0.0,\r\n",
+							"        \"max_value\": 1.1,\r\n",
+							"        \"frequency_in_ms\": 10000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"WSO200\",\r\n",
+							"        \"device_name\": \"Ultrasonic Wind/Weather Station\",\r\n",
+							"        \"parameter\": \"Barometric Pressure Accuracy\",\r\n",
+							"        \"comment\": \"+/-0.09” HG (+/-3 mb)\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0.0,\r\n",
+							"        \"max_value\": 1.0,\r\n",
+							"        \"frequency_in_ms\": 10000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"GPS200\",\r\n",
+							"        \"device_name\": \"Maretron GPS200\",\r\n",
+							"        \"parameter\": \"System Time\",\r\n",
+							"        \"comment\": \"\",\r\n",
+							"        \"data_type\": \"datetime\",\r\n",
+							"        \"frequency_in_ms\": 1000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"GPS200\",\r\n",
+							"        \"device_name\": \"Maretron GPS200\",\r\n",
+							"        \"parameter\": \"Speed\",\r\n",
+							"        \"comment\": \"\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0.0,\r\n",
+							"        \"max_value\": 200,\r\n",
+							"        \"frequency_in_ms\": 1000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"GPS200\",\r\n",
+							"        \"device_name\": \"Maretron GPS200\",\r\n",
+							"        \"parameter\": \"GNSS Satellites in View\",\r\n",
+							"        \"comment\": \"\",\r\n",
+							"        \"data_type\": \"number\",\r\n",
+							"        \"min_value\": 0.0,\r\n",
+							"        \"max_value\": 10,\r\n",
+							"        \"frequency_in_ms\": 1000\r\n",
+							"    },\r\n",
+							"    {\r\n",
+							"        \"device_code\": \"GPS200\",\r\n",
+							"        \"device_name\": \"Maretron GPS200\",\r\n",
+							"        \"parameter\": \"GNSS Position Data\",\r\n",
+							"        \"comment\": \"\",\r\n",
+							"        \"data_type\": \"string\",\r\n",
+							"        \"frequency_in_ms\": 1000\r\n",
+							"    }\r\n",
+							"]"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
 			"type": "Microsoft.Synapse/workspaces/sqlPools",
 			"apiVersion": "2019-06-01-preview",
@@ -7510,7 +7874,7 @@
 				"annotations": []
 			},
 			"dependsOn": [],
-			"location": "westeurope"
+			"location": "eastus"
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
@@ -7535,7 +7899,7 @@
 				"annotations": []
 			},
 			"dependsOn": [],
-			"location": "westeurope"
+			"location": "eastus"
 		}
 	]
 }
