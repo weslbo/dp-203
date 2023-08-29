@@ -5,6 +5,12 @@
 		"workspaceName": {
 			"value": "synapse-weslbo"
 		},
+		"AdventureWorksDBLinkedService_connectionString": {
+			"value": ""
+		},
+		"DP203AzureDataLakeStorage_accountKey": {
+			"value": ""
+		},
 		"SqlAdventureWorksLT_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sqldb-weslbo.database.windows.net;Initial Catalog=AdventureWorksLT;User ID=azureuser"
 		},
@@ -13,6 +19,12 @@
 		},
 		"synapse-weslbo-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synapse-weslbo.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"synapseweslbo2_accountKey": {
+			"value": ""
+		},
+		"DP203AzureDataLakeStorage_properties_typeProperties_url": {
+			"value": "https://datalakeweslbo.dfs.core.windows.net/"
 		},
 		"DataLake_properties_typeProperties_url": {
 			"value": "@{concat('https://datalake', linkedService().suffix, '.dfs.core.windows.net')}"
@@ -34,6 +46,9 @@
 		},
 		"synapse-weslbo-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://datalakeweslbo.dfs.core.windows.net"
+		},
+		"synapseweslbo2_properties_typeProperties_url": {
+			"value": "https://datalakeweslbo2.dfs.core.windows.net/"
 		}
 	}
 }
