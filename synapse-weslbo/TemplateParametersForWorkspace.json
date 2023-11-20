@@ -8,6 +8,9 @@
 		"AdventureWorksDBLinkedService_connectionString": {
 			"value": ""
 		},
+		"AzureDatabricks1_accessToken": {
+			"value": ""
+		},
 		"DP203AzureDataLakeStorage_accountKey": {
 			"value": ""
 		},
