@@ -1,0 +1,24 @@
+{
+	"name": "SourceDataset_846",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AdventureWorksDBLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"cw_table": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "SalesLT",
+			"table": {
+				"value": "@dataset().cw_table",
+				"type": "Expression"
+			}
+		}
+	}
+}
