@@ -7,7 +7,8 @@
 			"Type": "SPARK"
 		},
 		"Properties": {
-			"IsSyMSCDMDatabase": true
+			"IsSyMSCDMDatabase": true,
+			"DerivedModelDBInfo": "{\"ModelDirectives\":{\"BaseModel\":{\"Name\":\"Retail\",\"Version\":\"1.3.0\"}}}"
 		},
 		"Source": {
 			"Provider": "ADLS",
