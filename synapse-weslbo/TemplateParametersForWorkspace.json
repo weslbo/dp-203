@@ -8,9 +8,6 @@
 		"AdventureWorksDBLinkedService_connectionString": {
 			"value": ""
 		},
-		"AzureDatabricks1_accessToken": {
-			"value": ""
-		},
 		"DP203AzureDataLakeStorage_accountKey": {
 			"value": ""
 		},
@@ -22,12 +19,6 @@
 		},
 		"synapse-weslbo-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synapse-weslbo.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
-		},
-		"synapseweslbo2_accountKey": {
-			"value": ""
-		},
-		"ConferenceAPI_properties_typeProperties_url": {
-			"value": "https://conferenceapi.azurewebsites.net/"
 		},
 		"DP203AzureDataLakeStorage_properties_typeProperties_url": {
 			"value": "https://datalakeweslbo.dfs.core.windows.net/"
@@ -47,14 +38,8 @@
 		"Products_properties_typeProperties_url": {
 			"value": "https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/adventureworks/products.csv"
 		},
-		"bing-covid-19-data_sasUri": {
-			"value": ""
-		},
 		"synapse-weslbo-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://datalakeweslbo.dfs.core.windows.net"
-		},
-		"synapseweslbo2_properties_typeProperties_url": {
-			"value": "https://datalakeweslbo2.dfs.core.windows.net/"
 		}
 	}
 }
