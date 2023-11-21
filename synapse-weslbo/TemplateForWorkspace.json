@@ -38,6 +38,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'synapseweslbo2'"
 		},
+		"ConferenceAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://conferenceapi.azurewebsites.net/"
+		},
 		"DP203AzureDataLakeStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://datalakeweslbo.dfs.core.windows.net/"
@@ -361,6 +365,55 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/dataflows/Dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 2')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Dataflow2",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"Products": {
+										"suffix": "weslbo"
+									},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/Dataflow2')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -1270,6 +1323,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ConferenceJsonDestination')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapse-weslbo-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "conference.json",
+						"fileSystem": "landing"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synapse-weslbo-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/DP500LandingCSV')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -1730,6 +1807,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ProductParquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapse-weslbo-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "landing"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synapse-weslbo-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Products_Csv')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -2084,6 +2185,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ConferenceAPI')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('ConferenceAPI_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/DP203AzureDataLakeStorage')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -2369,6 +2491,16 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/OnPremIntegrationRuntime1')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/OnPremisesIntegrationRuntime')]",
 			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
 			"apiVersion": "2019-06-01-preview",
@@ -2450,6 +2582,80 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/SalesLTProductDataSet')]",
 				"[concat(variables('workspaceId'), '/datasets/AzureSynapseAnalyticsTable2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Dataflow2')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Products_Csv",
+								"type": "DatasetReference"
+							},
+							"name": "Products"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ProductParquet",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ProductID as string,",
+						"          ProductName as string,",
+						"          Color as string,",
+						"          Size as string,",
+						"          ListPrice as string,",
+						"          Discontinued as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Products",
+						"filter1 select(mapColumn(",
+						"          ProductID,",
+						"          ProductName,",
+						"          Color,",
+						"          ListPrice",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"Products filter(Discontinued==\"0\") ~> filter1",
+						"select1 derive(ProductIdFirst2Letters = left(ProductID, 2)) ~> derivedColumn1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Products_Csv')]",
+				"[concat(variables('workspaceId'), '/datasets/ProductParquet')]"
 			]
 		},
 		{
@@ -3301,7 +3507,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "",
+					"query": "SELECT TOP (100) [CustomerId]\n,[FirstName]\n,[LastName]\n,[EmailAddress]\n,[Phone]\n FROM [RetailDB].[dbo].[Customer]",
 					"metadata": {
 						"language": "sql"
 					},
@@ -8615,8 +8821,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "FirstName",
@@ -8629,8 +8834,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "LastName",
@@ -8643,8 +8847,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "EmailAddress",
@@ -8657,8 +8860,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "Phone",
@@ -8671,8 +8873,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									}
 								],
 								"Format": {
@@ -8683,8 +8884,8 @@
 									"Properties": {
 										"path": "abfss://files@datalakeweslbo.dfs.core.windows.net/RetailDB/Customer",
 										"delimiter": ",",
-										"multiLine": "false",
 										"firstRowAsHeader": "false",
+										"multiLine": "false",
 										"serialization.format": "1",
 										"escape": "\\",
 										"quote": "\"",
@@ -8752,8 +8953,7 @@
 										"BaseAttributeReference": {
 											"Entity": "RetailProduct.cdm.json/RetailProduct",
 											"Name": "ProductId"
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ProductName",
@@ -8770,8 +8970,7 @@
 										"BaseAttributeReference": {
 											"Entity": "RetailProduct.cdm.json/RetailProduct",
 											"Name": "ProductName"
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "IntroductionDate",
@@ -8788,8 +8987,7 @@
 										"BaseAttributeReference": {
 											"Entity": "RetailProduct.cdm.json/RetailProduct",
 											"Name": "IntroductionDate"
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ActualAbandonmentDate",
@@ -8806,8 +9004,7 @@
 										"BaseAttributeReference": {
 											"Entity": "RetailProduct.cdm.json/RetailProduct",
 											"Name": "ActualAbandonmentDate"
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ProductGrossWeight",
@@ -8825,8 +9022,7 @@
 										"BaseAttributeReference": {
 											"Entity": "RetailProduct.cdm.json/RetailProduct",
 											"Name": "ProductGrossWeight"
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ItemSku",
@@ -8843,8 +9039,7 @@
 										"BaseAttributeReference": {
 											"Entity": "RetailProduct.cdm.json/RetailProduct",
 											"Name": "ItemSku"
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ListPrice",
@@ -8858,8 +9053,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "decimal"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									}
 								],
 								"Format": {
@@ -8870,8 +9064,8 @@
 									"Properties": {
 										"path": "abfss://files@datalakeweslbo.dfs.core.windows.net/RetailDB/RetailProduct",
 										"delimiter": ",",
-										"multiLine": "false",
 										"firstRowAsHeader": "false",
+										"multiLine": "false",
 										"serialization.format": "1",
 										"escape": "\\",
 										"quote": "\"",
@@ -8935,8 +9129,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "OrderDate",
@@ -8948,8 +9141,7 @@
 												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
 												"HIVE_TYPE_STRING": "timestamp"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "LineItemId",
@@ -8960,8 +9152,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "CustomerId",
@@ -8972,8 +9163,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ProductId",
@@ -8984,8 +9174,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "Quantity",
@@ -8996,8 +9185,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									}
 								],
 								"Format": {
@@ -9008,8 +9196,8 @@
 									"Properties": {
 										"path": "abfss://files@datalakeweslbo.dfs.core.windows.net/RetailDB/SalesOrder",
 										"delimiter": ",",
-										"multiLine": "false",
 										"firstRowAsHeader": "false",
+										"multiLine": "false",
 										"serialization.format": "1",
 										"FormatTypeSetToDatabaseDefault": false,
 										"header": "false"
@@ -9025,7 +9213,7 @@
 								},
 								"Properties": {
 									"textinputformat.record.delimiter": ",",
-									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+									"compression": "",
 									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
 								},
 								"Compressed": false,

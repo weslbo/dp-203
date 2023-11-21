@@ -26,6 +26,9 @@
 		"synapseweslbo2_accountKey": {
 			"value": ""
 		},
+		"ConferenceAPI_properties_typeProperties_url": {
+			"value": "https://conferenceapi.azurewebsites.net/"
+		},
 		"DP203AzureDataLakeStorage_properties_typeProperties_url": {
 			"value": "https://datalakeweslbo.dfs.core.windows.net/"
 		},
