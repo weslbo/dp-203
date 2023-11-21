@@ -1,0 +1,19 @@
+{
+	"name": "ConferenceJsonDestination",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synapse-weslbo-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "conference.json",
+				"fileSystem": "landing"
+			}
+		},
+		"schema": {}
+	}
+}

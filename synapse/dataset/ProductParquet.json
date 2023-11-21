@@ -1,0 +1,19 @@
+{
+	"name": "ProductParquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synapse-weslbo-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "landing"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
