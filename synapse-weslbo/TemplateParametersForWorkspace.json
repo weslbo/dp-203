@@ -12,10 +12,13 @@
 			"value": ""
 		},
 		"SqlAdventureWorksLT_connectionString": {
-			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sqldb-weslbo.database.windows.net;Initial Catalog=AdventureWorksLT;User ID=azureuser"
+			"value": ""
 		},
 		"SqlDwh_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=\"@{concat('synapse-', linkedService().suffix,'.sql.azuresynapse.net')}\";Initial Catalog=sqldwh"
+		},
+		"salescosmosdb_connectionString": {
+			"value": ""
 		},
 		"synapse-weslbo-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synapse-weslbo.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
