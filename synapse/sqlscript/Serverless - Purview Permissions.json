@@ -5,12 +5,12 @@
 			"name": "dp-203/08-Govern data/22-Purview"
 		},
 		"content": {
-			"query": "CREATE LOGIN [purview-weslbo] FROM EXTERNAL PROVIDER\n\nUSE default\n\nCREATE USER [purview-weslbo] FROM LOGIN [purview-weslbo]\nALTER ROLE db_datareader ADD MEMBER [purview-weslbo]\n\nUSE Sales\n\nCREATE USER [purview-weslbo] FROM LOGIN [purview-weslbo]\nALTER ROLE db_datareader ADD MEMBER [purview-weslbo]\n",
+			"query": "CREATE LOGIN [purview-weslbo] FROM EXTERNAL PROVIDER\n\nUSE default\n\nCREATE USER [purview-weslbo] FROM LOGIN [purview-weslbo]\nALTER ROLE db_datareader ADD MEMBER [purview-weslbo]\n\nUSE SalesDB\n\nCREATE USER [purview-weslbo] FROM LOGIN [purview-weslbo]\nALTER ROLE db_datareader ADD MEMBER [purview-weslbo]\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "default",
+				"databaseName": "SalesDB",
 				"poolName": "Built-in"
 			},
 			"resultLimit": 5000
