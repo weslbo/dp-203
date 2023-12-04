@@ -2754,7 +2754,7 @@
 					"name": "dp-203/02-Serverless SQL/02-Demo-Query files using a serverless SQL pool"
 				},
 				"content": {
-					"query": "-- Demo: Query files using a serverless SQL pool\n-- Task: Access external data in a database\n\nCREATE DATABASE Sales\nCOLLATE Latin1_General_100_BIN2_UTF8;\nGO;\n\nUse Sales\n\nCREATE EXTERNAL DATA SOURCE sales_data WITH (\n    LOCATION = 'https://datalakeweslbo.dfs.core.windows.net/files/labs-dp-500/01/data/'\n);\nGO;\n\n-- The following query uses the external data source to connect to the data lake, and the OPENROWSET function \n-- now only need to reference the relative path to the .csv files.\n\nSELECT *\nFROM\n    OPENROWSET(\n        BULK '*.csv',\n        DATA_SOURCE = 'sales_data',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS orders\n\n\n-- Query the parquet files using the data source.\n\nSELECT *\nFROM  \n    OPENROWSET(\n        BULK '*.snappy.parquet',\n        DATA_SOURCE = 'sales_data',\n        FORMAT='PARQUET'\n    ) AS orders\nWHERE replace(orders.filepath(1), '.snappy', '') = '2019'\n\n-- The external data source makes it easier to access the files in the data lake, but most data analysts using SQL \n-- are used to working with tables in a database. Fortunately, you can also define external file formats and external\n-- tables that encapsulate rowsets from files in database tables.\n\nCREATE EXTERNAL FILE FORMAT CsvFormat\n    WITH (\n        FORMAT_TYPE = DELIMITEDTEXT,\n        FORMAT_OPTIONS(\n        FIELD_TERMINATOR = ',',\n        STRING_DELIMITER = '\"'\n        )\n    );\nGO;\n\nCREATE EXTERNAL TABLE dbo.orders\n(\n    SalesOrderNumber VARCHAR(10),\n    SalesOrderLineNumber INT,\n    OrderDate DATE,\n    CustomerName VARCHAR(25),\n    EmailAddress VARCHAR(50),\n    Item VARCHAR(30),\n    Quantity INT,\n    UnitPrice DECIMAL(18,2),\n    TaxAmount DECIMAL (18,2)\n)\nWITH\n(\n    DATA_SOURCE =sales_data,\n    LOCATION = '*.csv',\n    FILE_FORMAT = CsvFormat\n);\nGO\n\n-- Now that you’ve explored various ways to query files in the data lake by using SQL queries, you can analyze \n-- the results of these queries to gain insights into the data. Often, insights are easier to uncover by visualizing \n-- the query results in a chart; which you can easily do by using the integrated charting functionality in the Synapse Studio query editor.\n\nSELECT YEAR(OrderDate) AS OrderYear,\n    SUM((UnitPrice * Quantity) + TaxAmount) AS GrossRevenue\nFROM dbo.orders\nGROUP BY YEAR(OrderDate)\nORDER BY OrderYear;\n\n-- Cleanup\nDROP EXTERNAL TABLE dbo.orders\nDROP EXTERNAL TABLE dbo.ProductSalesTotals\nDROP EXTERNAL TABLE dbo.YearlySalesTotals\nDROP EXTERNAL FILE FORMAT ParquetFormat\nDROp EXTERNAL FILE FORMAT CsvFormat\nDROP EXTERNAL DATA SOURCE sales_data\n",
+					"query": "-- Demo: Query files using a serverless SQL pool\n-- Task: Access external data in a database\n\nCREATE DATABASE Sales\nCOLLATE Latin1_General_100_BIN2_UTF8; \nGO;\n\nUse Sales\n\nCREATE EXTERNAL DATA SOURCE sales_data WITH (\n    LOCATION = 'https://datalakeweslbo.dfs.core.windows.net/files/labs-dp-203/01/data/'\n);\nGO;\n\n-- The following query uses the external data source to connect to the data lake, and the OPENROWSET function \n-- now only need to reference the relative path to the .csv files.\n\nSELECT *\nFROM\n    OPENROWSET(\n        BULK '*.csv',\n        DATA_SOURCE = 'sales_data',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS orders\n\n\n-- Query the parquet files using the data source.\n\nSELECT *\nFROM  \n    OPENROWSET(\n        BULK '*.snappy.parquet',\n        DATA_SOURCE = 'sales_data',\n        FORMAT='PARQUET'\n    ) AS orders\nWHERE replace(orders.filepath(1), '.snappy', '') = '2019'\n\n-- The external data source makes it easier to access the files in the data lake, but most data analysts using SQL \n-- are used to working with tables in a database. Fortunately, you can also define external file formats and external\n-- tables that encapsulate rowsets from files in database tables.\n\nCREATE EXTERNAL FILE FORMAT CsvFormat\n    WITH (\n        FORMAT_TYPE = DELIMITEDTEXT,\n        FORMAT_OPTIONS(\n        FIELD_TERMINATOR = ',',\n        STRING_DELIMITER = '\"'\n        )\n    );\nGO;\n\nCREATE EXTERNAL TABLE dbo.orders\n(\n    SalesOrderNumber VARCHAR(10),\n    SalesOrderLineNumber INT,\n    OrderDate DATE,\n    CustomerName VARCHAR(25),\n    EmailAddress VARCHAR(50),\n    Item VARCHAR(30),\n    Quantity INT,\n    UnitPrice DECIMAL(18,2),\n    TaxAmount DECIMAL (18,2)\n)\nWITH\n(\n    DATA_SOURCE =sales_data,\n    LOCATION = '*.csv',\n    FILE_FORMAT = CsvFormat\n);\nGO\n\n-- Now that you’ve explored various ways to query files in the data lake by using SQL queries, you can analyze \n-- the results of these queries to gain insights into the data. Often, insights are easier to uncover by visualizing \n-- the query results in a chart; which you can easily do by using the integrated charting functionality in the Synapse Studio query editor.\n\nSELECT YEAR(OrderDate) AS OrderYear,\n    SUM((UnitPrice * Quantity) + TaxAmount) AS GrossRevenue\nFROM dbo.orders\nGROUP BY YEAR(OrderDate)\nORDER BY OrderYear;\n\n-- Cleanup\nDROP EXTERNAL TABLE dbo.orders\nDROP EXTERNAL TABLE dbo.ProductSalesTotals\nDROP EXTERNAL TABLE dbo.YearlySalesTotals\nDROP EXTERNAL FILE FORMAT ParquetFormat\nDROp EXTERNAL FILE FORMAT CsvFormat\nDROP EXTERNAL DATA SOURCE sales_data\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -8262,6 +8262,174 @@
 						],
 						"outputs": [],
 						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/RetailDB')]",
+			"type": "Microsoft.Synapse/workspaces/databases",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"Ddls": [
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "RetailDB",
+							"EntityType": "DATABASE",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"Properties": {
+								"IsSyMSCDMDatabase": true
+							},
+							"Source": {
+								"Provider": "ADLS",
+								"Location": "abfss://files@datalakeweslbo.dfs.core.windows.net/RetailDB",
+								"Properties": {
+									"FormatType": "csv",
+									"LinkedServiceName": "DP203AzureDataLakeStorage"
+								}
+							}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "Customer",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "RetailDB"
+							},
+							"Description": "",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "CustomerId",
+										"Description": "Unique customer ID",
+										"OriginDataTypeName": {
+											"TypeName": "long",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Properties": {
+												"HIVE_TYPE_STRING": "long"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "FirstName",
+										"Description": "FirstName ",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "LastName",
+										"Description": "Last name",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "EmailAddress",
+										"Description": "",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "Phone",
+										"Description": "",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://files@datalakeweslbo.dfs.core.windows.net/RetailDB/Customer",
+										"delimiter": ",",
+										"multiLine": "false",
+										"firstRowAsHeader": "false",
+										"serialization.format": "1",
+										"escape": "\\",
+										"quote": "\"",
+										"FormatTypeSetToDatabaseDefault": true,
+										"header": "false"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://files@datalakeweslbo.dfs.core.windows.net/RetailDB/Customer",
+									"Properties": {
+										"LinkedServiceName": "DP203AzureDataLakeStorage",
+										"LocationSetToDatabaseDefault": true
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "CustomerId",
+								"spark.sql.sources.provider": "csv"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
 					}
 				]
 			},
