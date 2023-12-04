@@ -24,10 +24,6 @@
 			"metadata": "Secure string for 'connectionString' of 'SqlDwh'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=\"@{concat('synapse-', linkedService().suffix,'.sql.azuresynapse.net')}\";Initial Catalog=sqldwh"
 		},
-		"salescosmosdb_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'salescosmosdb'"
-		},
 		"synapse-weslbo-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'synapse-weslbo-WorkspaceDefaultSqlServer'",
@@ -2165,25 +2161,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/salescosmosdb')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "CosmosDb",
-				"typeProperties": {
-					"connectionString": "[parameters('salescosmosdb_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/synapse-weslbo-WorkspaceDefaultSqlServer')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -2242,26 +2219,6 @@
 						}
 					}
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/OnPremIntegrationRuntime1')]",
-			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/OnPremisesIntegrationRuntime')]",
-			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
 			},
 			"dependsOn": []
 		},
@@ -3097,12 +3054,12 @@
 					"name": "dp-203/08-Govern data/22-Purview"
 				},
 				"content": {
-					"query": "CREATE LOGIN [purview-weslbo] FROM EXTERNAL PROVIDER\n\nUSE default\n\nCREATE USER [purview-weslbo] FROM LOGIN [purview-weslbo]\nALTER ROLE db_datareader ADD MEMBER [purview-weslbo]\n\nUSE Sales\n\nCREATE USER [purview-weslbo] FROM LOGIN [purview-weslbo]\nALTER ROLE db_datareader ADD MEMBER [purview-weslbo]\n",
+					"query": "CREATE LOGIN [purview-weslbo] FROM EXTERNAL PROVIDER\n\nUSE default\n\nCREATE USER [purview-weslbo] FROM LOGIN [purview-weslbo]\nALTER ROLE db_datareader ADD MEMBER [purview-weslbo]\n\nUSE SalesDB\n\nCREATE USER [purview-weslbo] FROM LOGIN [purview-weslbo]\nALTER ROLE db_datareader ADD MEMBER [purview-weslbo]\n",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "default",
+						"databaseName": "SalesDB",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -8311,6 +8268,18 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "eastus"
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
 			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
@@ -8330,18 +8299,6 @@
 				"sparkVersion": "3.2",
 				"isComputeIsolationEnabled": false,
 				"sessionLevelPackagesEnabled": false,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "eastus"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/sqldwh')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
 				"annotations": []
 			},
 			"dependsOn": [],
