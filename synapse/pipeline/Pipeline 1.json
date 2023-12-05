@@ -25,7 +25,17 @@
 						"allowCopyCommand": true,
 						"tableOption": "autoCreate"
 					},
-					"enableStaging": false,
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "DataLake",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"suffix": "weslbo"
+							}
+						},
+						"path": "landing"
+					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
