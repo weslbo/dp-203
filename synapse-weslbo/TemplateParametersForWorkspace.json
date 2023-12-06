@@ -11,6 +11,9 @@
 		"DP203AzureDataLakeStorage_accountKey": {
 			"value": ""
 		},
+		"SalesCosmos_connectionString": {
+			"value": ""
+		},
 		"SqlAdventureWorksLT_connectionString": {
 			"value": ""
 		},
