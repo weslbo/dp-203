@@ -8,13 +8,13 @@
 		"AdventureWorksDBLinkedService_connectionString": {
 			"value": ""
 		},
+		"AzureDatabricks1_accessToken": {
+			"value": ""
+		},
 		"DP203AzureDataLakeStorage_accountKey": {
 			"value": ""
 		},
 		"SalesCosmos_connectionString": {
-			"value": ""
-		},
-		"SqlAdventureWorksLT_connectionString": {
 			"value": ""
 		},
 		"SqlDwh_connectionString": {
