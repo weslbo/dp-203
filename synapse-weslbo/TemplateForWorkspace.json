@@ -352,6 +352,12 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"variables": {
+					"suffix": {
+						"type": "String",
+						"defaultValue": "weslbo"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
@@ -731,7 +737,10 @@
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "DataLake",
-					"type": "LinkedServiceReference"
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"suffix": "weslbo"
+					}
 				},
 				"annotations": [],
 				"type": "Parquet",
