@@ -3,7 +3,10 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "DataLake",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"suffix": "weslbo"
+			}
 		},
 		"annotations": [],
 		"type": "Parquet",

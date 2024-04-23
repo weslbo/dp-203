@@ -54,6 +54,12 @@
 				]
 			}
 		],
+		"variables": {
+			"suffix": {
+				"type": "String",
+				"defaultValue": "weslbo"
+			}
+		},
 		"annotations": []
 	}
 }
